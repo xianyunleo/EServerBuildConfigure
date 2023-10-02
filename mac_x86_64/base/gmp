@@ -1,0 +1,8 @@
+export MACOSX_DEPLOYMENT_TARGET=10.13
+make clean
+./configure --prefix=/Applications/EServer/Library/gmp \
+--enable-cxx \
+--with-pic
+
+make -j8
+make install

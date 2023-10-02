@@ -1,0 +1,8 @@
+export MACOSX_DEPLOYMENT_TARGET=10.13
+make clean
+BUILD_TLS=yes \
+CFLAGS=-I/Applications/EServer/Library/openssl@1.1/include \
+LDFLAGS=-L/Applications/EServer/Library/openssl@1.1/lib
+
+make -j8
+make install PREFIX=/Applications/EServer/software/server/redis-7.2

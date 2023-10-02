@@ -1,0 +1,10 @@
+export MACOSX_DEPLOYMENT_TARGET=10.13
+
+make clean
+./configure --prefix=/Applications/EServer/Library/zlib \
+
+make -j8
+make install
+
+
+#https://zlib.net

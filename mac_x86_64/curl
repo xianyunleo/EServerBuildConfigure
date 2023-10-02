@@ -1,0 +1,25 @@
+#需要先安装openssl、zlib、nghttp2
+
+export MACOSX_DEPLOYMENT_TARGET=10.13
+make clean
+./configure --prefix=/Applications/EServer/Library/curl \
+--disable-debug \
+--disable-dependency-tracking \
+--disable-silent-rules \
+--with-ssl=/Applications/EServer/Library/openssl@1.1 \
+--with-zlib=/Applications/EServer/Library/zlib \
+--without-ca-bundle \
+--without-ca-path \
+--with-ca-fallback \
+--with-secure-transport \
+--with-default-ssl-backend=openssl \
+--with-nghttp2=/Applications/EServer/Library/nghttp2 \
+--without-libpsl \
+--without-libidn2 \
+--without-librtmp \
+--without-zstd \
+--without-brotli \
+--with-gssapi
+
+make -j8
+make install

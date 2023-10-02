@@ -1,0 +1,9 @@
+export MACOSX_DEPLOYMENT_TARGET=10.13
+make clean
+./configure --prefix=/Applications/EServer/Library/libpq \
+--disable-debug
+make -j8
+make install
+
+
+#http://ftp.postgresql.org/pub/source/
