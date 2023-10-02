@@ -1,0 +1,16 @@
+#需要先安装bzip2、libpng、zlib
+
+export MACOSX_DEPLOYMENT_TARGET=11.0
+export CFLAGS="-arch arm64"
+make clean
+./configure --prefix=/Applications/EServer/Library/freetype \
+--enable-freetype-config \
+--without-harfbuzz \
+--without-brotli \
+BZIP2_CFLAGS="-I/Applications/EServer/Library/bzip2/include" \
+BZIP2_LIBS="-L/Applications/EServer/Library/bzip2/lib -lbz2" \
+PKG_CONFIG_PATH=/Applications/EServer/Library/libpng/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig \
+--host=arm64-apple-darwin
+
+make -j8
+make install

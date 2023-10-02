@@ -1,11 +1,13 @@
-#需要先执行 brew uninstall zstd
+#https://libzip.org/download/libzip-1.5.2.tar.xz
 
 
-export MACOSX_DEPLOYMENT_TARGET=10.13
+export MACOSX_DEPLOYMENT_TARGET=11.0
+export CFLAGS="-arch arm64"
 
 cmake . -DCMAKE_INSTALL_PREFIX=/Applications/EServer/Library/libzip \
 -DZLIB_LIBRARY_RELEASE=/Applications/EServer/Library/zlib/lib/libz.dylib \
 -DBZIP2_LIBRARY_RELEASE=/Applications/EServer/Library/bzip2/lib/libbz2.a \
+-DCMAKE_C_FLAGS="-arch arm64" -DCMAKE_CXX_FLAGS="-arch arm64" \
 -DENABLE_GNUTLS=OFF \
 -DENABLE_MBEDTLS=OFF \
 -DENABLE_OPENSSL=OFF \

@@ -1,4 +1,5 @@
-export MACOSX_DEPLOYMENT_TARGET=10.13
+export MACOSX_DEPLOYMENT_TARGET=11.0
+export CFLAGS="-arch arm64"
 make clean
 ./configure --prefix=/Applications/EServer/Library/pcre2 \
 --disable-dependency-tracking \
@@ -6,7 +7,8 @@ make clean
 --enable-pcre2-32 \
 --enable-pcre2grep-libz \
 --enable-pcre2grep-libbz2 \
---enable-jit
+--enable-jit \
+--host=arm64-apple-darwin
 
 make -j8
 make install

@@ -1,4 +1,6 @@
-export MACOSX_DEPLOYMENT_TARGET=10.13
+#需arm64 apple编译
+
+export MACOSX_DEPLOYMENT_TARGET=11.0
 make clean
 
 make -j8 \

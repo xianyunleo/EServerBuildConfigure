@@ -1,11 +1,12 @@
-export MACOSX_DEPLOYMENT_TARGET=10.13
+export MACOSX_DEPLOYMENT_TARGET=11.0
+export CFLAGS="-arch arm64"
 make clean
 ./Configure --prefix=/Applications/EServer/Library/openssl@1.1 \
 --openssldir=/Applications/EServer/Library/openssl@1.1/ssl \
 no-ssl3 \
 no-ssl3-method \
 no-zlib \
-darwin64-x86_64-cc \
+darwin64-arm64-cc \
 enable-ec_nistp_64_gcc_128
 
 make -j8

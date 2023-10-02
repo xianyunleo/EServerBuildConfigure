@@ -1,0 +1,13 @@
+export MACOSX_DEPLOYMENT_TARGET=11.0
+export CFLAGS="-arch arm64"
+make clean
+./configure --prefix=/Applications/EServer/Library/libpng \
+--disable-dependency-tracking \
+--disable-silent-rules \
+--host=arm64-apple-darwin
+
+make -j8
+make install
+
+
+#不需要指定zlib
