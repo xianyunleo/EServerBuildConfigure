@@ -1,5 +1,8 @@
 #需要先安装openssl、zlib、nghttp2
+#只能使用低版本/MacOSX SDK，其他高版本不行
+#https://github.com/curl/curl/releases/download/curl-7_85_0/curl-7.85.0.tar.xz
 
+export SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk
 export MACOSX_DEPLOYMENT_TARGET=10.13
 make clean
 ./configure --prefix=/Applications/EServer/Library/curl \
