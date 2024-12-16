@@ -7,29 +7,29 @@ make clean
 --enable-exif \
 --enable-ftp \
 --enable-fpm \
---enable-gd \
+--enable-gd=shared \
 --enable-mbstring \
 --enable-mbregex \
 --enable-opcache \
 --enable-soap \
 --enable-sockets \
 --with-bz2=/Applications/EServer/Library/bzip2 \
---with-curl \
+--with-curl=shared \
 --with-freetype \
 --with-gmp=/Applications/EServer/Library/gmp \
 --with-iconv=/Applications/EServer/Library/libiconv \
 --with-mysqli \
---with-openssl \
+--with-openssl=shared \
 --with-pdo-mysql \
---with-pgsql=/Applications/EServer/Library/libpq \
---with-pdo-pgsql=/Applications/EServer/Library/libpq \
---with-pdo-sqlite \
---with-sqlite3 \
 --with-libxml \
+--with-webp \
 --with-jpeg \
 --with-zip \
 --with-zlib \
-PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@1.1/lib/pkgconfig:/Applications/EServer/Library/curl/lib/pkgconfig:/Applications/EServer/Library/libpng/lib/pkgconfig:/Applications/EServer/Library/jpeg/lib/pkgconfig:/Applications/EServer/Library/oniguruma/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig:/Applications/EServer/Library/libxml2/lib/pkgconfig:/Applications/EServer/Library/libzip/lib/pkgconfig:/Applications/EServer/Library/freetype/lib/pkgconfig
+PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@1.1/lib/pkgconfig:/Applications/EServer/Library/curl/lib/pkgconfig:/Applications/EServer/Library/libpng/lib/pkgconfig:/Applications/EServer/Library/jpeg/lib/pkgconfig:/Applications/EServer/Library/oniguruma/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig:/Applications/EServer/Library/libxml2/lib/pkgconfig:/Applications/EServer/Library/libzip/lib/pkgconfig:/Applications/EServer/Library/freetype/lib/pkgconfig:/Applications/EServer/Library/libwebp/lib/pkgconfig
 
 make -j8
 make install
+
+cp ./php.ini-development /Applications/EServer/software/php/php-8.1/etc/php.ini-development
+cp ./php.ini-production /Applications/EServer/software/php/php-8.1/etc/php.ini-production

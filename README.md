@@ -8,4 +8,4 @@
 
 查看arch
 
-`otool  /path/to/your/binary`
+`file /path/to/your/binary`

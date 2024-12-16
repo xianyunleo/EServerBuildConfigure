@@ -14,24 +14,25 @@ make clean
 --enable-opcache \
 --enable-zip \
 --with-bz2=/Applications/EServer/Library/bzip2 \
---with-curl=/Applications/EServer/Library/curl \
+--with-curl=shared,/Applications/EServer/Library/curl \
 --with-freetype-dir=/Applications/EServer/Library/freetype \
---with-gd \
+--with-gd=shared \
 --with-gmp=/Applications/EServer/Library/gmp \
---with-openssl=/Applications/EServer/Library/openssl@1.1 \
+--with-openssl=shared,/Applications/EServer/Library/openssl@1.1 \
 --with-iconv=/Applications/EServer/Library/libiconv \
 --with-mysqli \
 --with-pdo-mysql \
---with-pgsql=/Applications/EServer/Library/libpq \
---with-pdo-pgsql=/Applications/EServer/Library/libpq \
---with-pdo-sqlite \
---with-sqlite3 \
 --with-libxml-dir=/Applications/EServer/Library/libxml2 \
 --with-jpeg-dir=/Applications/EServer/Library/jpeg \
 --with-png-dir=/Applications/EServer/Library/libpng \
+--with-webp-dir=/Applications/EServer/Library/libwebp \
+--with-freetype-dir=/Applications/EServer/Library/freetype \
 --with-zlib-dir=/Applications/EServer/Library/zlib \
 CFLAGS="-Wno-implicit-function-declaration" \
-PKG_CONFIG_PATH=/Applications/EServer/Library/freetype/lib/pkgconfig
+PKG_CONFIG_PATH=/Applications/EServer/Library/freetype/lib/pkgconfig:/Applications/EServer/Library/libwebp/lib/pkgconfig
 
 make -j8
 make install
+
+cp ./php.ini-development /Applications/EServer/software/php/php-7.0/etc/php.ini-development
+cp ./php.ini-production /Applications/EServer/software/php/php-7.0/etc/php.ini-production
