@@ -1,7 +1,7 @@
 export MACOSX_DEPLOYMENT_TARGET=10.13
 make clean
-./configure --prefix=/Applications/EServer/software/php/php-7.0 \
---with-config-file-path=/Applications/EServer/software/php/php-7.0/etc \
+./configure --prefix=/Applications/EServer/childApp/php/php-7.0 \
+--with-config-file-path=/Applications/EServer/childApp/php/php-7.0/etc \
 --enable-bcmath \
 --enable-calendar \
 --enable-exif \
@@ -34,5 +34,5 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/freetype/lib/pkgconfig:/Applicatio
 make -j8
 make install
 
-cp ./php.ini-development /Applications/EServer/software/php/php-7.0/etc/php.ini-development
-cp ./php.ini-production /Applications/EServer/software/php/php-7.0/etc/php.ini-production
+cp ./php.ini-development /Applications/EServer/childApp/php/php-7.0/etc/php.ini-development
+cp ./php.ini-production /Applications/EServer/childApp/php/php-7.0/etc/php.ini-production
