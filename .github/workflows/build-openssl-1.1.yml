@@ -1,0 +1,46 @@
+name: Build and Release OpenSSL 1.1 (macOS)
+
+on:
+  workflow_dispatch:   # 手动触发
+  push:
+    tags:
+      - 'openssl-1.1-*'
+
+jobs:
+  build_and_release:
+    name: Build and Release OpenSSL 1.1 (macOS)
+    runs-on: macos-latest
+    env:
+      PREFIX: /Applications/EServer/Library/openssl@1.1
+      OPENSSL_VERSION: 1.1.1w
+      MACOSX_DEPLOYMENT_TARGET: 11.0
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build OpenSSL
+        run: |
+          chmod +x mac_arm64/base/openssl@1.1.sh
+          ./mac_arm64/base/openssl@1.1.sh
+
+      - name: Show file info
+        run: |
+          FILE="$PREFIX/lib/libssl.dylib"
+          echo "=== file architectures ==="
+          lipo -info "$FILE"
+          echo "=== file minimum macOS version ==="
+          otool -l "$FILE" | grep -A 3 LC_BUILD_VERSION
+          echo "=== file dependencies ==="
+          otool -L "$FILE"
+
+      - name: Package artifact
+        run: |
+          tar -czf openssl-1.1-macos.tar.gz -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+
+      - name: Upload release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: openssl-1.1-macos.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

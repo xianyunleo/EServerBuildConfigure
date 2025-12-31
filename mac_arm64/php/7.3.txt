@@ -1,4 +1,4 @@
-export MACOSX_DEPLOYMENT_TARGET=10.13
+export MACOSX_DEPLOYMENT_TARGET=11.0
 make clean
 ./configure --prefix=/Applications/EServer/software/php/php-7.3 \
 --with-config-file-path=/Applications/EServer/software/php/php-7.3/etc \

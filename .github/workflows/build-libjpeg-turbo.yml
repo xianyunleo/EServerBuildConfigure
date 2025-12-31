@@ -1,0 +1,46 @@
+name: Build and Release libjpeg-turbo (macOS)
+
+on:
+  workflow_dispatch:   # 手动触发
+  push:
+    tags:
+      - 'libjpeg-turbo-*'
+
+jobs:
+  build_and_release:
+    name: Build and Release libjpeg-turbo (macOS)
+    runs-on: macos-latest
+    env:
+      PREFIX: /Applications/EServer/Library/libjpeg-turbo
+      JPEG_VERSION: 2.1.5.1
+      MACOSX_DEPLOYMENT_TARGET: 11.0
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build libjpeg-turbo
+        run: |
+          chmod +x mac_arm64/base/libjpeg-turbo.sh
+          ./mac_arm64/base/libjpeg-turbo.sh
+
+      - name: Show file info
+        run: |
+          FILE="$PREFIX/lib/libjpeg.dylib"
+          echo "=== file architectures ==="
+          lipo -info "$FILE"
+          echo "=== file minimum macOS version ==="
+          otool -l "$FILE" | grep -A 3 LC_BUILD_VERSION
+          echo "=== file dependencies ==="
+          otool -L "$FILE"
+
+      - name: Package artifact
+        run: |
+          tar -czf libjpeg-turbo-macos.tar.gz -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+
+      - name: Upload release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: libjpeg-turbo-macos.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

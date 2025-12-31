@@ -1,12 +1,12 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+set -euo pipefail
 
 # -------------------------------
 # 配置
 # -------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/Library/gmp}
-GMP_VERSION=${GMP_VERSION:-6.3.0}
+GMP_VERSION=${GMP_VERSION:-6.3.0} # 可以根据需要修改版本
 
 # -------------------------------
 # 下载 GMP 源码
@@ -31,13 +31,15 @@ tar xf "$GMP_TAR"
 cd "gmp-$GMP_VERSION"
 
 # 配置
-CFLAGS="-O2 -fPIC -mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET"
+CFLAGS="-O2"
 CXXFLAGS="$CFLAGS"
 LDFLAGS="-L$PREFIX/lib"
 ./configure \
     --prefix="$PREFIX" \
     --enable-shared \
     --enable-static \
+    --enable-cxx \
+    --with-pic \
     --build=$(uname -m)-apple-darwin
 
 # 编译安装

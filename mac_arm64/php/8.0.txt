@@ -1,4 +1,4 @@
-export MACOSX_DEPLOYMENT_TARGET=10.13
+export MACOSX_DEPLOYMENT_TARGET=11.0
 make clean
 ./configure --prefix=/Applications/EServer/software/php/php-8.0 \
 --with-config-file-path=/Applications/EServer/software/php/php-8.0/etc \
@@ -29,7 +29,7 @@ make clean
 --with-jpeg \
 --with-zip \
 --with-zlib \
-PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@1.1/lib/pkgconfig:/Applications/EServer/Library/curl/lib/pkgconfig:/Applications/EServer/Library/libpng/lib/pkgconfig:/Applications/EServer/Library/jpeg/lib/pkgconfig:/Applications/EServer/Library/oniguruma/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig:/Applications/EServer/Library/libxml2/lib/pkgconfig:/Applications/EServer/Library/libzip/lib/pkgconfig:/Applications/EServer/Library/freetype/lib/pkgconfig
+PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applications/EServer/Library/curl/lib/pkgconfig:/Applications/EServer/Library/libpng/lib/pkgconfig:/Applications/EServer/Library/jpeg/lib/pkgconfig:/Applications/EServer/Library/oniguruma/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig:/Applications/EServer/Library/libxml2/lib/pkgconfig:/Applications/EServer/Library/libzip/lib/pkgconfig:/Applications/EServer/Library/freetype/lib/pkgconfig
 
 make -j8
 make install

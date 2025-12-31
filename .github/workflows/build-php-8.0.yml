@@ -1,0 +1,43 @@
+name: Build and Release PHP 8.0 (macOS)
+
+on:
+  workflow_dispatch:   # 手动触发
+  push:
+    tags:
+      - 'php-8.0-*'
+
+jobs:
+  build_and_release:
+    name: Build and Release PHP 8.0 (macOS)
+    runs-on: macos-latest
+    env:
+      PREFIX: /Applications/EServer/software/php/php-8.0
+      PHP_VERSION: 8.0.30
+      MACOSX_DEPLOYMENT_TARGET: 10.13
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build PHP 8.0
+        run: |
+          chmod +x mac_arm64/php/php-8.0.sh
+          ./mac_arm64/php/php-8.0.sh
+
+      - name: Show PHP info
+        run: |
+          echo "=== PHP version ==="
+          "$PREFIX/bin/php" -v
+          echo "=== PHP modules ==="
+          "$PREFIX/bin/php" -m
+
+      - name: Package artifact
+        run: |
+          tar -czf php-8.0-macos.tar.gz -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+
+      - name: Upload release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: php-8.0-macos.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,46 @@
+name: Build and Release libpng (macOS)
+
+on:
+  workflow_dispatch:   # 手动触发
+  push:
+    tags:
+      - 'libpng-*'
+
+jobs:
+  build_and_release:
+    name: Build and Release libpng (macOS)
+    runs-on: macos-latest
+    env:
+      PREFIX: /Applications/EServer/Library/libpng
+      LIBPNG_VERSION: 1.6.43
+      MACOSX_DEPLOYMENT_TARGET: 11.0
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build libpng
+        run: |
+          chmod +x mac_arm64/base/libpng.sh
+          ./mac_arm64/base/libpng.sh
+
+      - name: Show file info
+        run: |
+          FILE="$PREFIX/lib/libpng16.dylib"
+          echo "=== file architectures ==="
+          lipo -info "$FILE"
+          echo "=== file minimum macOS version ==="
+          otool -l "$FILE" | grep -A 3 LC_BUILD_VERSION
+          echo "=== file dependencies ==="
+          otool -L "$FILE"
+
+      - name: Package artifact
+        run: |
+          tar -czf libpng-macos.tar.gz -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+
+      - name: Upload release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: libpng-macos.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
