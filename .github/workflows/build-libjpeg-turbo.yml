@@ -12,7 +12,7 @@ jobs:
     runs-on: macos-latest
     env:
       PREFIX: /Applications/EServer/Library/libjpeg-turbo
-      JPEG_VERSION: 2.1.5.1
+      JPEG_VERSION: 3.1.3
       MACOSX_DEPLOYMENT_TARGET: 11.0
 
     steps:
