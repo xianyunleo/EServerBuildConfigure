@@ -29,19 +29,23 @@ rm -rf "libjpeg-turbo-${JPEG_VERSION}"
 tar xf "$TARBALL"
 cd "libjpeg-turbo-${JPEG_VERSION}"
 
-# Autotools
-if [ -f "./autogen.sh" ]; then
-    ./autogen.sh
-fi
-
 # -------------------------------
 # 配置
 # -------------------------------
-CFLAGS="-O2"
-CXXFLAGS="$CFLAGS"
-./configure \
-    --prefix="$PREFIX" \
-    --disable-silent-rules
+args=(
+  "-DCMAKE_INSTALL_PREFIX=$PREFIX"
+  "-DCMAKE_BUILD_TYPE=Release"
+  "-DCMAKE_FIND_FRAMEWORK=LAST"
+  "-DCMAKE_VERBOSE_MAKEFILE=ON"
+  "-DCMAKE_INSTALL_RPATH=$RPATH"
+  "-DCMAKE_INSTALL_LIBDIR=lib"
+  "-DWITH_JPEG8=1"
+)
+
+# -------------------------------
+# 执行 CMake
+# -------------------------------
+cmake .. "${args[@]}"
 
 # -------------------------------
 # 编译安装
