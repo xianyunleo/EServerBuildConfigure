@@ -38,8 +38,6 @@ jobs:
       - name: Upload release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}    # workflow 由 tag 触发时使用
           files: gmp-macos.tar.gz
-          overwrite_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
