@@ -1,0 +1,45 @@
+name: Build and Release GMP (macOS)
+
+on:
+  workflow_dispatch:   # 手动触发
+  push:
+    tags:
+      - 'v*'          # tag 触发
+
+jobs:
+  build_and_release:
+    name: Build and Release GMP (macOS)
+    runs-on: macos-latest
+    env:
+      PREFIX: /Applications/EServer/Library/gmp
+      GMP_VERSION: 6.3.0
+      MACOSX_DEPLOYMENT_TARGET: 11.0
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build GMP
+        run: |
+          chmod +x mac_arm64/base/gmp.sh
+          ./mac_arm64/base/gmp.sh
+
+      - name: Show libgmp.dylib info
+        run: |
+          echo "=== libgmp.dylib architectures ==="
+          lipo -info "$PREFIX/lib/libgmp.dylib"
+          echo "=== libgmp.dylib minimum macOS version ==="
+          otool -l "$PREFIX/lib/libgmp.dylib" | grep -A 3 LC_VERSION_MIN_MACOSX || grep -A 3 LC_BUILD_VERSION
+
+      - name: Package artifact
+        run: |
+          tar -czf gmp-macos.tar.gz -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+
+      - name: Upload release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}    # workflow 由 tag 触发时使用
+          files: gmp-macos.tar.gz
+          overwrite_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
