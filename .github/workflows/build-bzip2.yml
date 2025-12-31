@@ -29,7 +29,7 @@ jobs:
           echo "=== libbz2.dylib architectures ==="
           lipo -info "$PREFIX/lib/libbz2.dylib"
           echo "=== libbz2.dylib minimum macOS version ==="
-          otool -l "$PREFIX/lib/libbz2.dylib" | grep -A 3 LC_VERSION_MIN_MACOSX
+          otool -l "$PREFIX/lib/libbz2.dylib" | grep -A 3 LC_BUILD_VERSION
 
       - name: Package artifact
         run: |
