@@ -1,0 +1,51 @@
+name: Build bzip2 (macOS)
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set variables
+        run: |
+          echo "BZIP2_VERSION=1.0.8" >> $GITHUB_ENV
+          echo "PREFIX=/Applications/EServer/Library/bzip2" >> $GITHUB_ENV
+
+
+      - name: Download bzip2
+        run: |
+          curl -LO https://sourceware.org/pub/bzip2/bzip2-${BZIP2_VERSION}.tar.gz
+          tar -xzf bzip2-${BZIP2_VERSION}.tar.gz
+
+      - name: Build bzip2
+        run: |
+          cd bzip2-${BZIP2_VERSION}
+          make clean
+          make
+          make -f Makefile-libbz2_so
+
+      - name: Install to dist
+        run: |
+          cd bzip2-${BZIP2_VERSION}
+          make install PREFIX=${PREFIX}
+
+      - name: Package artifacts
+        run: |
+          tar -czf bzip2-macos.tar.gz \
+            -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+
+
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/bzip2-macos.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
