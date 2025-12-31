@@ -12,7 +12,7 @@ GMP_VERSION=${GMP_VERSION:-6.3.0}
 # 下载 GMP 源码
 # -------------------------------
 GMP_TAR="gmp-$GMP_VERSION.tar.gz"
-GMP_URL="https://gmplib.org/download/gmp/$GMP_TAR"
+GMP_URL="https://ftpmirror.gnu.org/gnu/gmp/$GMP_TAR"
 
 mkdir -p build
 cd build
