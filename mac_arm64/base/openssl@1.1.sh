@@ -44,6 +44,7 @@ CXXFLAGS="$CFLAGS"
     no-ssl3 \
     no-ssl3-method \
     no-zlib \
+    darwin64-arm64-cc \
     enable-ec_nistp_64_gcc_128
 
 # -------------------------------
