@@ -24,12 +24,15 @@ jobs:
           chmod +x mac_arm64/base/gmp.sh
           ./mac_arm64/base/gmp.sh
 
-      - name: Show libgmp.dylib info
+      - name: Show file info
         run: |
-          echo "=== libgmp.dylib architectures ==="
-          lipo -info "$PREFIX/lib/libgmp.dylib"
-          echo "=== libgmp.dylib minimum macOS version ==="
-          otool -l "$PREFIX/lib/libgmp.dylib" | grep -A 3 LC_BUILD_VERSION
+          FILE="$PREFIX/lib/libgmp.dylib"
+          echo "=== file architectures ==="
+          lipo -info "$FILE"
+          echo "=== file minimum macOS version ==="
+          otool -l "$FILE" | grep -A 3 LC_BUILD_VERSION
+          echo "=== file dependencies ==="
+          otool -L "$FILE"
 
       - name: Package artifact
         run: |
