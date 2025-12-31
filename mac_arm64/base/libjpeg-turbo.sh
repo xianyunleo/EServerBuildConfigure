@@ -12,7 +12,7 @@ JPEG_VERSION=${JPEG_VERSION:-2.1.5.1} # 可以根据需要修改版本
 # 下载源码
 # -------------------------------
 TARBALL="libjpeg-turbo-${JPEG_VERSION}.tar.gz"
-URL="https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/v${JPEG_VERSION}/$TARBALL"
+URL="https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/${JPEG_VERSION}/$TARBALL"
 
 mkdir -p build
 cd build
