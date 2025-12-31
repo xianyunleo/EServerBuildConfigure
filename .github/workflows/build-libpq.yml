@@ -12,7 +12,7 @@ jobs:
     runs-on: macos-latest
     env:
       PREFIX: /Applications/EServer/Library/libpq
-      POSTGRESQL_VERSION: 17.2
+      POSTGRESQL_VERSION: 18.1
       MACOSX_DEPLOYMENT_TARGET: 11.0
 
     steps:
@@ -21,7 +21,7 @@ jobs:
 
       - name: Build libpq
         run: |
-          chmod +x mac_arm64/base/libpq.sh
+          chmod +x mac_arm64/libpq.sh
           ./mac_arm64/base/libpq.sh
 
       - name: Show file info

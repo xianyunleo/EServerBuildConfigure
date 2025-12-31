@@ -41,9 +41,7 @@ CFLAGS="-O2"
 CXXFLAGS="$CFLAGS"
 ./configure \
     --prefix="$PREFIX" \
-    --disable-silent-rules \
-    CFLAGS="$CFLAGS" \
-    CXXFLAGS="$CXXFLAGS"
+    --disable-silent-rules
 
 # -------------------------------
 # 编译安装

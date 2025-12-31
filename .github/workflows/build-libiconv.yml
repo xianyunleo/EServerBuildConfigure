@@ -12,7 +12,7 @@ jobs:
     runs-on: macos-latest
     env:
       PREFIX: /Applications/EServer/Library/libiconv
-      LIBICONV_VERSION: 1.17
+      LIBICONV_VERSION: 1.18
       MACOSX_DEPLOYMENT_TARGET: 11.0
 
     steps:

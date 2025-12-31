@@ -6,7 +6,7 @@ set -euo pipefail
 # -------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/Library/libiconv}
-LIBICONV_VERSION=${LIBICONV_VERSION:-1.17}
+LIBICONV_VERSION=${LIBICONV_VERSION:-1.18}
 
 # -------------------------------
 # 下载源码
@@ -37,18 +37,16 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
-export CFLAGS="-arch arm64"
+CFLAGS="-O2"
+CXXFLAGS="$CFLAGS"
 ./configure --prefix="$PREFIX" \
-    --disable-debug \
-    --disable-dependency-tracking \
     --enable-extra-encodings \
-    --enable-static \
-    --host=arm64-apple-darwin
+    --enable-static
 
 # -------------------------------
 # 编译安装
 # -------------------------------
-make -j8
+make -j$(sysctl -n hw.ncpu)
 make install
 
 # -------------------------------

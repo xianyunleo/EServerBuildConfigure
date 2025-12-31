@@ -6,7 +6,7 @@ set -euo pipefail
 # -------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/Library/libpng}
-LIBPNG_VERSION=${LIBPNG_VERSION:-1.6.43}
+LIBPNG_VERSION=${LIBPNG_VERSION:-1.6.53}
 
 # -------------------------------
 # 下载源码
@@ -37,16 +37,15 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
-export CFLAGS="-arch arm64"
+CFLAGS="-O2"
+CXXFLAGS="$CFLAGS"
 ./configure --prefix="$PREFIX" \
-    --disable-dependency-tracking \
-    --disable-silent-rules \
-    --host=arm64-apple-darwin
+    --disable-silent-rules
 
 # -------------------------------
 # 编译安装
 # -------------------------------
-make -j8
+make -j$(sysctl -n hw.ncpu)
 make install
 
 # -------------------------------

@@ -37,19 +37,19 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
-export CFLAGS="-arch arm64"
+CFLAGS="-O2"
+CXXFLAGS="$CFLAGS"
 ./Configure --prefix="$PREFIX" \
     --openssldir="$PREFIX/ssl" \
     no-ssl3 \
     no-ssl3-method \
     no-zlib \
-    darwin64-arm64-cc \
     enable-ec_nistp_64_gcc_128
 
 # -------------------------------
 # 编译安装
 # -------------------------------
-make -j8
+make -j$(sysctl -n hw.ncpu)
 make install
 
 # -------------------------------

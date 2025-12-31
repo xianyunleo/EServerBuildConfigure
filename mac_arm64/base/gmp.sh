@@ -33,14 +33,10 @@ cd "gmp-$GMP_VERSION"
 # 配置
 CFLAGS="-O2"
 CXXFLAGS="$CFLAGS"
-LDFLAGS="-L$PREFIX/lib"
 ./configure \
     --prefix="$PREFIX" \
-    --enable-shared \
-    --enable-static \
     --enable-cxx \
-    --with-pic \
-    --build=$(uname -m)-apple-darwin
+    --with-pic
 
 # 编译安装
 make -j$(sysctl -n hw.ncpu)

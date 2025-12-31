@@ -37,13 +37,14 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
-export CFLAGS="-arch arm64"
+CFLAGS="-O2"
+CXXFLAGS="$CFLAGS"
 ./configure --prefix="$PREFIX"
 
 # -------------------------------
 # 编译安装
 # -------------------------------
-make -j8
+make -j$(sysctl -n hw.ncpu)
 make install
 
 # -------------------------------

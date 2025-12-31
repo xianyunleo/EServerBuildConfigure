@@ -6,7 +6,7 @@ set -euo pipefail
 # -------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/Library/pcre2}
-PCRE2_VERSION=${PCRE2_VERSION:-10.44}
+PCRE2_VERSION=${PCRE2_VERSION:-10.47}
 
 # -------------------------------
 # 下载源码
@@ -37,20 +37,20 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
-export CFLAGS="-arch arm64"
+CFLAGS="-O2"
+CXXFLAGS="$CFLAGS"
 ./configure --prefix="$PREFIX" \
     --disable-dependency-tracking \
     --enable-pcre2-16 \
     --enable-pcre2-32 \
     --enable-pcre2grep-libz \
     --enable-pcre2grep-libbz2 \
-    --enable-jit \
-    --host=arm64-apple-darwin
+    --enable-jit
 
 # -------------------------------
 # 编译安装
 # -------------------------------
-make -j8
+make -j$(sysctl -n hw.ncpu)
 make install
 
 # -------------------------------

@@ -6,7 +6,7 @@ set -euo pipefail
 # -------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/Library/libpq}
-POSTGRESQL_VERSION=${POSTGRESQL_VERSION:-17.2}
+POSTGRESQL_VERSION=${POSTGRESQL_VERSION:-18.1}
 OPENSSL_PREFIX=${OPENSSL_PREFIX:-/Applications/EServer/Library/openssl@3.5}
 
 # -------------------------------
@@ -38,11 +38,10 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
+CFLAGS="-O2"
+CXXFLAGS="$CFLAGS"
 ./configure --prefix="$PREFIX" \
     --with-openssl \
-    --with-includes="$OPENSSL_PREFIX/include" \
-    --with-libraries="$OPENSSL_PREFIX/lib" \
-    --with-system-tzdata \
     --disable-debug
 
 # -------------------------------
