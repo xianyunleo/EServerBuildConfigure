@@ -5,8 +5,8 @@ set -e
 # 配置
 # -------------------------------
 export MACOSX_DEPLOYMENT_TARGET=11.0
+export PREFIX=/Applications/EServer/Library/bzip2
 BZIP2_VERSION=1.0.8
-PREFIX=/Applications/EServer/Library/bzip2
 
 # -------------------------------
 # 下载源码
