@@ -2,13 +2,6 @@
 set -e
 
 # -------------------------------
-# 配置
-# -------------------------------
-export MACOSX_DEPLOYMENT_TARGET=11.0
-export PREFIX=/Applications/EServer/Library/bzip2
-BZIP2_VERSION=1.0.8
-
-# -------------------------------
 # 下载源码
 # -------------------------------
 curl -LO https://sourceware.org/pub/bzip2/bzip2-${BZIP2_VERSION}.tar.gz

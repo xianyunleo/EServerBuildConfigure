@@ -1,24 +1,30 @@
-name: Build and Release bzip2 (macOS)  # workflow 名称
+name: Build and Release bzip2 (macOS)
 
 on:
+  workflow_dispatch:   # 手动触发
   push:
     tags:
-      - 'v*'  # 当打 tag 时触发
-  workflow_dispatch:  # 支持手动触发
+      - 'v*'          # tag 触发
 
 jobs:
-  build:
+  build_and_release:
+    name: Build and Release bzip2 (macOS)
     runs-on: macos-latest
+    env:
+      PREFIX: /Applications/EServer/Library/bzip2
+      BZIP2_VERSION: 1.0.8
+      MACOSX_DEPLOYMENT_TARGET: 11.0
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
       - name: Build bzip2
         run: |
           chmod +x mac_arm64/base/bzip2.sh
           ./mac_arm64/base/bzip2.sh
 
-      - name: Show libbz2.dylib info
+      - name: Verify libbz2.dylib
         run: |
           echo "=== libbz2.dylib architectures ==="
           lipo -info "$PREFIX/lib/libbz2.dylib"
@@ -27,11 +33,13 @@ jobs:
 
       - name: Package artifact
         run: |
-          tar -czf bzip2-macos.tar.gz -C /Applications/EServer/Library bzip2
+          tar -czf bzip2-macos.tar.gz -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
 
       - name: Upload release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.ref_name }}    # workflow 由 tag 触发时使用
           files: bzip2-macos.tar.gz
+          overwrite_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
