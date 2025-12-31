@@ -34,6 +34,14 @@ jobs:
           echo "=== file dependencies ==="
           otool -L "$FILE"
 
+      - name: Show bin/cjpeg info
+        run: |
+          BIN="$PREFIX/bin/cjpeg"
+          echo "=== $BIN version ==="
+          "$BIN" -version || "$BIN" --version || echo "No version flag recognized"
+          echo "=== $BIN dependencies ==="
+          otool -L "$BIN"
+
       - name: Package artifact
         run: |
           tar -czf libjpeg-turbo-macos.tar.gz -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
