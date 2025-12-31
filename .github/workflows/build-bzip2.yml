@@ -24,7 +24,7 @@ jobs:
           chmod +x mac_arm64/base/bzip2.sh
           ./mac_arm64/base/bzip2.sh
 
-      - name: Verify libbz2.dylib
+      - name: Show libbz2.dylib info
         run: |
           echo "=== libbz2.dylib architectures ==="
           lipo -info "$PREFIX/lib/libbz2.dylib"
