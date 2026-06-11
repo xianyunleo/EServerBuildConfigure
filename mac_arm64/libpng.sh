@@ -37,10 +37,10 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
-CFLAGS="-O2"
-CXXFLAGS="$CFLAGS"
-CPPFLAGS="-I/Applications/EServer/Library/zlib/include"
-LDFLAGS="-L/Applications/EServer/Library/zlib/lib"
+CFLAGS="-O2" \
+CXXFLAGS="$CFLAGS" \
+CPPFLAGS="-I/Applications/EServer/Library/zlib/include" \
+LDFLAGS="-L/Applications/EServer/Library/zlib/lib" \
 ./configure --prefix="$PREFIX" \
     --disable-silent-rules 
 
