@@ -59,20 +59,23 @@ jobs:
       
           echo "===== FULL TREE ====="
           find . -maxdepth 3 -type f -print
-      
-          echo "===== LOOK FOR CONFIG.LOG ====="
-          find . -name config.log -type f -print
     
       - name: Prepare logs
+        if: always()
         run: |
           find ./build -name config.log -type f -exec cp {} config-libpng.log \; || true
+
+      - name: Upload Logs release
+        if: always()
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name || inputs.tag }}
+          files: config-libpng.log
 
       - name: Upload release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name || inputs.tag }}
-          files: |
-            libpng-macos-${{ env.LIBPNG_VERSION }}.tar.gz
-            config-libpng.log
+          files: libpng-macos-${{ env.LIBPNG_VERSION }}.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
