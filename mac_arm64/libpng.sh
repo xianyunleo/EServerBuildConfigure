@@ -40,7 +40,7 @@ make clean || true
 CFLAGS="-O2" \
 CXXFLAGS="$CFLAGS" \
 CPPFLAGS="-I/Applications/EServer/Library/zlib/include" \
-LDFLAGS="-L/Applications/EServer/Library/zlib/lib -Wl,-search_paths_first" \
+LDFLAGS="-L/Applications/EServer/Library/zlib/lib" \
 ./configure --prefix="$PREFIX" \
     --disable-silent-rules 
 
