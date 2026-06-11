@@ -1,10 +1,14 @@
 name: Build and Release libpng (macOS)
 
 on:
-  workflow_dispatch:   # 手动触发
   push:
     tags:
       - 'libpng-*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. libpng-1.6.58)"
+        required: true
 
 jobs:
   build_and_release:
@@ -46,6 +50,8 @@ jobs:
       - name: Upload release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.ref_name || inputs.tag }}
+          name: libpng-macos-${{ env.LIBPNG_VERSION }}
           files: libpng-macos-${{ env.LIBPNG_VERSION }}.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
