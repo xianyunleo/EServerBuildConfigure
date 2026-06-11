@@ -38,7 +38,7 @@ make clean || true
 # 配置
 # -------------------------------
 ZLIB_PREFIX=/Applications/EServer/Library/zlib
-export PKG_CONFIG_PATH="${ZLIB_PREFIX}/lib/pkgconfig:$PKG_CONFIG_PATH"
+export PKG_CONFIG_PATH="${ZLIB_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
 
 CFLAGS="-O2"
 CXXFLAGS="$CFLAGS"
