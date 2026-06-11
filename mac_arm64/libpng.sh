@@ -6,7 +6,7 @@ set -euo pipefail
 # -------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/Library/libpng}
-LIBPNG_VERSION=${LIBPNG_VERSION:-1.6.53}
+LIBPNG_VERSION=${LIBPNG_VERSION:-1.6.58}
 
 # -------------------------------
 # 下载源码
@@ -49,7 +49,7 @@ CXXFLAGS="$CFLAGS"
 # 编译安装
 # -------------------------------
 make -j$(sysctl -n hw.ncpu)
-make install
+sudo make install
 
 # -------------------------------
 # 完成提示
