@@ -17,6 +17,7 @@ jobs:
     env:
       PREFIX: /Applications/EServer/Library/bzip2
       BZIP2_VERSION: 1.0.8
+      ARTIFACT_NAME: bzip2-macos-${{ env.BZIP2_VERSION }}.tar.gz
       MACOSX_DEPLOYMENT_TARGET: 11.0
 
     steps:
@@ -38,22 +39,14 @@ jobs:
           echo "=== file dependencies ==="
           otool -L "$FILE"
 
-
       - name: Package artifact
         run: |
-          tar -czf bzip2-macos.tar.gz -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
-
-      - name: Set artifact name
-        run: echo "ARTIFACT_NAME=bzip2-macos-${BZIP2_VERSION}.tar.gz" >> $GITHUB_ENV
-
-      - name: Package artifact
-        run: |
-          tar -czf "${{ ARTIFACT_NAME }}"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+          tar -czf "${ARTIFACT_NAME}"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
 
       - name: Upload release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
-          files: ${{ ARTIFACT_NAME }}
+          files:  ${{ env.ARTIFACT_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
