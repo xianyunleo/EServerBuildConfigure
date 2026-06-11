@@ -6,7 +6,7 @@ set -euo pipefail
 # -------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/Library/zlib}
-ZLIB_VERSION=${ZLIB_VERSION:-1.3.1}
+ZLIB_VERSION=${ZLIB_VERSION:-1.3.2}
 
 # -------------------------------
 # 下载源码
