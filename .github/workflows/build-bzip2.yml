@@ -1,10 +1,14 @@
 name: Build and Release bzip2 (macOS)
 
 on:
-  workflow_dispatch:   # 手动触发
   push:
     tags:
       - 'bzip2-*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. bzip2-1.0.8)"
+        required: true
 
 jobs:
   build_and_release:
@@ -39,9 +43,17 @@ jobs:
         run: |
           tar -czf bzip2-macos.tar.gz -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
 
+      - name: Set artifact name
+        run: echo "ARTIFACT_NAME=bzip2-macos-${BZIP2_VERSION}.tar.gz" >> $GITHUB_ENV
+
+      - name: Package artifact
+        run: |
+          tar -czf "${{ ARTIFACT_NAME }}"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+
       - name: Upload release
         uses: softprops/action-gh-release@v2
         with:
-          files: bzip2-macos.tar.gz
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          files: ${{ ARTIFACT_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

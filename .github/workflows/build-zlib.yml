@@ -38,14 +38,17 @@ jobs:
           echo "=== file dependencies ==="
           otool -L "$FILE"
 
+      - name: Set artifact name
+        run: echo "ARTIFACT_NAME=zlib-macos-${ZLIB_VERSION}.tar.gz" >> $GITHUB_ENV
+
       - name: Package artifact
         run: |
-          tar -czf "zlib-macos-${{ env.ZLIB_VERSION }}.tar.gz"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+          tar -czf "${{ ARTIFACT_NAME }}"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
 
       - name: Upload release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
-          files: zlib-macos-${{ env.ZLIB_VERSION }}.tar.gz
+          files: ${{ ARTIFACT_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -60,10 +60,17 @@ jobs:
           echo "===== FULL TREE ====="
           find . -maxdepth 3 -type f -print
 
+      - name: Set artifact name
+        run: echo "ARTIFACT_NAME=libpng-macos-${LIBPNG_VERSION}.tar.gz" >> $GITHUB_ENV
+
+      - name: Package artifact
+        run: |
+          tar -czf "${{ ARTIFACT_NAME }}"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+
       - name: Upload release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
-          files: libpng-macos-${{ env.LIBPNG_VERSION }}.tar.gz
+          files: ${{ ARTIFACT_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
