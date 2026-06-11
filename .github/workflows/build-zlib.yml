@@ -40,11 +40,12 @@ jobs:
 
       - name: Package artifact
         run: |
-          tar -czf zlib-macos.tar.gz -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+          tar -czf "zlib-macos-${{ env.ZLIB_VERSION }}.tar.gz"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
 
       - name: Upload release
         uses: softprops/action-gh-release@v2
         with:
-          files: zlib-macos.tar.gz
+          tag_name: ${{ github.ref_name || inputs.tag }}
+          files: zlib-macos-${{ env.ZLIB_VERSION }}.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
