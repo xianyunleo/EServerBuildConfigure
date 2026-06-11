@@ -39,9 +39,10 @@ make clean || true
 # -------------------------------
 CFLAGS="-O2"
 CXXFLAGS="$CFLAGS"
+CPPFLAGS="-I/Applications/EServer/Library/zlib/include"
+LDFLAGS="-L/Applications/EServer/Library/zlib/lib"
 ./configure --prefix="$PREFIX" \
-    --disable-silent-rules \
-    --with-zlib-prefix=/Applications/EServer/Library/zlib
+    --disable-silent-rules 
 
 # -------------------------------
 # 编译安装
