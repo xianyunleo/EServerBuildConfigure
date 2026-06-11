@@ -37,13 +37,11 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
-ZLIB_PREFIX=/Applications/EServer/Library/zlib
-export PKG_CONFIG_PATH="${ZLIB_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
-
 CFLAGS="-O2"
 CXXFLAGS="$CFLAGS"
 ./configure --prefix="$PREFIX" \
-    --disable-silent-rules
+    --disable-silent-rules \
+    --with-zlib-prefix=/Applications/EServer/Library/zlib
 
 # -------------------------------
 # 编译安装
