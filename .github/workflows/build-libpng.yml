@@ -48,7 +48,21 @@ jobs:
       - name: Package artifact
         run: |
           tar -czf "libpng-macos-${LIBPNG_VERSION}.tar.gz" -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
-
+          
+      - name: Debug workspace
+        run: |
+          echo "===== PWD ====="
+          pwd
+      
+          echo "===== ROOT LS ====="
+          ls -la
+      
+          echo "===== FULL TREE ====="
+          find . -maxdepth 3 -type f -print
+      
+          echo "===== LOOK FOR CONFIG.LOG ====="
+          find . -name config.log -type f -print
+    
       - name: Prepare logs
         run: |
           cp config.log config-libpng.log || true   
