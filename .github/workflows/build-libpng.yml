@@ -26,8 +26,8 @@ jobs:
 
       - name: Build libpng
         run: |
-          chmod +x mac_arm64/base/libpng.sh
-          ./mac_arm64/base/libpng.sh
+          chmod +x mac_arm64/libpng.sh
+          ./mac_arm64/libpng.sh
 
       - name: Show file info
         run: |
