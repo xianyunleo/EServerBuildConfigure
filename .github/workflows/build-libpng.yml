@@ -65,12 +65,12 @@ jobs:
 
       - name: Package artifact
         run: |
-          tar -czf "${{ ARTIFACT_NAME }}"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+          tar -czf "$ARTIFACT_NAME"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
 
       - name: Upload release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
-          files: ${{ ARTIFACT_NAME }}
+          files: ${{ env.ARTIFACT_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
