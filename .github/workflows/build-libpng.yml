@@ -65,7 +65,7 @@ jobs:
     
       - name: Prepare logs
         run: |
-          cp config.log config-libpng.log || true   
+          find ./build -name config.log -type f -exec cp {} config-libpng.log \; || true
 
       - name: Upload release
         uses: softprops/action-gh-release@v2
