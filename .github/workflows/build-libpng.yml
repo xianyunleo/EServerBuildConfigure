@@ -19,6 +19,11 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Prepare EServer Library
+        run: |
+          sudo mkdir -p /Applications/EServer/Library
+          sudo cp -R Library/* /Applications/EServer/Library/
+
       - name: Build libpng
         run: |
           chmod +x mac_arm64/base/libpng.sh
