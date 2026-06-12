@@ -1,7 +1,11 @@
 name: Build and Release GMP (macOS)
 
 on:
-  workflow_dispatch:   # 手动触发
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. gmp-6.3.0)"
+        required: true
   push:
     tags:
       - 'gmp-*'
@@ -24,6 +28,17 @@ jobs:
           chmod +x mac_arm64/base/gmp.sh
           ./mac_arm64/base/gmp.sh
 
+      - name: Debug workspace
+        run: |
+          echo "===== PWD ====="
+          pwd
+          
+          echo "===== ROOT LS ====="
+          ls -la
+          
+          echo "===== FULL TREE ====="
+          find . -maxdepth 3 -type f -print
+
       - name: Show file info
         run: |
           FILE="$PREFIX/lib/libgmp.dylib"
@@ -34,13 +49,17 @@ jobs:
           echo "=== file dependencies ==="
           otool -L "$FILE"
 
+      - name: Set artifact name
+        run: echo "ARTIFACT_NAME=gmp-macos-${GMP_VERSION}.tar.gz" >> $GITHUB_ENV
+
       - name: Package artifact
         run: |
-          tar -czf gmp-macos.tar.gz -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+          tar -czf "$ARTIFACT_NAME"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
 
       - name: Upload release
         uses: softprops/action-gh-release@v2
         with:
-          files: gmp-macos.tar.gz
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          files: ${{ env.ARTIFACT_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

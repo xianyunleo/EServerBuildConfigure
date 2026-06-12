@@ -1,7 +1,11 @@
 name: Build and Release PHP 8.1 (macOS)
 
 on:
-  workflow_dispatch:   # 手动触发
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. php-8.1.31)"
+        required: true
   push:
     tags:
       - 'php-8.1-*'
@@ -24,6 +28,17 @@ jobs:
           chmod +x mac_arm64/php/php-8.1.sh
           ./mac_arm64/php/php-8.1.sh
 
+      - name: Debug workspace
+        run: |
+          echo "===== PWD ====="
+          pwd
+          
+          echo "===== ROOT LS ====="
+          ls -la
+          
+          echo "===== FULL TREE ====="
+          find . -maxdepth 3 -type f -print
+
       - name: Show PHP info
         run: |
           echo "=== PHP version ==="
@@ -31,13 +46,17 @@ jobs:
           echo "=== PHP modules ==="
           "$PREFIX/bin/php" -m
 
+      - name: Set artifact name
+        run: echo "ARTIFACT_NAME=php-8.1-macos-${PHP_VERSION}.tar.gz" >> $GITHUB_ENV
+
       - name: Package artifact
         run: |
-          tar -czf php-8.1-macos.tar.gz -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+          tar -czf "$ARTIFACT_NAME"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
 
       - name: Upload release
         uses: softprops/action-gh-release@v2
         with:
-          files: php-8.1-macos.tar.gz
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          files: ${{ env.ARTIFACT_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

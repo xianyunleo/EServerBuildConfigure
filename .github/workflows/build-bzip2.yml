@@ -28,6 +28,17 @@ jobs:
           chmod +x mac_arm64/base/bzip2.sh
           ./mac_arm64/base/bzip2.sh
 
+      - name: Debug workspace
+        run: |
+          echo "===== PWD ====="
+          pwd
+          
+          echo "===== ROOT LS ====="
+          ls -la
+          
+          echo "===== FULL TREE ====="
+          find . -maxdepth 3 -type f -print
+
       - name: Show file info
         run: |
           FILE="$PREFIX/lib/libbz2.dylib"
