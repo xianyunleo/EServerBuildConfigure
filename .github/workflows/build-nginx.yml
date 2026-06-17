@@ -23,6 +23,13 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Prepare EServer Library
+        run: |
+          sudo mkdir -p /Applications/EServer/Library
+          sudo cp -R Library/* /Applications/EServer/Library/
+          echo "===== /Applications/EServer/Library ====="
+          ls -a /Applications/EServer/Library
+
       - name: Build nginx
         run: |
           chmod +x mac_arm64/nginx.sh
