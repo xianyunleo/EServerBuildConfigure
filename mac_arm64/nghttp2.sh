@@ -18,8 +18,8 @@ mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
-    echo "Downloading nghttp2 $NGHTTP2_VERSION..."
-    curl -LO "$URL"
+  echo "Downloading nghttp2 $NGHTTP2_VERSION..."
+  curl -LO "$URL"
 fi
 
 # -------------------------------
@@ -42,10 +42,10 @@ PKG_CONFIG_PATH="$OPENSSL_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH" \
 CFLAGS="-O2" \
 CXXFLAGS="-O2" \
 ./configure \
-    --prefix="$PREFIX" \
-    --enable-lib-only \
-    --host=arm64-apple-darwin \
-    --with-openssl="$OPENSSL_PREFIX"
+  --prefix="$PREFIX" \
+  --enable-lib-only \
+  --host=arm64-apple-darwin \
+  --with-openssl="$OPENSSL_PREFIX"
 
 # -------------------------------
 # 编译安装

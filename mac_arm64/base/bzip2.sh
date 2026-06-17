@@ -18,8 +18,8 @@ mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
-    echo "Downloading bzip2 $BZIP2_VERSION..."
-    curl -LO "$URL"
+  echo "Downloading bzip2 $BZIP2_VERSION..."
+  curl -LO "$URL"
 fi
 
 # -------------------------------
@@ -40,7 +40,7 @@ make clean || true
 CFLAGS="-Wall -Winline -O2 -g -D_FILE_OFFSET_BITS=64"
 
 for src in blocksort.c huffman.c crctable.c randtable.c compress.c decompress.c bzlib.c bzip2.c bzip2recover.c; do
-    clang $CFLAGS -c "$src"
+  clang $CFLAGS -c "$src"
 done
 
 # -------------------------------

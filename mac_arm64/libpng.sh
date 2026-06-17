@@ -18,8 +18,8 @@ mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
-    echo "Downloading libpng $LIBPNG_VERSION..."
-    curl -LO "$URL"
+  echo "Downloading libpng $LIBPNG_VERSION..."
+  curl -LO "$URL"
 fi
 
 # -------------------------------
@@ -42,7 +42,7 @@ CXXFLAGS="$CFLAGS" \
 CPPFLAGS="-I/Applications/EServer/Library/zlib/include" \
 LDFLAGS="-L/Applications/EServer/Library/zlib/lib" \
 ./configure --prefix="$PREFIX" \
-    --disable-silent-rules 
+  --disable-silent-rules 
 
 # -------------------------------
 # 编译安装

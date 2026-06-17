@@ -18,8 +18,8 @@ mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
-    echo "Downloading freetype $FREETYPE_VERSION..."
-    curl -LO "$URL"
+  echo "Downloading freetype $FREETYPE_VERSION..."
+  curl -LO "$URL"
 fi
 
 # -------------------------------
@@ -40,13 +40,13 @@ make clean || true
 CFLAGS="-O2" \
 CXXFLAGS="$CFLAGS" \
 ./configure --prefix="$PREFIX" \
-    --enable-freetype-config \
-    --without-harfbuzz \
-    --without-brotli \
-    BZIP2_CFLAGS="-I/Applications/EServer/Library/bzip2/include" \
-    BZIP2_LIBS="-L/Applications/EServer/Library/bzip2/lib -lbz2" \
-    PKG_CONFIG_PATH=/Applications/EServer/Library/libpng/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig \
-    --host=arm64-apple-darwin
+  --enable-freetype-config \
+  --without-harfbuzz \
+  --without-brotli \
+  BZIP2_CFLAGS="-I/Applications/EServer/Library/bzip2/include" \
+  BZIP2_LIBS="-L/Applications/EServer/Library/bzip2/lib -lbz2" \
+  PKG_CONFIG_PATH=/Applications/EServer/Library/libpng/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig \
+  --host=arm64-apple-darwin
 
 # -------------------------------
 # 编译安装

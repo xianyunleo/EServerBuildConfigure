@@ -18,8 +18,8 @@ mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
-    echo "Downloading curl $CURL_VERSION..."
-    curl -LO "$URL"
+  echo "Downloading curl $CURL_VERSION..."
+  curl -LO "$URL"
 fi
 
 # -------------------------------
@@ -40,24 +40,24 @@ make clean || true
 CFLAGS="-O2" \
 CXXFLAGS="$CFLAGS" \
 ./configure --prefix="$PREFIX" \
-    --disable-debug \
-    --disable-dependency-tracking \
-    --disable-silent-rules \
-    --with-ssl=/Applications/EServer/Library/openssl@3.5 \
-    --with-zlib=/Applications/EServer/Library/zlib \
-    --without-ca-bundle \
-    --without-ca-path \
-    --with-ca-fallback \
-    --with-secure-transport \
-    --with-default-ssl-backend=openssl \
-    --with-nghttp2=/Applications/EServer/Library/nghttp2 \
-    --without-libpsl \
-    --without-libidn2 \
-    --without-librtmp \
-    --without-zstd \
-    --without-brotli \
-    --with-gssapi \
-    --host=arm64-apple-darwin
+  --disable-debug \
+  --disable-dependency-tracking \
+  --disable-silent-rules \
+  --with-ssl=/Applications/EServer/Library/openssl@3.5 \
+  --with-zlib=/Applications/EServer/Library/zlib \
+  --without-ca-bundle \
+  --without-ca-path \
+  --with-ca-fallback \
+  --with-secure-transport \
+  --with-default-ssl-backend=openssl \
+  --with-nghttp2=/Applications/EServer/Library/nghttp2 \
+  --without-libpsl \
+  --without-libidn2 \
+  --without-librtmp \
+  --without-zstd \
+  --without-brotli \
+  --with-gssapi \
+  --host=arm64-apple-darwin
 
 # -------------------------------
 # 编译安装

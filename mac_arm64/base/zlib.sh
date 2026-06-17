@@ -18,8 +18,8 @@ mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
-    echo "Downloading zlib $ZLIB_VERSION..."
-    curl -LO "$URL"
+  echo "Downloading zlib $ZLIB_VERSION..."
+  curl -LO "$URL"
 fi
 
 # -------------------------------

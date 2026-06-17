@@ -18,8 +18,8 @@ mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
-    echo "Downloading libxml2 $LIBXML2_VERSION..."
-    curl -LO "$URL"
+  echo "Downloading libxml2 $LIBXML2_VERSION..."
+  curl -LO "$URL"
 fi
 
 # -------------------------------
@@ -40,13 +40,13 @@ make clean || true
 CFLAGS="-O2" \
 CXXFLAGS="$CFLAGS" \
 ./configure --prefix="$PREFIX" \
-    --disable-dependency-tracking \
-    --with-iconv=/Applications/EServer/Library/libiconv \
-    --with-zlib=/Applications/EServer/Library/zlib \
-    --with-history \
-    --without-python \
-    --without-lzma \
-    --host=arm64-apple-darwin
+  --disable-dependency-tracking \
+  --with-iconv=/Applications/EServer/Library/libiconv \
+  --with-zlib=/Applications/EServer/Library/zlib \
+  --with-history \
+  --without-python \
+  --without-lzma \
+  --host=arm64-apple-darwin
 
 # -------------------------------
 # 编译安装

@@ -16,8 +16,8 @@ URL="https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/${JPEG_VER
 
 
 if [ ! -f "$TARBALL" ]; then
-    echo "Downloading libjpeg-turbo $JPEG_VERSION..."
-    curl -LO "$URL"
+  echo "Downloading libjpeg-turbo $JPEG_VERSION..."
+  curl -LO "$URL"
 fi
 
 # -------------------------------

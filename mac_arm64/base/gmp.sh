@@ -18,8 +18,8 @@ mkdir -p build
 cd build
 
 if [ ! -f "$GMP_TAR" ]; then
-    echo "Downloading GMP $GMP_VERSION..."
-    curl -LO "$GMP_URL"
+  echo "Downloading GMP $GMP_VERSION..."
+  curl -LO "$GMP_URL"
 fi
 
 # -------------------------------
@@ -34,9 +34,9 @@ cd "gmp-$GMP_VERSION"
 CFLAGS="-O2"
 CXXFLAGS="$CFLAGS"
 ./configure \
-    --prefix="$PREFIX" \
-    --enable-cxx \
-    --with-pic
+  --prefix="$PREFIX" \
+  --enable-cxx \
+  --with-pic
 
 # 编译安装
 make -j$(sysctl -n hw.ncpu)
