@@ -6,7 +6,7 @@ set -euo pipefail
 # -------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/Library/openssl@3.5}
-OPENSSL_VERSION=${OPENSSL_VERSION:-3.5.4}
+OPENSSL_VERSION=${OPENSSL_VERSION:-3.5.7}
 
 # -------------------------------
 # 下载源码

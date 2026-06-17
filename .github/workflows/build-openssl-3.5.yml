@@ -16,7 +16,7 @@ jobs:
     runs-on: macos-latest
     env:
       PREFIX: /Applications/EServer/Library/openssl@3.5
-      OPENSSL_VERSION: 3.5.4
+      OPENSSL_VERSION: 3.5.7
       MACOSX_DEPLOYMENT_TARGET: 11.0
 
     steps:
