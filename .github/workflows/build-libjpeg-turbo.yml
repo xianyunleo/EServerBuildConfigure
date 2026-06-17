@@ -48,6 +48,8 @@ jobs:
           otool -l "$FILE" | grep -A 3 LC_BUILD_VERSION
           echo "=== file dependencies ==="
           otool -L "$FILE"
+          echo "=== file rpath ==="
+          otool -l "$FILE" | grep -A2 LC_RPATH
 
       - name: Show bin/cjpeg info
         run: |
