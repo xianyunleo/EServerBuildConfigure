@@ -37,7 +37,7 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
-sudo ./configure --prefix="$PREFIX" \
+./configure --prefix="$PREFIX" \
     --with-cc-opt="-I/Applications/EServer/Library/pcre2/include -I/Applications/EServer/Library/openssl@3.5/include" \
     --with-ld-opt="-L/Applications/EServer/Library/pcre2/lib -L/Applications/EServer/Library/openssl@3.5/lib" \
     --with-compat \
@@ -72,7 +72,7 @@ sudo ./configure --prefix="$PREFIX" \
 # 编译安装
 # -------------------------------
 sudo make -j8
-make install
+sudo make install
 
 # -------------------------------
 # 完成提示
