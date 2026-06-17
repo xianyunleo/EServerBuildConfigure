@@ -49,7 +49,7 @@ jobs:
       - name: Show nginx info
         run: |
           FILE="$PREFIX/sbin/nginx"
-          echo "=== nginx version ==="
+          echo "=== nginx -V ==="
           "$FILE" -V 2>&1
           echo "=== file architectures ==="
           lipo -info "$FILE"
@@ -57,8 +57,6 @@ jobs:
           otool -l "$FILE" | grep -A 3 LC_BUILD_VERSION
           echo "=== file dependencies ==="
           otool -L "$FILE"
-          echo "=== file rpath ==="
-          otool -l "$FILE" | grep -A2 LC_RPATH
 
       - name: Set artifact name
         run: echo "ARTIFACT_NAME=nginx-macos-${NGINX_VERSION}.tar.gz" >> $GITHUB_ENV

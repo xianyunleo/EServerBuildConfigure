@@ -18,8 +18,8 @@ mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
-    echo "Downloading libiconv $LIBICONV_VERSION..."
-    curl -LO "$URL"
+  echo "Downloading libiconv $LIBICONV_VERSION..."
+  curl -LO "$URL"
 fi
 
 # -------------------------------
@@ -40,8 +40,8 @@ make clean || true
 CFLAGS="-O2"
 CXXFLAGS="$CFLAGS"
 ./configure --prefix="$PREFIX" \
-    --enable-extra-encodings \
-    --enable-static
+  --enable-extra-encodings \
+  --enable-static
 
 # -------------------------------
 # 编译安装

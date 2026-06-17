@@ -18,8 +18,8 @@ mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
-    echo "Downloading redis $REDIS_VERSION..."
-    curl -LO "$URL"
+  echo "Downloading redis $REDIS_VERSION..."
+  curl -LO "$URL"
 fi
 
 # -------------------------------
@@ -38,9 +38,9 @@ make clean || true
 # 编译安装
 # -------------------------------
 make -j8 \
-    BUILD_TLS=yes \
-    CFLAGS="-I/Applications/EServer/Library/openssl@3.5/include" \
-    LDFLAGS=-L/Applications/EServer/Library/openssl@3.5/lib
+  BUILD_TLS=yes \
+  CFLAGS="-I/Applications/EServer/Library/openssl@3.5/include" \
+  LDFLAGS=-L/Applications/EServer/Library/openssl@3.5/lib
 
 make install PREFIX="$PREFIX"
 

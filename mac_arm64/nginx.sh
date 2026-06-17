@@ -18,8 +18,8 @@ mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
-    echo "Downloading nginx $NGINX_VERSION..."
-    curl -LO "$URL"
+  echo "Downloading nginx $NGINX_VERSION..."
+  curl -LO "$URL"
 fi
 
 # -------------------------------
@@ -37,42 +37,42 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
-sudo ./configure --prefix="$PREFIX" \
-    --with-cc-opt="-I/Applications/EServer/Library/pcre2/include -I/Applications/EServer/Library/openssl@3.5/include" \
-    --with-ld-opt="-L/Applications/EServer/Library/pcre2/lib -L/Applications/EServer/Library/openssl@3.5/lib" \
-    --with-compat \
-    --with-debug \
-    --with-http_addition_module \
-    --with-http_auth_request_module \
-    --with-http_dav_module \
-    --with-http_degradation_module \
-    --with-http_flv_module \
-    --with-http_gunzip_module \
-    --with-http_gzip_static_module \
-    --with-http_mp4_module \
-    --with-http_random_index_module \
-    --with-http_realip_module \
-    --with-http_secure_link_module \
-    --with-http_slice_module \
-    --with-http_ssl_module \
-    --with-http_stub_status_module \
-    --with-http_sub_module \
-    --with-http_v2_module \
-    --with-http_v3_module \
-    --with-mail \
-    --with-mail_ssl_module \
-    --with-pcre \
-    --with-pcre-jit \
-    --with-stream \
-    --with-stream_realip_module \
-    --with-stream_ssl_module \
-    --with-stream_ssl_preread_module
+./configure --prefix="$PREFIX" \
+--with-cc-opt="-I/Applications/EServer/Library/pcre2/include -I/Applications/EServer/Library/openssl@3.5/include -I/Applications/EServer/Library/zlib/include" \
+  --with-ld-opt="-L/Applications/EServer/Library/pcre2/lib -L/Applications/EServer/Library/openssl@3.5/lib -L/Applications/EServer/Library/zlib/lib" \
+  --with-compat \
+  --with-debug \
+  --with-http_addition_module \
+  --with-http_auth_request_module \
+  --with-http_dav_module \
+  --with-http_degradation_module \
+  --with-http_flv_module \
+  --with-http_gunzip_module \
+  --with-http_gzip_static_module \
+  --with-http_mp4_module \
+  --with-http_random_index_module \
+  --with-http_realip_module \
+  --with-http_secure_link_module \
+  --with-http_slice_module \
+  --with-http_ssl_module \
+  --with-http_stub_status_module \
+  --with-http_sub_module \
+  --with-http_v2_module \
+  --with-http_v3_module \
+  --with-mail \
+  --with-mail_ssl_module \
+  --with-pcre \
+  --with-pcre-jit \
+  --with-stream \
+  --with-stream_realip_module \
+  --with-stream_ssl_module \
+  --with-stream_ssl_preread_module
 
 # -------------------------------
 # 编译安装
 # -------------------------------
 sudo make -j8
-make install
+sudo make install
 
 # -------------------------------
 # 完成提示

@@ -18,8 +18,8 @@ mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
-    echo "Downloading OpenSSL $OPENSSL_VERSION..."
-    curl -LO "$URL"
+  echo "Downloading OpenSSL $OPENSSL_VERSION..."
+  curl -LO "$URL"
 fi
 
 # -------------------------------
@@ -37,15 +37,14 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
-CFLAGS="-O2"
-CXXFLAGS="$CFLAGS"
+CFLAGS="-O2" \
+CXXFLAGS="$CFLAGS" \
 ./Configure --prefix="$PREFIX" \
-    --openssldir="$PREFIX/ssl" \
-    --libdir=lib \
-    no-ssl3 \
-    no-ssl3-method \
-    no-zlib \
-    enable-ec_nistp_64_gcc_128
+  --openssldir="$PREFIX/ssl" \
+  --libdir=lib \
+  no-ssl3 \
+  no-ssl3-method \
+  no-zlib
 
 # -------------------------------
 # 编译安装

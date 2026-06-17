@@ -19,8 +19,8 @@ mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
-    echo "Downloading PostgreSQL $POSTGRESQL_VERSION..."
-    curl -LO "$URL"
+  echo "Downloading PostgreSQL $POSTGRESQL_VERSION..."
+  curl -LO "$URL"
 fi
 
 # -------------------------------
@@ -41,8 +41,8 @@ make clean || true
 CFLAGS="-O2" \
 CXXFLAGS="$CFLAGS" \
 ./configure --prefix="$PREFIX" \
-    --with-openssl \
-    --disable-debug
+  --with-openssl \
+  --disable-debug
 
 # -------------------------------
 # 编译安装
@@ -54,8 +54,8 @@ make install
 # 删除bin目录（根据注释要求）
 # -------------------------------
 if [ -d "$PREFIX/bin" ]; then
-    echo "Removing bin directory as per requirements..."
-    rm -rf "$PREFIX/bin"
+  echo "Removing bin directory as per requirements..."
+  rm -rf "$PREFIX/bin"
 fi
 
 # -------------------------------

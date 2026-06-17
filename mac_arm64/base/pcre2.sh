@@ -18,8 +18,8 @@ mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
-    echo "Downloading pcre2 $PCRE2_VERSION..."
-    curl -LO "$URL"
+  echo "Downloading pcre2 $PCRE2_VERSION..."
+  curl -LO "$URL"
 fi
 
 # -------------------------------
@@ -40,12 +40,12 @@ make clean || true
 CFLAGS="-O2"
 CXXFLAGS="$CFLAGS"
 ./configure --prefix="$PREFIX" \
-    --disable-dependency-tracking \
-    --enable-pcre2-16 \
-    --enable-pcre2-32 \
-    --enable-pcre2grep-libz \
-    --enable-pcre2grep-libbz2 \
-    --enable-jit
+  --disable-dependency-tracking \
+  --enable-pcre2-16 \
+  --enable-pcre2-32 \
+  --enable-pcre2grep-libz \
+  --enable-pcre2grep-libbz2 \
+  --enable-jit
 
 # -------------------------------
 # 编译安装
