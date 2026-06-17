@@ -1,7 +1,7 @@
 export MACOSX_DEPLOYMENT_TARGET=11.0
 make clean
-./configure --prefix=/Applications/EServer/software/php/php-7.1 \
---with-config-file-path=/Applications/EServer/software/php/php-7.1/etc \
+./configure --prefix=/Applications/EServer/childApp/php/php-7.1 \
+--with-config-file-path=/Applications/EServer/childApp/php/php-7.1/etc \
 --enable-bcmath \
 --enable-calendar \
 --enable-exif \

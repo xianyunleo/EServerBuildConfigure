@@ -5,8 +5,8 @@ set -euo pipefail
 # 配置
 # -------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
-PREFIX=${PREFIX:-/Applications/EServer/software/server/nginx}
-NGINX_VERSION=${NGINX_VERSION:-1.28.1}
+PREFIX=${PREFIX:-/Applications/EServer/childApp/server/nginx}
+NGINX_VERSION=${NGINX_VERSION:-1.30.2}
 
 # -------------------------------
 # 下载源码

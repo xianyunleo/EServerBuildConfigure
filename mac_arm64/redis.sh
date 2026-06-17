@@ -5,7 +5,7 @@ set -euo pipefail
 # 配置
 # -------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
-PREFIX=${PREFIX:-/Applications/EServer/software/server/redis-8.2}
+PREFIX=${PREFIX:-/Applications/EServer/childApp/server/redis-8.2}
 REDIS_VERSION=${REDIS_VERSION:-8.2.3}
 
 # -------------------------------

@@ -2,7 +2,7 @@
 
 export MACOSX_DEPLOYMENT_TARGET=11.0
 make clean
-./configure --prefix=/Applications/EServer/software/server/nginx \
+./configure --prefix=/Applications/EServer/childApp/server/nginx \
 --with-cc-opt="-I/Applications/EServer/Library/pcre2/include -I/Applications/EServer/Library/openssl@1.1/include -I/Applications/EServer/Library/zlib/include" \
 --with-ld-opt="-L/Applications/EServer/Library/pcre2/lib -L/Applications/EServer/Library/openssl@1.1/lib -L/Applications/EServer/Library/zlib/lib" \
 --with-compat \
