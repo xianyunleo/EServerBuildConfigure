@@ -37,6 +37,10 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
+export CFLAGS="-mmacosx-version-min=11.0"
+export CXXFLAGS="-mmacosx-version-min=11.0"
+export LDFLAGS="-mmacosx-version-min=11.0"
+
 ./configure --prefix="$PREFIX" \
 --with-cc-opt="-I/Applications/EServer/Library/pcre2/include -I/Applications/EServer/Library/openssl@3.5/include -I/Applications/EServer/Library/zlib/include" \
   --with-ld-opt="-L/Applications/EServer/Library/pcre2/lib -L/Applications/EServer/Library/openssl@3.5/lib -L/Applications/EServer/Library/zlib/lib" \
