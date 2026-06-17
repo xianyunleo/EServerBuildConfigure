@@ -6,7 +6,7 @@ set -euo pipefail
 # -------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/Library/libjpeg-turbo}
-JPEG_VERSION=${JPEG_VERSION:-3.1.3} # 可以根据需要修改版本
+JPEG_VERSION=${JPEG_VERSION:-3.1.4.1} # 可以根据需要修改版本
 
 # -------------------------------
 # 下载源码
