@@ -5,7 +5,7 @@ set -euo pipefail
 # 配置
 # -------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
-PREFIX=${PREFIX:-/Applications/EServer/software/php/php-7.2}
+PREFIX=${PREFIX:-/Applications/EServer/childApp/php/php-7.2}
 PHP_VERSION=${PHP_VERSION:-7.2.34}
 
 # -------------------------------
