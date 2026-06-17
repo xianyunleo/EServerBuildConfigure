@@ -37,9 +37,20 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
-export CFLAGS="-mmacosx-version-min=11.0"
-export CXXFLAGS="-mmacosx-version-min=11.0"
-export LDFLAGS="-mmacosx-version-min=11.0"
+# 1. 下载
+curl -L -o MacOSX11.3.tar.bz2 \
+https://github.com/alexey-lysiuk/macos-sdk/releases/download/11.3/MacOSX11.3.tar.bz2
+
+# 2. 安装目录
+sudo mkdir -p /opt/sdks
+
+# 3. 解压
+sudo tar -xjf MacOSX11.3.tar.bz2 -C /opt/sdks
+
+# 4. 检查
+ls /opt/sdks/MacOSX11.3.sdk
+
+export SDKROOT=/opt/sdks/MacOSX11.3.sdk
 
 ./configure --prefix="$PREFIX" \
 --with-cc-opt="-I/Applications/EServer/Library/pcre2/include -I/Applications/EServer/Library/openssl@3.5/include -I/Applications/EServer/Library/zlib/include" \
