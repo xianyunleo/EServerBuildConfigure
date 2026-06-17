@@ -37,15 +37,14 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
-CFLAGS="-O2"
-CXXFLAGS="$CFLAGS"
+CFLAGS="-O2" \
+CXXFLAGS="$CFLAGS" \
 ./Configure --prefix="$PREFIX" \
   --openssldir="$PREFIX/ssl" \
   --libdir=lib \
   no-ssl3 \
   no-ssl3-method \
-  no-zlib \
-  enable-ec_nistp_64_gcc_128
+  no-zlib
 
 # -------------------------------
 # 编译安装
