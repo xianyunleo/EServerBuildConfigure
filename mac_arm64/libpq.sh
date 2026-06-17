@@ -38,8 +38,8 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
-CFLAGS="-O2"
-CXXFLAGS="$CFLAGS"
+CFLAGS="-O2" \
+CXXFLAGS="$CFLAGS" \
 ./configure --prefix="$PREFIX" \
     --with-openssl \
     --disable-debug

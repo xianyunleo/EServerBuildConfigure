@@ -32,7 +32,6 @@ cd "libzip-${LIBZIP_VERSION}"
 # -------------------------------
 # 配置
 # -------------------------------
-export CFLAGS="-arch arm64"
 cmake . -DCMAKE_INSTALL_PREFIX="$PREFIX" \
     -DZLIB_LIBRARY_RELEASE=/Applications/EServer/Library/zlib/lib/libz.dylib \
     -DBZIP2_LIBRARY_RELEASE=/Applications/EServer/Library/bzip2/lib/libbz2.a \

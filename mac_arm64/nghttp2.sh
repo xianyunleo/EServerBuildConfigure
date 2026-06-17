@@ -38,9 +38,11 @@ make clean || true
 # 配置
 # -------------------------------
 OPENSSL_PREFIX="/Applications/EServer/Library/openssl@3.5"
-export CFLAGS="-arch arm64"
-export PKG_CONFIG_PATH="$OPENSSL_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
-./configure --prefix="$PREFIX" \
+PKG_CONFIG_PATH="$OPENSSL_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH" \
+CFLAGS="-O2" \
+CXXFLAGS="-O2" \
+./configure \
+    --prefix="$PREFIX" \
     --enable-lib-only \
     --host=arm64-apple-darwin \
     --with-openssl="$OPENSSL_PREFIX"
