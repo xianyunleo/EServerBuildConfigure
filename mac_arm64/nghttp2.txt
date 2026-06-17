@@ -1,9 +1,0 @@
-export MACOSX_DEPLOYMENT_TARGET=11.0
-export CFLAGS="-arch arm64"
-make clean
-./configure --prefix=/Applications/EServer/Library/nghttp2 \
---enable-lib-only \
---host=arm64-apple-darwin
-
-make -j8
-make install
