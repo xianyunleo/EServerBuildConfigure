@@ -23,10 +23,17 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Prepare EServer Library
+        run: |
+          sudo mkdir -p /Applications/EServer/Library
+          sudo cp -R Library/* /Applications/EServer/Library/
+          echo "===== /Applications/EServer/Library ====="
+          ls -a /Applications/EServer/Library
+
       - name: Build libpq
         run: |
           chmod +x mac_arm64/libpq.sh
-          ./mac_arm64/base/libpq.sh
+          ./mac_arm64/libpq.sh
 
       - name: Debug workspace
         run: |

@@ -37,7 +37,8 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
-export CFLAGS="-arch arm64"
+CFLAGS="-O2" \
+CXXFLAGS="$CFLAGS" \
 ./configure --prefix="$PREFIX" \
     --disable-debug \
     --disable-dependency-tracking \
