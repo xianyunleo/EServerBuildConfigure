@@ -10,7 +10,7 @@ PREFIX=${PREFIX:-/Applications/EServer/Library/curl}
 CURL_VERSION=${CURL_VERSION:-8.20.0}
 
 # 依赖库路径（按需覆盖）
-OPENSSL_PREFIX=${OPENSSL_PREFIX:-/Applications/EServer/Library/openssl}
+OPENSSL_PREFIX=${OPENSSL_PREFIX:-/Applications/EServer/Library/openssl@3.5}
 BROTLI_PREFIX=${BROTLI_PREFIX:-/Applications/EServer/Library/brotli}
 LIBNGHTTP2_PREFIX=${LIBNGHTTP2_PREFIX:-/Applications/EServer/Library/libnghttp2}
 LIBNGHTTP3_PREFIX=${LIBNGHTTP3_PREFIX:-/Applications/EServer/Library/libnghttp3}
