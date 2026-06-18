@@ -37,24 +37,9 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
-# 1. 下载
-curl -L -o MacOSX11.3.tar.bz2 \
-https://github.com/alexey-lysiuk/macos-sdk/releases/download/11.3/MacOSX11.3.tar.bz2
-
-# 2. 安装目录
-sudo mkdir -p /opt/sdks
-
-# 3. 解压
-sudo tar -xjf MacOSX11.3.tar.bz2 -C /opt/sdks
-
-# 4. 检查
-ls /opt/sdks/MacOSX11.3.sdk
-
-export SDKROOT=/opt/sdks/MacOSX11.3.sdk
-
 ./configure --prefix="$PREFIX" \
---with-cc-opt="-I/Applications/EServer/Library/pcre2/include -I/Applications/EServer/Library/openssl@3.5/include -I/Applications/EServer/Library/zlib/include" \
-  --with-ld-opt="-L/Applications/EServer/Library/pcre2/lib -L/Applications/EServer/Library/openssl@3.5/lib -L/Applications/EServer/Library/zlib/lib" \
+  --with-cc-opt="-I/Applications/EServer/Library/pcre2/include -I/Applications/EServer/Library/openssl@3.5/include -I/Applications/EServer/Library/zlib/include -mmacosx-version-min=11.0" \
+  --with-ld-opt="-L/Applications/EServer/Library/pcre2/lib -L/Applications/EServer/Library/openssl@3.5/lib -L/Applications/EServer/Library/zlib/lib -mmacosx-version-min=11.0" \
   --with-compat \
   --with-debug \
   --with-http_addition_module \
