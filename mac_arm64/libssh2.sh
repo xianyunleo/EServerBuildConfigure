@@ -9,6 +9,7 @@ export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/Library/libssh2}
 LIBSSH2_VERSION=${LIBSSH2_VERSION:-1.11.1}
 OPENSSL_PREFIX=${OPENSSL_PREFIX:-/Applications/EServer/Library/openssl@3.5}
+ZLIB_PREFIX=${ZLIB_PREFIX:-/Applications/EServer/Library/zlib}
 
 # -------------------------------------------------
 # 下载源码
@@ -45,7 +46,8 @@ CXXFLAGS="$CFLAGS" \
   --disable-examples-build \
   --with-openssl \
   --with-libz \
-  --with-libssl-prefix="$OPENSSL_PREFIX"
+  --with-libssl-prefix="$OPENSSL_PREFIX" \
+  --with-libz-prefix="$ZLIB_PREFIX"
 
 # -------------------------------------------------
 # 编译安装
