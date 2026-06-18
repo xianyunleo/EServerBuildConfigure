@@ -18,6 +18,16 @@ LIBNGTCP2_PREFIX=${LIBNGTCP2_PREFIX:-/Applications/EServer/Library/libngtcp2}
 LIBSSH2_PREFIX=${LIBSSH2_PREFIX:-/Applications/EServer/Library/libssh2}
 ZSTD_PREFIX=${ZSTD_PREFIX:-/Applications/EServer/Library/zstd}
 
+unset PKG_CONFIG_PATH
+export PKG_CONFIG_PATH="
+$OPENSSL_PREFIX/lib/pkgconfig:
+$LIBNGHTTP2_PREFIX/lib/pkgconfig:
+$LIBNGHTTP3_PREFIX/lib/pkgconfig:
+$LIBNGTCP2_PREFIX/lib/pkgconfig:
+$BROTLI_PREFIX/lib/pkgconfig:
+$ZSTD_PREFIX/lib/pkgconfig
+"
+
 # -------------------------------------------------
 # 下载源码
 # -------------------------------------------------
@@ -52,8 +62,8 @@ ARGS=(
   --with-ca-fallback
   --with-default-ssl-backend=openssl
   --with-libssh2="$LIBSSH2_PREFIX"
-  --with-nghttp3
-  --with-ngtcp2
+  --with-nghttp3="$LIBNGHTTP3_PREFIX"
+  --with-ngtcp2="$LIBNGTCP2_PREFIX"
   --without-libpsl
 )
 
