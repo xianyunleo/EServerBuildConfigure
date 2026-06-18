@@ -51,9 +51,9 @@ CXXFLAGS="$CFLAGS" \
 ./configure \
   --prefix="$PREFIX" \
   --disable-debug \
-  --with-gssapi \
   --with-libcurl \
-  --with-openssl
+  --with-openssl \
+  --with-gssapi
 
 # -------------------------------
 # 编译安装
