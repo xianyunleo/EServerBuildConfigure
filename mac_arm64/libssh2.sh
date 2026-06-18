@@ -8,7 +8,7 @@ set -euo pipefail
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/Library/libssh2}
 LIBSSH2_VERSION=${LIBSSH2_VERSION:-1.11.1}
-OPENSSL_PREFIX=${OPENSSL_PREFIX:-/Applications/EServer/Library/openssl}
+OPENSSL_PREFIX=${OPENSSL_PREFIX:-/Applications/EServer/Library/openssl@3.5}
 
 # -------------------------------------------------
 # 下载源码
