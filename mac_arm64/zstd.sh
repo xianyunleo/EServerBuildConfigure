@@ -62,7 +62,7 @@ sudo cmake --install builddir
 
 # 修复 pkgconfig 中的绝对路径
 if [ -f "$PREFIX/lib/pkgconfig/libzstd.pc" ]; then
-  sed -i '' "s|^prefix=.*|prefix=$PREFIX|" "$PREFIX/lib/pkgconfig/libzstd.pc"
+  sudo sed -i '' "s|^prefix=.*|prefix=$PREFIX|" "$PREFIX/lib/pkgconfig/libzstd.pc"
 fi
 
 # -------------------------------------------------
