@@ -33,26 +33,26 @@ cd "brotli-${BROTLI_VERSION}"
 # 配置（参照 Homebrew brotli 配方）
 # -------------------------------------------------
 # 动态库构建
-cmake -S . -B build \
+sudo cmake -S . -B build \
   -DCMAKE_INSTALL_PREFIX="$PREFIX" \
   -DCMAKE_OSX_ARCHITECTURES="arm64" \
   -DCMAKE_OSX_DEPLOYMENT_TARGET="${MACOSX_DEPLOYMENT_TARGET}" \
   -DCMAKE_INSTALL_RPATH="$PREFIX/lib"
 
 # 编译安装动态库
-cmake --build build --parallel "$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
+sudo cmake --build build --parallel "$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
 sudo cmake --install build
 
 # 静态库构建（参照 Homebrew 配方，单独构建静态库）
-cmake -S . -B build-static \
+sudo cmake -S . -B build-static \
   -DCMAKE_INSTALL_PREFIX="$PREFIX" \
   -DCMAKE_OSX_ARCHITECTURES="arm64" \
   -DCMAKE_OSX_DEPLOYMENT_TARGET="${MACOSX_DEPLOYMENT_TARGET}" \
   -DBUILD_SHARED_LIBS=OFF
 
-cmake --build build-static --parallel "$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
+sudo cmake --build build-static --parallel "$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
 # 只复制静态库，不重复安装
-cp build-static/libbrotli*.a "$PREFIX/lib/"
+sudo cp build-static/libbrotli*.a "$PREFIX/lib/"
 
 # -------------------------------------------------
 # 完成提示
