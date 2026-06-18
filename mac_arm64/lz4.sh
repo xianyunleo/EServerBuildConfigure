@@ -34,7 +34,8 @@ cd "lz4-${LZ4_VERSION}"
 # 编译安装（参照 Homebrew lz4 配方）
 # lz4 使用 Makefile 而非 autotools
 # -------------------------------------------------
-CFLAGS="-O2" \
+CFLAGS="-O2 -mmacosx-version-min=11.0" \
+LDFLAGS="-mmacosx-version-min=11.0" \
 sudo make install PREFIX="$PREFIX" -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
 
 # 修复 pkgconfig 中的路径，避免硬编码构建路径
