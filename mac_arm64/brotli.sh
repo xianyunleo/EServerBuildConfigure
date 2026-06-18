@@ -41,7 +41,7 @@ cmake -S . -B build \
 
 # 编译安装动态库
 cmake --build build --parallel "$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
-cmake --install build
+sudo cmake --install build
 
 # 静态库构建（参照 Homebrew 配方，单独构建静态库）
 cmake -S . -B build-static \

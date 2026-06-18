@@ -44,7 +44,7 @@ cmake -S . -B build \
 # 编译安装
 # -------------------------------------------------
 cmake --build build --parallel "$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
-cmake --install build
+sudo cmake --install build
 
 # -------------------------------------------------
 # 完成提示

@@ -58,7 +58,7 @@ cmake -S build/cmake -B builddir \
 # 编译安装
 # -------------------------------------------------
 cmake --build builddir --parallel "$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
-cmake --install builddir
+sudo cmake --install builddir
 
 # 修复 pkgconfig 中的绝对路径
 if [ -f "$PREFIX/lib/pkgconfig/libzstd.pc" ]; then

@@ -53,7 +53,7 @@ CXXFLAGS="$CFLAGS" \
 # 编译安装
 # -------------------------------------------------
 make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
-make install
+sudo make install
 
 # 创建 pkg-config 软链接（兼容性）
 ln -sf "$PREFIX/bin/pkgconf" "$PREFIX/bin/pkg-config"

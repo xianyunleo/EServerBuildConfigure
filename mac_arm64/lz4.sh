@@ -35,7 +35,7 @@ cd "lz4-${LZ4_VERSION}"
 # lz4 使用 Makefile 而非 autotools
 # -------------------------------------------------
 CFLAGS="-O2" \
-make install PREFIX="$PREFIX" -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
+sudo make install PREFIX="$PREFIX" -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
 
 # 修复 pkgconfig 中的路径，避免硬编码构建路径
 if [ -f "$PREFIX/lib/pkgconfig/liblz4.pc" ]; then

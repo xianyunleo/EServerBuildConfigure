@@ -44,7 +44,7 @@ CXXFLAGS="$CFLAGS" \
 # 编译安装（仅 lib 子目录）
 # -------------------------------------------------
 make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)" -C lib
-make -C lib install
+sudo make -C lib install
 
 # -------------------------------------------------
 # 完成提示
