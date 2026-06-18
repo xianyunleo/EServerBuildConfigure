@@ -6,7 +6,7 @@ set -euo pipefail
 # -------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/childApp/server/nginx}
-NGINX_VERSION=${NGINX_VERSION:-1.30.2}
+NGINX_VERSION=${NGINX_VERSION:-1.30.3}
 
 # -------------------------------
 # 下载源码
@@ -37,13 +37,9 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
-export CFLAGS="-mmacosx-version-min=11.0"
-export CXXFLAGS="-mmacosx-version-min=11.0"
-export LDFLAGS="-mmacosx-version-min=11.0"
-
 ./configure --prefix="$PREFIX" \
---with-cc-opt="-I/Applications/EServer/Library/pcre2/include -I/Applications/EServer/Library/openssl@3.5/include -I/Applications/EServer/Library/zlib/include" \
-  --with-ld-opt="-L/Applications/EServer/Library/pcre2/lib -L/Applications/EServer/Library/openssl@3.5/lib -L/Applications/EServer/Library/zlib/lib" \
+  --with-cc-opt="-I/Applications/EServer/Library/pcre2/include -I/Applications/EServer/Library/openssl@3.5/include -I/Applications/EServer/Library/zlib/include -mmacosx-version-min=11.0" \
+  --with-ld-opt="-L/Applications/EServer/Library/pcre2/lib -L/Applications/EServer/Library/openssl@3.5/lib -L/Applications/EServer/Library/zlib/lib -mmacosx-version-min=11.0" \
   --with-compat \
   --with-debug \
   --with-http_addition_module \

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag (e.g. libpq-18.1)"
+        description: "Release tag (e.g. libpq-18.4)"
         required: true
   push:
     tags:
@@ -16,7 +16,7 @@ jobs:
     runs-on: macos-latest
     env:
       PREFIX: /Applications/EServer/Library/libpq
-      POSTGRESQL_VERSION: 18.1
+      POSTGRESQL_VERSION: 18.4
       MACOSX_DEPLOYMENT_TARGET: 11.0
 
     steps:

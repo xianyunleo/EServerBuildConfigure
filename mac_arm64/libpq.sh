@@ -6,7 +6,7 @@ set -euo pipefail
 # -------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/Library/libpq}
-POSTGRESQL_VERSION=${POSTGRESQL_VERSION:-18.1}
+POSTGRESQL_VERSION=${POSTGRESQL_VERSION:-18.4}
 OPENSSL_PREFIX=${OPENSSL_PREFIX:-/Applications/EServer/Library/openssl@3.5}
 
 # -------------------------------
