@@ -48,10 +48,16 @@ jobs:
 
       - name: Show file info
         run: |
+          FILE="$PREFIX/lib/libpkgconf.dylib"
+          echo "=== file architectures ==="
+          lipo -info "$FILE" 2>/dev/null || file "$FILE"
+          echo "=== file minimum macOS version ==="
+          otool -l "$FILE" | grep -A 3 LC_BUILD_VERSION
+          echo "=== file dependencies ==="
+          otool -L "$FILE"
+          echo ""
           echo "=== pkgconf version ==="
           "$PREFIX/bin/pkgconf" --version
-          echo "=== pkgconf lib ==="
-          lipo -info "$PREFIX/lib/libpkgconf.dylib" 2>/dev/null || file "$PREFIX/lib/libpkgconf.dylib"
 
       - name: Set artifact name
         run: echo "ARTIFACT_NAME=pkgconf-macos-${PKGCONF_VERSION}.tar.gz" >> $GITHUB_ENV
