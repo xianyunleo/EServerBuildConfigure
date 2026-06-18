@@ -18,28 +18,6 @@ LIBNGTCP2_PREFIX=${LIBNGTCP2_PREFIX:-/Applications/EServer/Library/libngtcp2}
 LIBSSH2_PREFIX=${LIBSSH2_PREFIX:-/Applications/EServer/Library/libssh2}
 ZSTD_PREFIX=${ZSTD_PREFIX:-/Applications/EServer/Library/zstd}
 
-# 设置 pkg-config 搜索路径，让 configure 自动发现依赖库
-export PKG_CONFIG_PATH="\
-${OPENSSL_PREFIX}/lib/pkgconfig:\
-${BROTLI_PREFIX}/lib/pkgconfig:\
-${LIBNGHTTP2_PREFIX}/lib/pkgconfig:\
-${LIBNGHTTP3_PREFIX}/lib/pkgconfig:\
-${LIBNGTCP2_PREFIX}/lib/pkgconfig:\
-${LIBSSH2_PREFIX}/lib/pkgconfig:\
-${ZSTD_PREFIX}/lib/pkgconfig\
-${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
-
-# 设置运行时库搜索路径，解决 configure runtime check 找不到 dylib
-export DYLD_FALLBACK_LIBRARY_PATH="\
-${OPENSSL_PREFIX}/lib:\
-${BROTLI_PREFIX}/lib:\
-${LIBNGHTTP2_PREFIX}/lib:\
-${LIBNGHTTP3_PREFIX}/lib:\
-${LIBNGTCP2_PREFIX}/lib:\
-${LIBSSH2_PREFIX}/lib:\
-${ZSTD_PREFIX}/lib\
-${DYLD_FALLBACK_LIBRARY_PATH:+:$DYLD_FALLBACK_LIBRARY_PATH}"
-
 # -------------------------------------------------
 # 下载源码
 # -------------------------------------------------
