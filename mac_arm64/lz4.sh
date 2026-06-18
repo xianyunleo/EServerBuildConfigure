@@ -34,12 +34,12 @@ cd "lz4-${LZ4_VERSION}"
 # 编译安装（参照 Homebrew lz4 配方）
 # lz4 使用 Makefile 而非 autotools
 # -------------------------------------------------
-CFLAGS="-O2" \
-sudo make install PREFIX="$PREFIX" -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
+make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)" PREFIX="$PREFIX"
+sudo make install PREFIX="$PREFIX"
 
 # 修复 pkgconfig 中的路径，避免硬编码构建路径
 if [ -f "$PREFIX/lib/pkgconfig/liblz4.pc" ]; then
-  sed -i '' "s|^prefix=.*|prefix=$PREFIX|" "$PREFIX/lib/pkgconfig/liblz4.pc"
+  sudo sed -i '' "s|^prefix=.*|prefix=$PREFIX|" "$PREFIX/lib/pkgconfig/liblz4.pc"
 fi
 
 # -------------------------------------------------
