@@ -56,8 +56,8 @@ make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
 sudo make install
 
 # 创建 pkg-config 软链接（兼容性）
-ln -sf "$PREFIX/bin/pkgconf" "$PREFIX/bin/pkg-config"
-ln -sf "$PREFIX/share/man/man1/pkgconf.1" "$PREFIX/share/man/man1/pkg-config.1" 2>/dev/null || true
+sudo ln -sf "$PREFIX/bin/pkgconf" "$PREFIX/bin/pkg-config"
+sudo ln -sf "$PREFIX/share/man/man1/pkgconf.1" "$PREFIX/share/man/man1/pkg-config.1" 2>/dev/null || true
 
 # -------------------------------------------------
 # 完成提示
