@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag (e.g. nginx-1.30.2)"
+        description: "Release tag (e.g. nginx-1.30.3)"
         required: true
   push:
     tags:
@@ -16,7 +16,7 @@ jobs:
     runs-on: macos-latest
     env:
       PREFIX: /Applications/EServer/childApp/server/nginx
-      NGINX_VERSION: 1.30.2
+      NGINX_VERSION: 1.30.3
       MACOSX_DEPLOYMENT_TARGET: 11.0
 
     steps:
