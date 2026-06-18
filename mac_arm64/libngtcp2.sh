@@ -10,10 +10,6 @@ export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/Library/libngtcp2}
 NGTCP2_VERSION=${NGTCP2_VERSION:-1.23.0}
 OPENSSL_PREFIX=${OPENSSL_PREFIX:-/Applications/EServer/Library/openssl}
-PKGCONF_PREFIX=${PKGCONF_PREFIX:-/Applications/EServer/Library/pkgconf}
-
-# 确保 pkgconf 在 PATH 中以支持 configure 查找依赖
-export PATH="$PKGCONF_PREFIX/bin:$PATH"
 
 # -------------------------------------------------
 # 下载源码
