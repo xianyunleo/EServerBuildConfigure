@@ -66,7 +66,7 @@ ARGS=(
   --without-ca-path
   --with-ca-fallback
   --with-default-ssl-backend=openssl
-  --with-libssh2
+  --with-libssh2="$LIBSSH2_PREFIX"
   --with-nghttp3
   --with-ngtcp2
   --without-libpsl
