@@ -19,6 +19,8 @@ LIBSSH2_PREFIX=${LIBSSH2_PREFIX:-/Applications/EServer/Library/libssh2}
 ZSTD_PREFIX=${ZSTD_PREFIX:-/Applications/EServer/Library/zstd}
 
 unset PKG_CONFIG_PATH
+unset PKG_CONFIG_LIBDIR
+
 export PKG_CONFIG_PATH="
 $OPENSSL_PREFIX/lib/pkgconfig:
 $LIBNGHTTP2_PREFIX/lib/pkgconfig:
