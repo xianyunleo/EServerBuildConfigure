@@ -52,7 +52,8 @@ CXXFLAGS="$CFLAGS" \
   --prefix="$PREFIX" \
   --disable-debug \
   --with-libcurl \
-  --with-openssl
+  --with-openssl \
+  --with-gssapi
 
 # -------------------------------
 # 编译安装
