@@ -50,8 +50,10 @@ jobs:
         run: |
           echo "=== PHP version ==="
           "$PREFIX/bin/php" -v
-          echo "=== PHP info ==="
+          echo "=== PHP info (php -i) ==="
           "$PREFIX/bin/php" -i
+          echo "=== PHP info (phpinfo()) ==="
+          "$PREFIX/bin/php" -r "phpinfo();"
           echo "=== PHP modules ==="
           "$PREFIX/bin/php" -m
 
