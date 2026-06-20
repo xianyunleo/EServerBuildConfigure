@@ -17,7 +17,7 @@ old_library='libngtcp2_crypto_ossl.a'
 inherited_linker_flags=' '
 
 # Libraries that this one depends upon.
-dependency_libs=' /Applications/EServer/Library/libngtcp2/lib/libngtcp2.la -L/opt/homebrew/Cellar/openssl@3/3.6.2/lib -lssl -lcrypto'
+dependency_libs=' /Applications/EServer/Library/libngtcp2/lib/libngtcp2.la -L/Applications/EServer/Library/openssl@3.5/lib -lssl -lcrypto'
 
 # Names of additional weak libraries provided by this library
 weak_library_names=''
