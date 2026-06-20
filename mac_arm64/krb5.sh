@@ -39,11 +39,9 @@ cd "krb5-${KRB5_VERSION}"
 #   --disable-silent-rules
 #   --without-system-verto
 #   --prefix=<keg>
-# OpenSSL 依赖通过 pkg-config 自动发现，因此把搜索范围锁定在
-# EServer Library 的 openssl@3.5 内，避免命中 Homebrew 的 openssl@3。
+# OpenSSL 依赖通过 pkg-config 自动发现。
 # 注意：krb5 的 configure 脚本位于 src/ 子目录。
 export PKG_CONFIG_PATH="$OPENSSL_PREFIX/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
-export PKG_CONFIG_LIBDIR="$OPENSSL_PREFIX/lib/pkgconfig"
 export CPPFLAGS="-I$OPENSSL_PREFIX/include"
 export LDFLAGS="-L$OPENSSL_PREFIX/lib"
 

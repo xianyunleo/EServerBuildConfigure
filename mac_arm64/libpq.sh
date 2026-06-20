@@ -18,13 +18,11 @@ CURL_PREFIX=${CURL_PREFIX:-$ESERVER_LIBRARY/curl}
 # -------------------------------
 # 动态收集 EServer Library 下所有 pkgconfig 子目录，确保 pkg-config
 # 递归解析 libcurl 等库的 Requires.private 时能找到全部依赖。
-# 同时设 PKG_CONFIG_LIBDIR 锁定搜索范围，避免命中 Homebrew。
 PKG_DEPS=$(\
   find "$ESERVER_LIBRARY" -name pkgconfig -type d 2>/dev/null \
   | tr '\n' ':'
 )
 export PKG_CONFIG_PATH="$PKG_DEPS"
-export PKG_CONFIG_LIBDIR="$PKG_DEPS"
 
 # 同时为 configure 脚本提供显式路径（并非所有库都用 pkg-config）
 export CPPFLAGS="-I${OPENSSL_PREFIX}/include -I${ICU_PREFIX}/include -I${KRB5_PREFIX}/include -I${CURL_PREFIX}/include"
