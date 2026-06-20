@@ -7,7 +7,7 @@ set -euo pipefail
 # -------------------------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/Library/freetype}
-FREETYPE_VERSION=${FREETYPE_VERSION:-2.13.3}
+FREETYPE_VERSION=${FREETYPE_VERSION:-2.14.3}
 
 # 依赖库路径（按需覆盖）
 LIBPNG_PREFIX=${LIBPNG_PREFIX:-/Applications/EServer/Library/libpng}

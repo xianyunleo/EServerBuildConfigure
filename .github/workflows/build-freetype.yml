@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag (e.g. freetype-2.13.3)"
+        description: "Release tag (e.g. freetype-2.14.3)"
         required: true
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
     runs-on: macos-latest
     env:
       PREFIX: /Applications/EServer/Library/freetype
-      FREETYPE_VERSION: 2.13.3
+      FREETYPE_VERSION: 2.14.3
       MACOSX_DEPLOYMENT_TARGET: 11.0
 
     steps:
