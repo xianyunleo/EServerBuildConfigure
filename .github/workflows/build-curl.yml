@@ -30,10 +30,14 @@ jobs:
             sudo cp -R Library/* /Applications/EServer/Library/
           fi
           echo "===== /Applications/EServer/Library ====="
-          ls -a /Applications/EServer/Library
+          ls -a /Applications/EServer/Library     
+          
 
       - name: Build curl
         run: |
+          echo "=== DEBUG pkg-config openssl ==="
+          pkg-config --cflags openssl
+          pkg-config --libs openssl
           chmod +x mac_arm64/curl.sh
           ./mac_arm64/curl.sh
 
