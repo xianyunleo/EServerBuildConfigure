@@ -10,13 +10,12 @@ PREFIX=${PREFIX:-/Applications/EServer/Library/freetype}
 FREETYPE_VERSION=${FREETYPE_VERSION:-2.14.3}
 
 # 依赖库路径（按需覆盖）
+ZLIB_PREFIX=${ZLIB_PREFIX:-/Applications/EServer/Library/zlib}
+BZIP2_PREFIX=${BZIP2_PREFIX:-/Applications/EServer/Library/bzip2}
 LIBPNG_PREFIX=${LIBPNG_PREFIX:-/Applications/EServer/Library/libpng}
 BROTLI_PREFIX=${BROTLI_PREFIX:-/Applications/EServer/Library/brotli}
-# zlib 使用系统版本，libpng 已静态链接 zlib，无需额外指定
 
-export PKG_CONFIG_PATH="
-$LIBPNG_PREFIX/lib/pkgconfig:
-$BROTLI_PREFIX/lib/pkgconfig"
+export PKG_CONFIG_PATH="$ZLIB_PREFIX/lib/pkgconfig:$LIBPNG_PREFIX/lib/pkgconfig:$BROTLI_PREFIX/lib/pkgconfig"
 # -------------------------------------------------
 # 下载源码
 # -------------------------------------------------
@@ -48,6 +47,8 @@ make clean || true
 # -------------------------------------------------
 CFLAGS="-O2" \
 CXXFLAGS="$CFLAGS" \
+CPPFLAGS="-I$ZLIB_PREFIX/include -I$BZIP2_PREFIX/include -I$LIBPNG_PREFIX/include -I$BROTLI_PREFIX/include" \
+LDFLAGS="-L$ZLIB_PREFIX/lib -L$BZIP2_PREFIX/lib -L$LIBPNG_PREFIX/lib -L$BROTLI_PREFIX/lib" \
 ./configure --prefix="$PREFIX" \
   --enable-freetype-config \
   --with-png \
