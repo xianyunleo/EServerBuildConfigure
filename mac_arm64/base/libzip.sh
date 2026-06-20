@@ -6,7 +6,7 @@ set -euo pipefail
 # -------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/Library/libzip}
-LIBZIP_VERSION=${LIBZIP_VERSION:-1.5.2}
+LIBZIP_VERSION=${LIBZIP_VERSION:-1.11.4}
 
 # -------------------------------
 # 下载源码

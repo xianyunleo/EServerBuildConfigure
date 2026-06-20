@@ -16,7 +16,7 @@ jobs:
     runs-on: macos-latest
     env:
       PREFIX: /Applications/EServer/Library/libzip
-      LIBZIP_VERSION: 1.5.2
+      LIBZIP_VERSION: 1.11.4
       OPENSSL_PREFIX: /Applications/EServer/Library/openssl
       ZLIB_PREFIX: /Applications/EServer/Library/zlib
       MACOSX_DEPLOYMENT_TARGET: 11.0
