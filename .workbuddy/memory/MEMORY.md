@@ -6,13 +6,10 @@
 参考 Homebrew Formula 生成编译配置时，如果配方依赖 `openssl@3`，本项目统一使用 `openssl@3.5`（路径 `/Applications/EServer/Library/openssl@3.5`）。
 所有脚本中的 `OPENSSL_PREFIX` 默认值应设为 `/Applications/EServer/Library/openssl@3.5`。
 
-### pkg-config 隔离规则（macOS 构建）
-为防止 GitHub Actions macOS runner 上 Homebrew 的库污染构建，所有使用 pkg-config 的脚本必须同时设置：
-- `PKG_CONFIG_PATH`：指向 EServer Library 内各依赖的 pkgconfig 目录
-- `PKG_CONFIG_LIBDIR`：等同于 `PKG_CONFIG_PATH`，用于完整锁定搜索范围
-
-仅设 `PKG_CONFIG_PATH` 不够（只是在默认路径前追加搜索，仍会 fall back 到系统/Homebrew 路径）。
-`PKG_CONFIG_LIBDIR` 才是真正控制完整搜索范围的变量。
+### pkg-config 路径设置规则（macOS 构建）
+所有使用 pkg-config 的脚本只设置 `PKG_CONFIG_PATH`，不设置 `PKG_CONFIG_LIBDIR`。
+- `PKG_CONFIG_PATH`：指向 EServer Library 内各依赖的 pkgconfig 目录，在默认路径前搜索
+- 不要用 `PKG_CONFIG_LIBDIR`（会完全替换默认搜索路径，导致 libcurl 等库的 `Requires.private` 解析失败）
 
 ### 构建脚本结构约定
 - `mac_arm64/` 下每个库一个 `.sh` 脚本
