@@ -55,6 +55,7 @@ make clean || true
   --with-freetype-dir=/Applications/EServer/Library/freetype \
   --with-gd=shared \
   --with-gmp=/Applications/EServer/Library/gmp \
+  --with-iconv=/usr \
   --with-mysqli \
   --with-openssl=shared,/Applications/EServer/Library/openssl@1.1 \
   --with-pdo-mysql \

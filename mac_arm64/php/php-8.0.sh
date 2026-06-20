@@ -54,6 +54,7 @@ make clean || true
   --with-curl=shared \
   --with-freetype \
   --with-gmp=/Applications/EServer/Library/gmp \
+  --with-iconv=/usr \
   --with-mysqli \
   --with-openssl=shared \
   --with-pdo-mysql \
