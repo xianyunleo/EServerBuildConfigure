@@ -89,7 +89,7 @@ ARGS+=(
 )
 
 # 添加 rpath，解决 configure runtime check 和最终运行时找不到 dylib 的问题
-LDFLAGS="-Wl,-rpath,${OPENSSL_PREFIX}/lib -Wl,-rpath,${LIBNGHTTP2_PREFIX}/lib -Wl,-rpath,${LIBNGHTTP3_PREFIX}/lib -Wl,-rpath,${LIBNGTCP2_PREFIX}/lib -Wl,-rpath,${LIBSSH2_PREFIX}/lib -Wl,-rpath,${ZSTD_PREFIX}/lib"
+LDFLAGS="-Wl,-rpath,${OPENSSL_PREFIX}/lib -Wl,-rpath,${BROTLI_PREFIX}/lib -Wl,-rpath,${LIBNGHTTP2_PREFIX}/lib -Wl,-rpath,${LIBNGHTTP3_PREFIX}/lib -Wl,-rpath,${LIBNGTCP2_PREFIX}/lib -Wl,-rpath,${LIBSSH2_PREFIX}/lib -Wl,-rpath,${ZSTD_PREFIX}/lib"
 
 CFLAGS="-O2" \
 CXXFLAGS="$CFLAGS" \
