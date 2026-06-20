@@ -1,22 +1,22 @@
-name: Build and Release curl (macOS)
+name: Build and Release krb5 (macOS)
 
 on:
   push:
     tags:
-      - 'curl-*'
+      - 'krb5-*'
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag (e.g. curl-8.20.0)"
+        description: "Release tag (e.g. krb5-1.22.2)"
         required: true
 
 jobs:
   build_and_release:
-    name: Build and Release curl (macOS)
+    name: Build and Release krb5 (macOS)
     runs-on: macos-latest
     env:
-      PREFIX: /Applications/EServer/Library/curl
-      CURL_VERSION: 8.20.0
+      PREFIX: /Applications/EServer/Library/krb5
+      KRB5_VERSION: 1.22.2
       MACOSX_DEPLOYMENT_TARGET: 11.0
 
     steps:
@@ -30,13 +30,12 @@ jobs:
             sudo cp -R Library/* /Applications/EServer/Library/
           fi
           echo "===== /Applications/EServer/Library ====="
-          ls -a /Applications/EServer/Library     
+          ls -a /Applications/EServer/Library
 
-
-      - name: Build curl
+      - name: Build krb5
         run: |
-          chmod +x mac_arm64/curl.sh
-          ./mac_arm64/curl.sh
+          chmod +x mac_arm64/krb5.sh
+          ./mac_arm64/krb5.sh
 
       - name: Debug workspace
         run: |
@@ -49,22 +48,16 @@ jobs:
 
       - name: Show file info
         run: |
-          FILE="$PREFIX/lib/libcurl.dylib"
+          FILE="$PREFIX/lib/libkrb5.dylib"
           echo "=== file architectures ==="
           lipo -info "$FILE" 2>/dev/null || file "$FILE"
           echo "=== file minimum macOS version ==="
           otool -l "$FILE" | grep -A 3 LC_BUILD_VERSION
           echo "=== file dependencies ==="
           otool -L "$FILE"
-          echo ""
-          echo "=== curl supported features ==="
-          "$PREFIX/bin/curl-config" --features
-          echo ""
-          echo "=== curl supported protocols ==="
-          "$PREFIX/bin/curl-config" --protocols
 
       - name: Set artifact name
-        run: echo "ARTIFACT_NAME=curl-macos-${CURL_VERSION}.tar.gz" >> $GITHUB_ENV
+        run: echo "ARTIFACT_NAME=krb5-macos-${KRB5_VERSION}.tar.gz" >> $GITHUB_ENV
 
       - name: Package artifact
         run: |
