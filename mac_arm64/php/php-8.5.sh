@@ -37,6 +37,7 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
+PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applications/EServer/Library/curl/lib/pkgconfig:/Applications/EServer/Library/libpng/lib/pkgconfig:/Applications/EServer/Library/jpeg/lib/pkgconfig:/Applications/EServer/Library/oniguruma/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig:/Applications/EServer/Library/libxml2/lib/pkgconfig:/Applications/EServer/Library/libzip/lib/pkgconfig:/Applications/EServer/Library/freetype/lib/pkgconfig:/Applications/EServer/Library/icu/lib/pkgconfig \
 ./configure --prefix="$PREFIX" \
   --with-config-file-path="$PREFIX/etc" \
   --enable-bcmath \
@@ -50,6 +51,7 @@ make clean || true
   --enable-opcache \
   --enable-soap \
   --enable-sockets \
+  --enable-intl \
   --with-bz2=/Applications/EServer/Library/bzip2 \
   --with-curl \
   --with-freetype \
@@ -65,8 +67,7 @@ make clean || true
   --with-libxml \
   --with-jpeg \
   --with-zip \
-  --with-zlib \
-  PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applications/EServer/Library/curl/lib/pkgconfig:/Applications/EServer/Library/libpng/lib/pkgconfig:/Applications/EServer/Library/jpeg/lib/pkgconfig:/Applications/EServer/Library/oniguruma/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig:/Applications/EServer/Library/libxml2/lib/pkgconfig:/Applications/EServer/Library/libzip/lib/pkgconfig:/Applications/EServer/Library/freetype/lib/pkgconfig
+  --with-zlib
 
 # -------------------------------
 # 编译安装
