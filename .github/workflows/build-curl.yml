@@ -35,9 +35,6 @@ jobs:
 
       - name: Build curl
         run: |
-          echo "=== DEBUG pkg-config openssl ==="
-          pkg-config --cflags openssl
-          pkg-config --libs openssl
           chmod +x mac_arm64/curl.sh
           ./mac_arm64/curl.sh
 
