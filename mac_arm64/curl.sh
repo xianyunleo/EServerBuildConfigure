@@ -25,6 +25,8 @@ export LDFLAGS="-L$OPENSSL_PREFIX/lib -Wl,-rpath,$OPENSSL_PREFIX/lib"
 echo "=== DEBUG pkg-config openssl ==="
 pkg-config --cflags openssl
 pkg-config --libs openssl
+
+otool -L $OPENSSL_PREFIX/lib/libssl.dylib
 # -------------------------------------------------
 # 下载源码
 # -------------------------------------------------
