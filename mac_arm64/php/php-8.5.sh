@@ -56,7 +56,6 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applica
   --with-curl \
   --with-freetype \
   --with-gmp=/Applications/EServer/Library/gmp \
-  --with-iconv=/Applications/EServer/Library/libiconv \
   --with-mysqli \
   --with-openssl \
   --with-pdo-mysql \
