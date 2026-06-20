@@ -51,11 +51,11 @@ make clean || true
   --enable-opcache \
   --enable-zip \
   --with-bz2=/Applications/EServer/Library/bzip2 \
-  --with-curl=/Applications/EServer/Library/curl \
+  --with-curl=shared,/Applications/EServer/Library/curl \
   --with-freetype-dir=/Applications/EServer/Library/freetype \
-  --with-gd \
+  --with-gd=shared \
   --with-gmp=/Applications/EServer/Library/gmp \
-  --with-openssl=/Applications/EServer/Library/openssl@1.1 \
+  --with-openssl=shared,/Applications/EServer/Library/openssl@1.1 \
   --with-iconv=/Applications/EServer/Library/libiconv \
   --with-mysqli \
   --with-pdo-mysql \

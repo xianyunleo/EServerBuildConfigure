@@ -45,7 +45,7 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applica
   --enable-exif \
   --enable-ftp \
   --enable-fpm \
-  --enable-gd \
+  --enable-gd=shared \
   --enable-mbstring \
   --enable-mbregex \
   --enable-opcache \
@@ -53,11 +53,11 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applica
   --enable-sockets \
   --enable-intl \
   --with-bz2=/Applications/EServer/Library/bzip2 \
-  --with-curl \
+  --with-curl=shared \
   --with-freetype \
   --with-gmp=/Applications/EServer/Library/gmp \
   --with-mysqli \
-  --with-openssl \
+  --with-openssl=shared \
   --with-pdo-mysql \
   --with-pgsql=/Applications/EServer/Library/libpq \
   --with-pdo-pgsql=/Applications/EServer/Library/libpq \
