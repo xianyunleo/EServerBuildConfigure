@@ -70,7 +70,7 @@ sudo make install
 # -------------------------------
 if [ -d "$PREFIX/bin" ]; then
   echo "Removing bin directory as per requirements..."
-  rm -rf "$PREFIX/bin"
+  sudo rm -rf "$PREFIX/bin"
 fi
 
 # -------------------------------
