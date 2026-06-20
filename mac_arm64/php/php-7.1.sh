@@ -56,7 +56,6 @@ make clean || true
   --with-gd=shared \
   --with-gmp=/Applications/EServer/Library/gmp \
   --with-openssl=shared,/Applications/EServer/Library/openssl@1.1 \
-  --with-iconv=/Applications/EServer/Library/libiconv \
   --with-mysqli \
   --with-pdo-mysql \
   --with-pgsql=/Applications/EServer/Library/libpq \
