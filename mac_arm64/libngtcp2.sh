@@ -9,7 +9,7 @@ set -euo pipefail
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/Library/libngtcp2}
 NGTCP2_VERSION=${NGTCP2_VERSION:-1.23.0}
-OPENSSL_PREFIX=${OPENSSL_PREFIX:-/Applications/EServer/Library/openssl}
+OPENSSL_PREFIX=${OPENSSL_PREFIX:-/Applications/EServer/Library/openssl@3.5}
 
 # -------------------------------------------------
 # 下载源码
@@ -36,7 +36,10 @@ cd "ngtcp2-${NGTCP2_VERSION}"
 # 配置（参照 Homebrew libngtcp2 配方）
 # ngtcp2 通过 pkg-config 自动查找 OpenSSL
 # -------------------------------------------------
-PKG_CONFIG_PATH="$OPENSSL_PREFIX/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}" \
+# 将 pkg-config 搜索范围锁定在 EServer Library 的 openssl 内，避免命中 Homebrew
+export PKG_CONFIG_PATH="$OPENSSL_PREFIX/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
+export PKG_CONFIG_LIBDIR="$OPENSSL_PREFIX/lib/pkgconfig"
+
 CFLAGS="-O2" \
 CXXFLAGS="$CFLAGS" \
 ./configure \

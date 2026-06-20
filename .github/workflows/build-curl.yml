@@ -70,10 +70,24 @@ jobs:
         run: |
           tar -czf "$ARTIFACT_NAME" -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
 
+      - name: Collect config.log
+        run: |
+          # 定位 curl 源码目录下的 config.log 并打包
+          CONFIG_LOG=$(find build -name config.log -path '*curl-*' | head -1)
+          if [ -n "$CONFIG_LOG" ]; then
+            cp "$CONFIG_LOG" "curl-config-${CURL_VERSION}.log"
+            echo "CONFIG_LOG_NAME=curl-config-${CURL_VERSION}.log" >> $GITHUB_ENV
+            echo "===== found config.log: $CONFIG_LOG ====="
+          else
+            echo "===== config.log not found ====="
+          fi
+
       - name: Upload release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
-          files: ${{ env.ARTIFACT_NAME }}
+          files: |
+            ${{ env.ARTIFACT_NAME }}
+            ${{ env.CONFIG_LOG_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
