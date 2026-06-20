@@ -35,7 +35,6 @@ cd build
 # -------------------------------
 args=(
   "-DCMAKE_INSTALL_PREFIX=$PREFIX"
-  "-DCMAKE_SKIP_RPATH=ON"
   "-DCMAKE_BUILD_TYPE=Release"
   "-DCMAKE_FIND_FRAMEWORK=LAST"
   "-DCMAKE_VERBOSE_MAKEFILE=ON"
