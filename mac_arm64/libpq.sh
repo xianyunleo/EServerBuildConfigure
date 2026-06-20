@@ -74,6 +74,14 @@ if [ -d "$PREFIX/bin" ]; then
 fi
 
 # -------------------------------
+# 删除 share 目录（若存在）
+# -------------------------------
+if [ -d "$PREFIX/share" ]; then
+  echo "Removing share directory..."
+  sudo rm -rf "$PREFIX/share"
+fi
+
+# -------------------------------
 # 完成提示
 # -------------------------------
 echo "libpq (PostgreSQL $POSTGRESQL_VERSION) installed to $PREFIX"
