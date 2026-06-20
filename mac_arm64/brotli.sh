@@ -46,6 +46,11 @@ sudo cmake -S . -B build \
 sudo cmake --build build --parallel "$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
 sudo cmake --install build
 
+# 删除 share 目录（不需要的文件）
+if [ -d "$PREFIX/share" ]; then
+  sudo rm -rf "$PREFIX/share"
+fi
+
 # 静态库构建（参照 Homebrew 配方，单独构建静态库）
 sudo cmake -S . -B build-static \
   -DCMAKE_INSTALL_PREFIX="$PREFIX" \

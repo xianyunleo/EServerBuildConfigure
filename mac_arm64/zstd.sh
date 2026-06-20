@@ -68,6 +68,11 @@ if [ -f "$PREFIX/lib/pkgconfig/libzstd.pc" ]; then
   sudo sed -i '' "s|^prefix=.*|prefix=$PREFIX|" "$PREFIX/lib/pkgconfig/libzstd.pc"
 fi
 
+# 删除 share 目录（不需要的文件）
+if [ -d "$PREFIX/share" ]; then
+  sudo rm -rf "$PREFIX/share"
+fi
+
 # -------------------------------------------------
 # 完成提示
 # -------------------------------------------------

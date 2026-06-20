@@ -42,6 +42,11 @@ CXXFLAGS="$CFLAGS"
 make -j$(sysctl -n hw.ncpu)
 make install
 
+# 删除 share 目录（不需要的文件）
+if [ -d "$PREFIX/share" ]; then
+  sudo rm -rf "$PREFIX/share"
+fi
+
 # -------------------------------
 # 打印完成信息
 # -------------------------------
