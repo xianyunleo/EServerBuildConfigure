@@ -48,7 +48,7 @@ CXXFLAGS="$CFLAGS" \
 # 编译安装
 # -------------------------------
 make -j8
-make install
+sudo make install
 
 # -------------------------------
 # 完成提示
