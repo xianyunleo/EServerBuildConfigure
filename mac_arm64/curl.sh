@@ -83,7 +83,6 @@ ARGS+=(
 
 CFLAGS="-O2" \
 CXXFLAGS="$CFLAGS" \
-LDFLAGS="$LDFLAGS" \
 ./configure "${ARGS[@]}"
 
 # -------------------------------------------------
