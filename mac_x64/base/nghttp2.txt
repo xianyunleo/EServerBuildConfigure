@@ -1,7 +1,0 @@
-export MACOSX_DEPLOYMENT_TARGET=10.13
-make clean
-./configure --prefix=/Applications/EServer/Library/nghttp2 \
---enable-lib-only
-
-make -j8
-make install
