@@ -55,6 +55,8 @@ jobs:
           otool -l "$FILE" | grep -A 3 LC_BUILD_VERSION
           echo "=== file dependencies ==="
           otool -L "$FILE"
+          echo "=== libngtcp2_crypto_ossl.dylib dependencies ==="
+          otool -L "$PREFIX/lib/libngtcp2_crypto_ossl.dylib"
 
       - name: Set artifact name
         run: echo "ARTIFACT_NAME=libngtcp2-macos-${NGTCP2_VERSION}.tar.gz" >> $GITHUB_ENV
