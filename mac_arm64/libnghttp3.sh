@@ -36,6 +36,9 @@ cd "nghttp3-${NGHTTP3_VERSION}"
 # -------------------------------------------------
 cmake -S . -B build \
   -DCMAKE_INSTALL_PREFIX="$PREFIX" \
+  -DCMAKE_INSTALL_LIBDIR=lib \
+  -DCMAKE_INSTALL_NAME_DIR="$PREFIX/lib" \
+  -DCMAKE_SKIP_RPATH=ON \
   -DCMAKE_OSX_ARCHITECTURES="arm64" \
   -DCMAKE_OSX_DEPLOYMENT_TARGET="${MACOSX_DEPLOYMENT_TARGET}" \
   -DENABLE_LIB_ONLY=1

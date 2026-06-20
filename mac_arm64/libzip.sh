@@ -33,6 +33,9 @@ cd "libzip-${LIBZIP_VERSION}"
 # 配置
 # -------------------------------
 cmake . -DCMAKE_INSTALL_PREFIX="$PREFIX" \
+  -DCMAKE_INSTALL_LIBDIR=lib \
+  -DCMAKE_INSTALL_NAME_DIR="$PREFIX/lib" \
+  -DCMAKE_SKIP_RPATH=ON \
   -DZLIB_LIBRARY_RELEASE=/Applications/EServer/Library/zlib/lib/libz.dylib \
   -DBZIP2_LIBRARY_RELEASE=/Applications/EServer/Library/bzip2/lib/libbz2.a \
   -DCMAKE_C_FLAGS="-arch arm64" \
