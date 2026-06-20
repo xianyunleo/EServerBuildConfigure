@@ -80,6 +80,8 @@ ARGS+=(
   --with-zstd="$ZSTD_PREFIX"
   --with-nghttp2="$LIBNGHTTP2_PREFIX"
 )
+export CPPFLAGS="-I$OPENSSL_PREFIX/include"
+export LDFLAGS="-L$OPENSSL_PREFIX/lib"
 
 CFLAGS="-O2" \
 CXXFLAGS="$CFLAGS" \
