@@ -18,9 +18,14 @@ LIBNGTCP2_PREFIX=${LIBNGTCP2_PREFIX:-/Applications/EServer/Library/libngtcp2}
 LIBSSH2_PREFIX=${LIBSSH2_PREFIX:-/Applications/EServer/Library/libssh2}
 ZSTD_PREFIX=${ZSTD_PREFIX:-/Applications/EServer/Library/zstd}
 
-unset PKG_CONFIG_PATH
-export PKG_CONFIG_LIBDIR="$OPENSSL_PREFIX/lib/pkgconfig:$LIBNGHTTP2_PREFIX/lib/pkgconfig:$LIBNGHTTP3_PREFIX/lib/pkgconfig:$LIBNGTCP2_PREFIX/lib/pkgconfig:$BROTLI_PREFIX/lib/pkgconfig:$ZSTD_PREFIX/lib/pkgconfig"
-
+export PKG_CONFIG_PATH="
+$OPENSSL_PREFIX/lib/pkgconfig:
+$BROTLI_PREFIX/lib/pkgconfig:
+$ZSTD_PREFIX/lib/pkgconfig:
+$LIBNGHTTP2_PREFIX/lib/pkgconfig:
+$LIBNGHTTP3_PREFIX/lib/pkgconfig:
+$LIBNGTCP2_PREFIX/lib/pkgconfig:
+$LIBSSH2_PREFIX/lib/pkgconfig"
 # -------------------------------------------------
 # 下载源码
 # -------------------------------------------------
