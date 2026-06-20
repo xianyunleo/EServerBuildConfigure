@@ -6,13 +6,13 @@ set -euo pipefail
 # -------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/Library/libxml2}
-LIBXML2_VERSION=${LIBXML2_VERSION:-2.13.5}
+LIBXML2_VERSION=${LIBXML2_VERSION:-2.15.3}
 
 # -------------------------------
 # 下载源码
 # -------------------------------
 TARBALL="libxml2-${LIBXML2_VERSION}.tar.xz"
-URL="https://download.gnome.org/sources/libxml2/2.13/$TARBALL"
+URL="https://download.gnome.org/sources/libxml2/2.15/$TARBALL"
 
 mkdir -p build
 cd build
@@ -41,12 +41,9 @@ CFLAGS="-O2" \
 CXXFLAGS="$CFLAGS" \
 ./configure --prefix="$PREFIX" \
   --disable-dependency-tracking \
-  --with-iconv=/Applications/EServer/Library/libiconv \
   --with-zlib=/Applications/EServer/Library/zlib \
   --with-history \
-  --without-python \
-  --without-lzma \
-  --host=arm64-apple-darwin
+  --with-legacy
 
 # -------------------------------
 # 编译安装
