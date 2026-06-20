@@ -20,6 +20,8 @@ ZSTD_PREFIX=${ZSTD_PREFIX:-/Applications/EServer/Library/zstd}
 
 unset PKG_CONFIG_PATH
 export PKG_CONFIG_LIBDIR="$OPENSSL_PREFIX/lib/pkgconfig:$LIBNGHTTP2_PREFIX/lib/pkgconfig:$LIBNGHTTP3_PREFIX/lib/pkgconfig:$LIBNGTCP2_PREFIX/lib/pkgconfig:$BROTLI_PREFIX/lib/pkgconfig:$ZSTD_PREFIX/lib/pkgconfig"
+export CPPFLAGS="-I$OPENSSL_PREFIX/include"
+export LDFLAGS="-L$OPENSSL_PREFIX/lib"
 
 echo "=== DEBUG pkg-config openssl ==="
 pkg-config --cflags openssl
