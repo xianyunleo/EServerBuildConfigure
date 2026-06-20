@@ -9,13 +9,15 @@ PREFIX=${PREFIX:-/Applications/EServer/Library/libpq}
 POSTGRESQL_VERSION=${POSTGRESQL_VERSION:-18.4}
 OPENSSL_PREFIX=${OPENSSL_PREFIX:-/Applications/EServer/Library/openssl@3.5}
 ICU_PREFIX=${ICU_PREFIX:-/Applications/EServer/Library/icu}
+KRB5_PREFIX=${KRB5_PREFIX:-/Applications/EServer/Library/krb5}
 
 # -------------------------------
 # 依赖库查找路径
 # -------------------------------
-export PKG_CONFIG_PATH="${OPENSSL_PREFIX}/lib/pkgconfig:${ICU_PREFIX}/lib/pkgconfig"
-export CPPFLAGS="-I${OPENSSL_PREFIX}/include -I${ICU_PREFIX}/include"
-export LDFLAGS="-L${OPENSSL_PREFIX}/lib -L${ICU_PREFIX}/lib"
+export PKG_CONFIG_PATH="${OPENSSL_PREFIX}/lib/pkgconfig:${ICU_PREFIX}/lib/pkgconfig${KRB5_PREFIX:+:$KRB5_PREFIX/lib/pkgconfig}"
+export PKG_CONFIG_LIBDIR="${OPENSSL_PREFIX}/lib/pkgconfig:${ICU_PREFIX}/lib/pkgconfig${KRB5_PREFIX:+:$KRB5_PREFIX/lib/pkgconfig}"
+export CPPFLAGS="-I${OPENSSL_PREFIX}/include -I${ICU_PREFIX}/include -I${KRB5_PREFIX}/include"
+export LDFLAGS="-L${OPENSSL_PREFIX}/lib -L${ICU_PREFIX}/lib -L${KRB5_PREFIX}/lib"
 
 # -------------------------------
 # 下载源码
@@ -59,7 +61,7 @@ CXXFLAGS="$CFLAGS" \
 # 编译安装
 # -------------------------------
 make -j8
-make install
+sudo make install
 
 # -------------------------------
 # 删除bin目录
