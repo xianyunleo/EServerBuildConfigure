@@ -38,9 +38,7 @@ cd "libssh2-${LIBSSH2_VERSION}"
 # --with-openssl : 启用 OpenSSL 支持
 # --with-libz    : 启用 zlib 支持（使用系统自带）
 # --with-libssl-prefix : 指定 OpenSSL 安装路径
-# 将 pkg-config 搜索范围锁定在 EServer Library 内，避免命中 Homebrew
 export PKG_CONFIG_PATH="$OPENSSL_PREFIX/lib/pkgconfig:$ZLIB_PREFIX/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
-export PKG_CONFIG_LIBDIR="$OPENSSL_PREFIX/lib/pkgconfig:$ZLIB_PREFIX/lib/pkgconfig"
 
 CFLAGS="-O2" \
 CXXFLAGS="$CFLAGS" \
