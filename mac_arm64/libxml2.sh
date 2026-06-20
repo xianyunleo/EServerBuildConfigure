@@ -42,7 +42,6 @@ CXXFLAGS="$CFLAGS" \
 ./configure --prefix="$PREFIX" \
   --disable-dependency-tracking \
   --with-zlib=/Applications/EServer/Library/zlib \
-  --with-history \
   --with-legacy
 
 # -------------------------------
