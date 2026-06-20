@@ -36,8 +36,8 @@ jobs:
 
       - name: Build libzip
         run: |
-          chmod +x mac_arm64/libzip.sh
-          ./mac_arm64/libzip.sh
+          chmod +x mac_arm64/base/libzip.sh
+          ./mac_arm64/base/libzip.sh
 
       - name: Debug workspace
         run: |
