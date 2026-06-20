@@ -9,7 +9,7 @@ set(CMAKE_IMPORT_FILE_VERSION 1)
 set_property(TARGET libjpeg-turbo::jpeg APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(libjpeg-turbo::jpeg PROPERTIES
   IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib/libjpeg.8.3.2.dylib"
-  IMPORTED_SONAME_RELEASE "@rpath/libjpeg.8.dylib"
+  IMPORTED_SONAME_RELEASE "/Applications/EServer/Library/libjpeg-turbo/lib/libjpeg.8.dylib"
   )
 
 list(APPEND _cmake_import_check_targets libjpeg-turbo::jpeg )
@@ -19,7 +19,7 @@ list(APPEND _cmake_import_check_files_for_libjpeg-turbo::jpeg "${_IMPORT_PREFIX}
 set_property(TARGET libjpeg-turbo::turbojpeg APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(libjpeg-turbo::turbojpeg PROPERTIES
   IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib/libturbojpeg.0.4.0.dylib"
-  IMPORTED_SONAME_RELEASE "@rpath/libturbojpeg.0.dylib"
+  IMPORTED_SONAME_RELEASE "/Applications/EServer/Library/libjpeg-turbo/lib/libturbojpeg.0.dylib"
   )
 
 list(APPEND _cmake_import_check_targets libjpeg-turbo::turbojpeg )

@@ -9,7 +9,7 @@ set(CMAKE_IMPORT_FILE_VERSION 1)
 set_property(TARGET nghttp3::nghttp3 APPEND PROPERTY IMPORTED_CONFIGURATIONS RELWITHDEBINFO)
 set_target_properties(nghttp3::nghttp3 PROPERTIES
   IMPORTED_LOCATION_RELWITHDEBINFO "${_IMPORT_PREFIX}/lib/libnghttp3.9.7.0.dylib"
-  IMPORTED_SONAME_RELWITHDEBINFO "@rpath/libnghttp3.9.dylib"
+  IMPORTED_SONAME_RELWITHDEBINFO "/Applications/EServer/Library/libnghttp3/lib/libnghttp3.9.dylib"
   )
 
 list(APPEND _cmake_import_check_targets nghttp3::nghttp3 )
