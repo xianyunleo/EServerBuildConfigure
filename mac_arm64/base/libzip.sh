@@ -6,7 +6,9 @@ set -euo pipefail
 # -------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/Library/libzip}
-LIBZIP_VERSION=${LIBZIP_VERSION:-1.5.2}
+LIBZIP_VERSION=${LIBZIP_VERSION:-1.11.4}
+XZ_PREFIX=${XZ_PREFIX:-/Applications/EServer/Library/xz}
+ZSTD_PREFIX=${ZSTD_PREFIX:-/Applications/EServer/Library/zstd}
 
 # -------------------------------
 # 下载源码
@@ -33,10 +35,16 @@ cd "libzip-${LIBZIP_VERSION}"
 # 配置
 # -------------------------------
 cmake . -DCMAKE_INSTALL_PREFIX="$PREFIX" \
+  -DCMAKE_INSTALL_LIBDIR=lib \
+  -DCMAKE_INSTALL_NAME_DIR="$PREFIX/lib" \
+  -DCMAKE_SKIP_RPATH=ON \
+  -DCMAKE_PREFIX_PATH="$XZ_PREFIX;$ZSTD_PREFIX" \
   -DZLIB_LIBRARY_RELEASE=/Applications/EServer/Library/zlib/lib/libz.dylib \
   -DBZIP2_LIBRARY_RELEASE=/Applications/EServer/Library/bzip2/lib/libbz2.a \
   -DCMAKE_C_FLAGS="-arch arm64" \
   -DCMAKE_CXX_FLAGS="-arch arm64" \
+  -DENABLE_LZMA=ON \
+  -DENABLE_ZSTD=ON \
   -DENABLE_GNUTLS=OFF \
   -DENABLE_MBEDTLS=OFF \
   -DENABLE_OPENSSL=OFF \
@@ -47,7 +55,7 @@ cmake . -DCMAKE_INSTALL_PREFIX="$PREFIX" \
 # 编译安装
 # -------------------------------
 make -j8
-make install
+sudo make install
 
 # -------------------------------
 # 完成提示

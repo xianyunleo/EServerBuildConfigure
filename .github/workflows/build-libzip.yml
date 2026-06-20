@@ -1,22 +1,24 @@
-name: Build and Release openssl (macOS)
+name: Build and Release libzip (macOS)
 
 on:
   push:
     tags:
-      - 'openssl-*'
+      - 'libzip-*'
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag (e.g. openssl-3.6.2)"
+        description: "Release tag (e.g. libzip-1.5.2)"
         required: true
 
 jobs:
   build_and_release:
-    name: Build and Release openssl (macOS)
+    name: Build and Release libzip (macOS)
     runs-on: macos-latest
     env:
-      PREFIX: /Applications/EServer/Library/openssl
-      OPENSSL_VERSION: 3.6.2
+      PREFIX: /Applications/EServer/Library/libzip
+      LIBZIP_VERSION: 1.11.4
+      OPENSSL_PREFIX: /Applications/EServer/Library/openssl
+      ZLIB_PREFIX: /Applications/EServer/Library/zlib
       MACOSX_DEPLOYMENT_TARGET: 11.0
 
     steps:
@@ -32,10 +34,10 @@ jobs:
           echo "===== /Applications/EServer/Library ====="
           ls -a /Applications/EServer/Library
 
-      - name: Build openssl
+      - name: Build libzip
         run: |
-          chmod +x mac_arm64/openssl.sh
-          ./mac_arm64/openssl.sh
+          chmod +x mac_arm64/base/libzip.sh
+          ./mac_arm64/base/libzip.sh
 
       - name: Debug workspace
         run: |
@@ -48,16 +50,22 @@ jobs:
 
       - name: Show file info
         run: |
-          FILE="$PREFIX/lib/libssl.dylib"
-          echo "=== file architectures ==="
-          lipo -info "$FILE" 2>/dev/null || file "$FILE"
-          echo "=== file minimum macOS version ==="
-          otool -l "$FILE" | grep -A 3 LC_BUILD_VERSION
-          echo "=== file dependencies ==="
-          otool -L "$FILE"
+          FILE="$PREFIX/lib/libzip.dylib"
+          if [ -f "$FILE" ]; then
+            echo "=== file architectures ==="
+            lipo -info "$FILE" 2>/dev/null || file "$FILE"
+            echo "=== file minimum macOS version ==="
+            otool -l "$FILE" | grep -A 3 LC_BUILD_VERSION
+            echo "=== file dependencies ==="
+            otool -L "$FILE"
+          else
+            echo "ERROR: $FILE not found!"
+            ls -la "$PREFIX/lib/"
+            exit 1
+          fi
 
       - name: Set artifact name
-        run: echo "ARTIFACT_NAME=openssl-macos-${OPENSSL_VERSION}.tar.gz" >> $GITHUB_ENV
+        run: echo "ARTIFACT_NAME=libzip-macos-${LIBZIP_VERSION}.tar.gz" >> $GITHUB_ENV
 
       - name: Package artifact
         run: |
@@ -70,3 +78,4 @@ jobs:
           files: ${{ env.ARTIFACT_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

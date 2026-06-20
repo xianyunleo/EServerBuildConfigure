@@ -10,28 +10,25 @@ PREFIX=${PREFIX:-/Applications/EServer/Library/curl}
 CURL_VERSION=${CURL_VERSION:-8.20.0}
 
 # 依赖库路径（按需覆盖）
-OPENSSL_PREFIX=${OPENSSL_PREFIX:-/Applications/EServer/Library/openssl}
+OPENSSL_PREFIX=${OPENSSL_PREFIX:-/Applications/EServer/Library/openssl@3.5}
 BROTLI_PREFIX=${BROTLI_PREFIX:-/Applications/EServer/Library/brotli}
 LIBNGHTTP2_PREFIX=${LIBNGHTTP2_PREFIX:-/Applications/EServer/Library/libnghttp2}
 LIBNGHTTP3_PREFIX=${LIBNGHTTP3_PREFIX:-/Applications/EServer/Library/libnghttp3}
 LIBNGTCP2_PREFIX=${LIBNGTCP2_PREFIX:-/Applications/EServer/Library/libngtcp2}
 LIBSSH2_PREFIX=${LIBSSH2_PREFIX:-/Applications/EServer/Library/libssh2}
 ZSTD_PREFIX=${ZSTD_PREFIX:-/Applications/EServer/Library/zstd}
-PKGCONF_PREFIX=${PKGCONF_PREFIX:-/Applications/EServer/Library/pkgconf}
 
-# 设置 pkg-config 搜索路径，让 configure 自动发现依赖库
-export PKG_CONFIG_PATH="\
-${OPENSSL_PREFIX}/lib/pkgconfig:\
-${BROTLI_PREFIX}/lib/pkgconfig:\
-${LIBNGHTTP2_PREFIX}/lib/pkgconfig:\
-${LIBNGHTTP3_PREFIX}/lib/pkgconfig:\
-${LIBNGTCP2_PREFIX}/lib/pkgconfig:\
-${LIBSSH2_PREFIX}/lib/pkgconfig:\
-${ZSTD_PREFIX}/lib/pkgconfig\
-${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
+unset PKG_CONFIG_PATH
+unset PKG_CONFIG_LIBDIR
 
-# 确保 pkgconf 在 PATH 中
-export PATH="$PKGCONF_PREFIX/bin:$PATH"
+export PKG_CONFIG_PATH="
+$OPENSSL_PREFIX/lib/pkgconfig:
+$LIBNGHTTP2_PREFIX/lib/pkgconfig:
+$LIBNGHTTP3_PREFIX/lib/pkgconfig:
+$LIBNGTCP2_PREFIX/lib/pkgconfig:
+$BROTLI_PREFIX/lib/pkgconfig:
+$ZSTD_PREFIX/lib/pkgconfig
+"
 
 # -------------------------------------------------
 # 下载源码
@@ -66,9 +63,9 @@ ARGS=(
   --without-ca-path
   --with-ca-fallback
   --with-default-ssl-backend=openssl
-  --with-libssh2
-  --with-nghttp3
-  --with-ngtcp2
+  --with-libssh2="$LIBSSH2_PREFIX"
+  --with-nghttp3="$LIBNGHTTP3_PREFIX"
+  --with-ngtcp2="$LIBNGTCP2_PREFIX"
   --without-libpsl
 )
 
@@ -91,8 +88,12 @@ ARGS+=(
   --with-nghttp2="$LIBNGHTTP2_PREFIX"
 )
 
+# 添加 rpath，解决 configure runtime check 和最终运行时找不到 dylib 的问题
+LDFLAGS="-Wl,-rpath,${OPENSSL_PREFIX}/lib -Wl,-rpath,${BROTLI_PREFIX}/lib -Wl,-rpath,${LIBNGHTTP2_PREFIX}/lib -Wl,-rpath,${LIBNGHTTP3_PREFIX}/lib -Wl,-rpath,${LIBNGTCP2_PREFIX}/lib -Wl,-rpath,${LIBSSH2_PREFIX}/lib -Wl,-rpath,${ZSTD_PREFIX}/lib"
+
 CFLAGS="-O2" \
 CXXFLAGS="$CFLAGS" \
+LDFLAGS="$LDFLAGS" \
 ./configure "${ARGS[@]}"
 
 # -------------------------------------------------
