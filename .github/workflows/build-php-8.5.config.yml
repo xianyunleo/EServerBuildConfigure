@@ -1,4 +1,4 @@
-name: Build and Release PHP 8.5 (macOS)
+name: Build and Release PHP 8.5 (macOS) config
 
 on:
   workflow_dispatch:
