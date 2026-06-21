@@ -64,10 +64,18 @@ jobs:
         run: |
           tar -czf "$ARTIFACT_NAME"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
 
+      - name: Find configure logs
+        run: |
+          CONFIG_LOGS=$(find . -name config.log | tr '\n' ' ')
+          echo "Configure logs: $CONFIG_LOGS"
+          echo "CONFIG_LOGS=$CONFIG_LOGS" >> $GITHUB_ENV
+
       - name: Upload release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
-          files: ${{ env.ARTIFACT_NAME }}
+          files: |
+            ${{ env.ARTIFACT_NAME }}
+            ${{ env.CONFIG_LOGS }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
