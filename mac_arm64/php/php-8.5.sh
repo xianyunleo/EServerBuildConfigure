@@ -37,6 +37,9 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
+SDKROOT=$(xcrun --show-sdk-path)
+
+
 PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applications/EServer/Library/curl/lib/pkgconfig:/Applications/EServer/Library/libpng/lib/pkgconfig:/Applications/EServer/Library/jpeg/lib/pkgconfig:/Applications/EServer/Library/oniguruma/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig:/Applications/EServer/Library/libxml2/lib/pkgconfig:/Applications/EServer/Library/libzip/lib/pkgconfig:/Applications/EServer/Library/freetype/lib/pkgconfig:/Applications/EServer/Library/icu/lib/pkgconfig \
 ./configure --prefix="$PREFIX" \
   --with-config-file-path="$PREFIX/etc" \
@@ -56,7 +59,7 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applica
   --with-curl=shared \
   --with-freetype \
   --with-gmp=/Applications/EServer/Library/gmp \
-  --with-iconv=/usr/local \
+  --with-iconv=$SDKROOT/usr \
   --with-mysqli \
   --with-openssl=shared \
   --with-pdo-mysql \
