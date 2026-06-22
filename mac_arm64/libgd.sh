@@ -2,12 +2,12 @@
 set -euo pipefail
 
 # -------------------------------------------------
-# gd — 基于 Homebrew Formula/g/gd.rb
+# libgd — 基于 Homebrew Formula/g/gd.rb
 # 依赖: freetype, libjpeg-turbo, libpng, libwebp
 # -------------------------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
-PREFIX=${PREFIX:-/Applications/EServer/Library/gd}
-GD_VERSION=${GD_VERSION:-2.3.3}
+PREFIX=${PREFIX:-/Applications/EServer/Library/libgd}
+LIBGD_VERSION=${LIBGD_VERSION:-2.3.3}
 
 # 依赖库路径（按需覆盖）
 FREETYPE_PREFIX=${FREETYPE_PREFIX:-/Applications/EServer/Library/freetype}
@@ -18,23 +18,23 @@ LIBWEBP_PREFIX=${LIBWEBP_PREFIX:-/Applications/EServer/Library/libwebp}
 # -------------------------------------------------
 # 下载源码
 # -------------------------------------------------
-TARBALL="libgd-${GD_VERSION}.tar.xz"
-URL="https://github.com/libgd/libgd/releases/download/gd-${GD_VERSION}/$TARBALL"
+TARBALL="libgd-${LIBGD_VERSION}.tar.xz"
+URL="https://github.com/libgd/libgd/releases/download/gd-${LIBGD_VERSION}/$TARBALL"
 
 mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
-  echo "Downloading libgd $GD_VERSION..."
+  echo "Downloading libgd $LIBGD_VERSION..."
   curl -fLo "$TARBALL" "$URL"
 fi
 
 # -------------------------------------------------
 # 解压
 # -------------------------------------------------
-rm -rf "libgd-${GD_VERSION}"
+rm -rf "libgd-${LIBGD_VERSION}"
 tar -xf "$TARBALL"
-cd "libgd-${GD_VERSION}"
+cd "libgd-${LIBGD_VERSION}"
 
 # -------------------------------------------------
 # 应用补丁（revert breaking changes in 2.3.3）
@@ -82,6 +82,6 @@ fi
 # -------------------------------------------------
 # 完成提示
 # -------------------------------------------------
-echo "gd $GD_VERSION installed to $PREFIX"
+echo "libgd $LIBGD_VERSION installed to $PREFIX"
 ls -l "$PREFIX/lib"
 ls -l "$PREFIX/include"

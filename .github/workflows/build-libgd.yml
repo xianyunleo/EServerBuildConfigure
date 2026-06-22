@@ -1,22 +1,22 @@
-name: Build and Release gd (macOS)
+name: Build and Release libgd (macOS)
 
 on:
   push:
     tags:
-      - 'gd-*'
+      - 'libgd-*'
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag (e.g. gd-2.3.3)"
+        description: "Release tag (e.g. libgd-2.3.3)"
         required: true
 
 jobs:
   build_and_release:
-    name: Build and Release gd (macOS)
+    name: Build and Release libgd (macOS)
     runs-on: macos-latest
     env:
-      PREFIX: /Applications/EServer/Library/gd
-      GD_VERSION: 2.3.3
+      PREFIX: /Applications/EServer/Library/libgd
+      LIBGD_VERSION: 2.3.3
       MACOSX_DEPLOYMENT_TARGET: 11.0
 
     steps:
@@ -32,10 +32,10 @@ jobs:
           echo "===== /Applications/EServer/Library ====="
           ls -a /Applications/EServer/Library
 
-      - name: Build gd
+      - name: Build libgd
         run: |
-          chmod +x mac_arm64/gd.sh
-          ./mac_arm64/gd.sh
+          chmod +x mac_arm64/libgd.sh
+          ./mac_arm64/libgd.sh
 
       - name: Debug workspace
         run: |
@@ -60,7 +60,7 @@ jobs:
           "$PREFIX/bin/gdlib-config" --cflags 2>/dev/null || true
 
       - name: Set artifact name
-        run: echo "ARTIFACT_NAME=gd-macos-${GD_VERSION}.tar.gz" >> $GITHUB_ENV
+        run: echo "ARTIFACT_NAME=libgd-macos-${LIBGD_VERSION}.tar.gz" >> $GITHUB_ENV
 
       - name: Package artifact
         run: |
