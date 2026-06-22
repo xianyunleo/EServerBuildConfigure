@@ -1,0 +1,73 @@
+name: Build and Release PHP 8.4 (macOS)
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. php-8.4.22)"
+        required: true
+  push:
+    tags:
+      - 'php-8.4-*'
+
+jobs:
+  build_and_release:
+    name: Build and Release PHP 8.4 (macOS)
+    runs-on: macos-latest
+    env:
+      PREFIX: /Applications/EServer/childApp/php/php-8.4
+      PHP_VERSION: 8.4.22
+      MACOSX_DEPLOYMENT_TARGET: 11.0
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Prepare EServer Library
+        run: |
+          sudo mkdir -p /Applications/EServer/Library
+          sudo cp -R Library/* /Applications/EServer/Library/
+          echo "===== /Applications/EServer/Library ====="
+          ls -a /Applications/EServer/Library
+
+      - name: Build PHP 8.4
+        run: |
+          chmod +x mac_arm64/php/php-8.4.sh
+          ./mac_arm64/php/php-8.4.sh
+
+      - name: Debug workspace
+        run: |
+          echo "===== PWD ====="
+          pwd
+          
+          echo "===== ROOT LS ====="
+          ls -la
+          
+          echo "===== FULL TREE ====="
+          find . -maxdepth 3 -type f -print
+
+      - name: Show PHP info
+        run: |
+          echo "=== PHP version ==="
+          "$PREFIX/bin/php" -v
+          echo "=== PHP info (php -i) ==="
+          "$PREFIX/bin/php" -i
+          echo "=== PHP info (phpinfo()) ==="
+          "$PREFIX/bin/php" -r "phpinfo();"
+          echo "=== PHP modules ==="
+          "$PREFIX/bin/php" -m
+
+      - name: Set artifact name
+        run: echo "ARTIFACT_NAME=php-8.4-macos-${PHP_VERSION}.tar.gz" >> $GITHUB_ENV
+
+      - name: Package artifact
+        run: |
+          tar -czf "$ARTIFACT_NAME"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+
+      - name: Upload release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          files: ${{ env.ARTIFACT_NAME }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
