@@ -3,7 +3,7 @@ set -euo pipefail
 
 # -------------------------------------------------
 # libwebp — WebP 图像编解码库
-# 依赖: libpng, jpeg
+# 依赖: libpng, libjpeg-turbo
 # -------------------------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/Library/libwebp}
@@ -11,7 +11,7 @@ LIBWEBP_VERSION=${LIBWEBP_VERSION:-1.6.0}
 
 # 依赖库路径（按需覆盖）
 LIBPNG_PREFIX=${LIBPNG_PREFIX:-/Applications/EServer/Library/libpng}
-JPEG_PREFIX=${JPEG_PREFIX:-/Applications/EServer/Library/jpeg}
+JPEG_PREFIX=${JPEG_PREFIX:-/Applications/EServer/Library/libjpeg-turbo}
 
 # -------------------------------------------------
 # 下载源码
