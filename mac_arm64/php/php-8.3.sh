@@ -45,6 +45,7 @@ make clean || true
   --enable-ftp \
   --enable-fpm \
   --enable-gd=shared \
+  --with-external-gd \
   --enable-mbstring \
   --enable-mbregex \
   --enable-opcache \
@@ -52,7 +53,6 @@ make clean || true
   --enable-sockets \
   --with-bz2=/Applications/EServer/Library/bzip2 \
   --with-curl=shared \
-  --with-freetype \
   --with-gmp=/Applications/EServer/Library/gmp \
   --with-iconv=/Applications/EServer/Library/libiconv \
   --with-mysqli \
@@ -63,10 +63,9 @@ make clean || true
   --with-pdo-sqlite \
   --with-sqlite3 \
   --with-libxml \
-  --with-jpeg \
   --with-zip \
   --with-zlib \
-  PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applications/EServer/Library/curl/lib/pkgconfig:/Applications/EServer/Library/libpng/lib/pkgconfig:/Applications/EServer/Library/jpeg/lib/pkgconfig:/Applications/EServer/Library/oniguruma/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig:/Applications/EServer/Library/libxml2/lib/pkgconfig:/Applications/EServer/Library/libzip/lib/pkgconfig:/Applications/EServer/Library/freetype/lib/pkgconfig
+  PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applications/EServer/Library/curl/lib/pkgconfig:/Applications/EServer/Library/libgd/lib/pkgconfig:/Applications/EServer/Library/oniguruma/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig:/Applications/EServer/Library/libxml2/lib/pkgconfig:/Applications/EServer/Library/libzip/lib/pkgconfig
 
 # -------------------------------
 # 编译安装
