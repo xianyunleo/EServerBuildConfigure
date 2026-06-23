@@ -9,7 +9,8 @@ PREFIX=${PREFIX:-/Applications/EServer/childApp/php/php-8.5}
 PHP_VERSION=${PHP_VERSION:-8.5.7}
 
 # build.log 固定落仓库根目录（脚本启动时的 cwd），不受后续 cd 影响
-BUILD_LOG="$(pwd)/build.log" : > "$BUILD_LOG"   # 预创建/清空，保证 configure 失败时文件也已存在
+BUILD_LOG="$(pwd)/build.log"
+: > "$BUILD_LOG"   # 预创建/清空，保证 configure 失败时文件也已存在
 
 # -------------------------------
 # 下载源码
