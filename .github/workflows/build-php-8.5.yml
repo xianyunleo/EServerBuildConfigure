@@ -31,11 +31,13 @@ jobs:
           ls -a /Applications/EServer/Library
 
       - name: Build PHP 8.5
+        if: always()
         run: |
           chmod +x mac_arm64/php/php-8.5.sh
           ./mac_arm64/php/php-8.5.sh
 
       - name: Verify build log
+        if: always()
         run: |
           echo "===== build.log exists? ====="
           ls -la build.log
@@ -43,6 +45,7 @@ jobs:
           tail -n 50 build.log
 
       - name: Debug workspace
+        if: always()
         run: |
           echo "===== PWD ====="
           pwd
@@ -54,6 +57,7 @@ jobs:
           find . -maxdepth 3 -type f -print
 
       - name: Show PHP info
+        if: always()
         run: |
           echo "=== PHP version ==="
           "$PREFIX/bin/php" -v
@@ -65,9 +69,11 @@ jobs:
           "$PREFIX/bin/php" -m
 
       - name: Set artifact name
+        if: always()
         run: echo "ARTIFACT_NAME=php-8.5-macos-${PHP_VERSION}.tar.gz" >> $GITHUB_ENV
 
       - name: Package artifact
+        if: always()
         run: |
           tar -czf "$ARTIFACT_NAME"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
 
