@@ -1,0 +1,20 @@
+name: macOS CPU Info
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/macos-cpu-info.yml'
+
+jobs:
+  cpu-info:
+    runs-on: macos-latest
+    steps:
+      - name: Print macOS CPU info
+        run: |
+          echo "=== macOS CPU Information ==="
+          sysctl hw.ncpu
+          sysctl hw.physicalcpu
+          sysctl hw.logicalcpu
+          sysctl hw.physicalcpu_max
+          sysctl hw.logicalcpu_max
