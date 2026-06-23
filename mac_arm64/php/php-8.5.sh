@@ -9,6 +9,20 @@ PREFIX=${PREFIX:-/Applications/EServer/childApp/php/php-8.5}
 PHP_VERSION=${PHP_VERSION:-8.5.7}
 
 # -------------------------------
+# 将全部输出记录到 build.log（同时保留终端实时输出）
+# build.log 生成在脚本启动时的工作目录（仓库根目录），不受后续 cd 影响
+# -------------------------------
+BUILD_LOG="$(pwd)/build.log"
+echo "Build log will be written to: $BUILD_LOG"
+exec > >(tee "$BUILD_LOG") 2>&1
+
+echo "================================================"
+echo "Build started at: $(date '+%Y-%m-%d %H:%M:%S %z')"
+echo "PHP_VERSION : $PHP_VERSION"
+echo "PREFIX      : $PREFIX"
+echo "================================================"
+
+# -------------------------------
 # 下载源码
 # -------------------------------
 TARBALL="php-${PHP_VERSION}.tar.gz"
@@ -92,3 +106,8 @@ fi
 echo "PHP $PHP_VERSION installed to $PREFIX"
 ls -l "$PREFIX/bin"
 "$PREFIX/bin/php" -v
+
+echo "================================================"
+echo "Build finished at: $(date '+%Y-%m-%d %H:%M:%S %z')"
+echo "Full build log saved to: $BUILD_LOG"
+echo "================================================"

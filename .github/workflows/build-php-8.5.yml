@@ -35,6 +35,13 @@ jobs:
           chmod +x mac_arm64/php/php-8.5.sh
           ./mac_arm64/php/php-8.5.sh
 
+      - name: Verify build log
+        run: |
+          echo "===== build.log exists? ====="
+          ls -la build.log
+          echo "===== build.log (tail) ====="
+          tail -n 50 build.log
+
       - name: Debug workspace
         run: |
           echo "===== PWD ====="
@@ -68,6 +75,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
-          files: ${{ env.ARTIFACT_NAME }}
+          files: |
+            ${{ env.ARTIFACT_NAME }}
+            build.log
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
