@@ -1,4 +1,4 @@
-name: Build and Release PHP 8.5 (macOS)
+name: Build and Release PHP 8.5 (macOS) log
 
 on:
   workflow_dispatch:
@@ -31,43 +31,23 @@ jobs:
           ls -a /Applications/EServer/Library
 
       - name: Build PHP 8.5
+        continue-on-error: true
         run: |
           chmod +x mac_arm64/php/php-8.5.sh
           ./mac_arm64/php/php-8.5.sh
 
-      - name: Debug workspace
+      - name: Verify build log
+        continue-on-error: true
         run: |
-          echo "===== PWD ====="
-          pwd
-          
-          echo "===== ROOT LS ====="
-          ls -la
-          
-          echo "===== FULL TREE ====="
-          find . -maxdepth 3 -type f -print
-
-      - name: Show PHP info
-        run: |
-          echo "=== PHP version ==="
-          "$PREFIX/bin/php" -v
-          echo "=== PHP info (php -i) ==="
-          "$PREFIX/bin/php" -i
-          echo "=== PHP info (phpinfo()) ==="
-          "$PREFIX/bin/php" -r "phpinfo();"
-          echo "=== PHP modules ==="
-          "$PREFIX/bin/php" -m
-
-      - name: Set artifact name
-        run: echo "ARTIFACT_NAME=php-8.5-macos-${PHP_VERSION}.tar.gz" >> $GITHUB_ENV
-
-      - name: Package artifact
-        run: |
-          tar -czf "$ARTIFACT_NAME"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+          echo "===== build.log exists? ====="
+          ls -la build.log
+          echo "===== build.log (tail) ====="
+          tail -n 50 build.log
 
       - name: Upload release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
-          files: ${{ env.ARTIFACT_NAME }}
+          files: build.log
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
