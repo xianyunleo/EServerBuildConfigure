@@ -37,7 +37,7 @@ make clean || true
 # -------------------------------
 # 编译安装
 # -------------------------------
-make -j8 \
+make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)" \
   BUILD_TLS=yes \
   CFLAGS="-I/Applications/EServer/Library/openssl@3.5/include" \
   LDFLAGS=-L/Applications/EServer/Library/openssl@3.5/lib

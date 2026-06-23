@@ -71,7 +71,7 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applica
 # -------------------------------
 # 编译安装
 # -------------------------------
-make -j8
+make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
 make install
 
 # -------------------------------
