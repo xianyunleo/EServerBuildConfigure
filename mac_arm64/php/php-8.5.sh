@@ -62,6 +62,7 @@ export PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/
   --enable-opcache \
   --enable-soap \
   --enable-sockets \
+  --enable-intl \
   --enable-pcntl \
   --with-bz2=/Applications/EServer/Library/bzip2 \
   --with-curl=shared \
