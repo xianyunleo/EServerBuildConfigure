@@ -42,10 +42,7 @@ make clean || true
 # 配置
 # -------------------------------
 
-export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
-export CFLAGS="-isysroot $SDKROOT"
-export CPPFLAGS="-isysroot $SDKROOT"
-export LDFLAGS="-isysroot $SDKROOT"
+export LIBS="${LIBS:+$LIBS }-lresolv"
 export PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applications/EServer/Library/curl/lib/pkgconfig:/Applications/EServer/Library/libgd/lib/pkgconfig:/Applications/EServer/Library/oniguruma/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig:/Applications/EServer/Library/libxml2/lib/pkgconfig:/Applications/EServer/Library/libzip/lib/pkgconfig:/Applications/EServer/Library/icu/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
 
 ./configure --prefix="$PREFIX" \
