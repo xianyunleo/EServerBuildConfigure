@@ -59,6 +59,26 @@ if [ -d "$PREFIX/share" ]; then
 fi
 
 # -------------------------------------------------
+# 修正 dylib install name（裸名 → 绝对路径）
+# 不修正的话，链接 ICU 的程序（如 PHP）load commands
+# 里只记录裸文件名，dyld 运行时找不到库
+# -------------------------------------------------
+echo "Fixing dylib install names..."
+for f in "$PREFIX/lib"/libicu*.dylib; do
+  [ -f "$f" ] || continue
+  base=$(basename "$f")
+  # 修正自身 install name (LC_ID_DYLIB)
+  install_name_tool -id "$f" "$f"
+  # 修正对其他 ICU dylib 的内部引用
+  for dep in $(otool -L "$f" | grep 'libicu' | awk '{print $1}'); do
+    depname=$(basename "$dep")
+    if [ "$dep" != "$base" ] && [ -f "$PREFIX/lib/$depname" ]; then
+      install_name_tool -change "$dep" "$PREFIX/lib/$depname" "$f"
+    fi
+  done
+done
+
+# -------------------------------------------------
 # 完成提示
 # -------------------------------------------------
 echo "ICU $ICU_VERSION installed to $PREFIX"
