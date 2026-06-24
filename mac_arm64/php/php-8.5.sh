@@ -41,12 +41,12 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
-brew install icu4c@78
+
 export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
 export CFLAGS="-isysroot $SDKROOT"
 export CPPFLAGS="-isysroot $SDKROOT"
 export LDFLAGS="-isysroot $SDKROOT"
-export PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applications/EServer/Library/curl/lib/pkgconfig:/Applications/EServer/Library/libgd/lib/pkgconfig:/Applications/EServer/Library/oniguruma/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig:/Applications/EServer/Library/libxml2/lib/pkgconfig:/Applications/EServer/Library/libzip/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
+export PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applications/EServer/Library/curl/lib/pkgconfig:/Applications/EServer/Library/libgd/lib/pkgconfig:/Applications/EServer/Library/oniguruma/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig:/Applications/EServer/Library/libxml2/lib/pkgconfig:/Applications/EServer/Library/libzip/lib/pkgconfig:/Applications/EServer/Library/icu/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
 
 ./configure --prefix="$PREFIX" \
   --with-config-file-path="$PREFIX/etc" \
@@ -62,7 +62,6 @@ export PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/
   --enable-opcache \
   --enable-soap \
   --enable-sockets \
-  --enable-intl \
   --enable-pcntl \
   --with-bz2=/Applications/EServer/Library/bzip2 \
   --with-curl=shared \
