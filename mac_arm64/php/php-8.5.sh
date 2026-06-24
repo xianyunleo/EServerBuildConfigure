@@ -51,9 +51,6 @@ export PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/
 --enable-mbstring \
 --enable-mbregex \
 --enable-opcache \
---enable-soap \
---enable-intl \
---enable-pcntl \
 --with-iconv=/Applications/EServer/Library/libiconv
 # -------------------------------
 # 编译安装
