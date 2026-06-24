@@ -11,7 +11,7 @@ PHP_VERSION=${PHP_VERSION:-8.5.7}
 # build.log 固定落仓库根目录（脚本启动时的 cwd），不受后续 cd 影响
 BUILD_LOG="$(pwd)/build.log"
 : > "$BUILD_LOG"   # 预创建/清空，保证 configure 失败时文件也已存在
-brew install libiconv
+
 # -------------------------------
 # 下载源码
 # -------------------------------
@@ -42,9 +42,11 @@ make clean || true
 # 配置
 # -------------------------------
 
+export PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applications/EServer/Library/curl/lib/pkgconfig:/Applications/EServer/Library/libgd/lib/pkgconfig:/Applications/EServer/Library/oniguruma/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig:/Applications/EServer/Library/libxml2/lib/pkgconfig:/Applications/EServer/Library/libzip/lib/pkgconfig:/Applications/EServer/Library/icu/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
 
 ./configure --prefix="$PREFIX" \
-  --with-config-file-path="$PREFIX/etc"
+  --with-config-file-path="$PREFIX/etc" \
+    --with-iconv=/Applications/EServer/Library/libiconv
 # -------------------------------
 # 编译安装
 # -------------------------------

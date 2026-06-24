@@ -48,10 +48,21 @@ jobs:
 
       - name: Show PHP info
         run: |
+          FILE="$PREFIX/bin/php"
           echo "=== PHP version ==="
-          "$PREFIX/bin/php" -v
+          "$FILE" -v
           echo "=== PHP modules ==="
-          "$PREFIX/bin/php" -m
+          "$FILE" -m
+
+      - name: Show file info
+        run: |
+          FILE="$PREFIX/bin/php"
+          echo "=== file architectures ==="
+          lipo -info "$FILE" 2>/dev/null || file "$FILE"
+          echo "=== file minimum macOS version ==="
+          otool -l "$FILE" | grep -A 3 LC_BUILD_VERSION
+          echo "=== file dependencies ==="
+          otool -L "$FILE"
 
       - name: Set artifact name
         run: echo "ARTIFACT_NAME=php-7.0-macos-${PHP_VERSION}.tar.gz" >> $GITHUB_ENV
