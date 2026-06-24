@@ -40,9 +40,8 @@ jobs:
         continue-on-error: true
         run: |
           echo "===== build.log exists? ====="
-          ls -la build.log
-          echo "===== build.log (tail) ====="
-          tail -n 50 build.log
+          pwd
+          ls -la config.h
 
       - name: Upload release
         uses: softprops/action-gh-release@v2
