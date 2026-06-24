@@ -41,7 +41,7 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
-
+brew install icu4c@78
 export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
 export CFLAGS="-isysroot $SDKROOT"
 export CPPFLAGS="-isysroot $SDKROOT"
