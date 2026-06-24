@@ -86,7 +86,7 @@ ICULIBSUFFIX=""
 # rpath links a library search path right into the binaries.
 ## mh-files MUST NOT override RPATHLDFLAGS unless they provide
 ## equivalent '#SH#' lines for icu-config fixup
-default_ENABLE_RPATH="NO"
+default_ENABLE_RPATH="YES"
 if [ "x${ENABLE_RPATH}" = "x" ]; then ENABLE_RPATH="$default_ENABLE_RPATH"; fi
 RPATHLDFLAGS="${LD_RPATH}${LD_RPATH_PRE}${libdir}"
 
