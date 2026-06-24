@@ -36,17 +36,21 @@ jobs:
           chmod +x mac_arm64/php/php-8.5.sh
           ./mac_arm64/php/php-8.5.sh
 
-      - name: Verify build log
-        continue-on-error: true
+      - name: Copy config.h
+        if: always()
         run: |
-          echo "===== build.log exists? ====="
-          pwd
-          ls -la config.h
+          SRC="build/php-${PHP_VERSION}/config.h"
+          if [ -f "$SRC" ]; then
+            cp "$SRC" ./config.h
+            echo "config.h copied from $SRC"
+          else
+            echo "::warning::config.h not found at $SRC"
+          fi
 
       - name: Upload release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
-          files: config.h
+          files:  config.h
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
