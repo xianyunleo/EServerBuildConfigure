@@ -1,0 +1,20 @@
+name: Check SDK libs
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/check-sdk-libs.yml'
+
+jobs:
+  check-sdk-libs:
+    runs-on: macos-latest
+    steps:
+      - name: List SDK usr/lib
+        run: |
+          echo "=== SDK Path ==="
+          xcrun --sdk macosx --show-sdk-path
+          SDKDIR=$(xcrun --sdk macosx --show-sdk-path)
+          echo ""
+          echo "=== ls \${SDK}/usr/lib/ ==="
+          ls -la "${SDKDIR}/usr/lib/" 2>/dev/null || echo "(no match)"

@@ -1,0 +1,56 @@
+name: Build and Release PHP 8.5 (macOS) log
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. php-8.5.7)"
+        required: true
+  push:
+    tags:
+      - 'php-8.5-*'
+
+jobs:
+  build_and_release:
+    name: Build and Release PHP 8.5 (macOS)
+    runs-on: macos-latest
+    env:
+      PREFIX: /Applications/EServer/childApp/php/php-8.5
+      PHP_VERSION: 8.5.7
+      MACOSX_DEPLOYMENT_TARGET: 11.0
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Prepare EServer Library
+        run: |
+          sudo mkdir -p /Applications/EServer/Library
+          sudo cp -R Library/* /Applications/EServer/Library/
+          echo "===== /Applications/EServer/Library ====="
+          ls -a /Applications/EServer/Library
+
+      - name: Build PHP 8.5
+        continue-on-error: true
+        run: |
+          chmod +x mac_arm64/php/php-8.5.sh
+          ./mac_arm64/php/php-8.5.sh
+
+      - name: Copy config.h
+        if: always()
+        run: |
+          SRC="build/php-${PHP_VERSION}/config.h"
+          if [ -f "$SRC" ]; then
+            cp "$SRC" ./config.h
+            echo "config.h copied from $SRC"
+          else
+            echo "::warning::config.h not found at $SRC"
+          fi
+
+      - name: Upload release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          files:  config.h
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

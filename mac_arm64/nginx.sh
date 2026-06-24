@@ -71,7 +71,7 @@ make clean || true
 # -------------------------------
 # 编译安装
 # -------------------------------
-sudo make -j8
+sudo make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
 sudo make install
 
 # -------------------------------

@@ -1,0 +1,26 @@
+name: Check libresolv Locations
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/check-libresolv.yml'
+
+jobs:
+  check-libresolv:
+    runs-on: macos-latest
+    steps:
+      - name: List /usr/lib/libresolv*
+        run: |
+          echo "=== SDK Path ==="
+          xcrun --sdk macosx --show-sdk-path
+          SDKDIR=$(xcrun --sdk macosx --show-sdk-path)
+          echo ""
+          echo "=== ls /usr/lib/libresolv* ==="
+          ls -la /usr/lib/libresolv* 2>/dev/null || echo "(no match)"
+          echo ""
+          echo "=== ls \${SDK}/usr/lib/libresolv* ==="
+          ls -la "${SDKDIR}/usr/lib/libresolv"* 2>/dev/null || echo "(no match)"
+          echo ""
+          echo "=== nm /usr/lib/libresolv.dylib (res_9 symbols) ==="
+          nm /usr/lib/libresolv.dylib 2>/dev/null | grep res_9 || echo "(no res_9 symbols or file not found)"

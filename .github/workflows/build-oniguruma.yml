@@ -1,39 +1,32 @@
-name: Build and Release PHP 7.0 (macOS)
+name: Build and Release oniguruma (macOS)
 
 on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag (e.g. php-7.0.33)"
+        description: "Release tag (e.g. oniguruma-6.9.10)"
         required: true
   push:
     tags:
-      - 'php-7.0-*'
+      - 'oniguruma-*'
 
 jobs:
   build_and_release:
-    name: Build and Release PHP 7.0 (macOS)
+    name: Build and Release oniguruma (macOS)
     runs-on: macos-latest
     env:
-      PREFIX: /Applications/EServer/software/php/php-7.0
-      PHP_VERSION: 7.0.33
+      PREFIX: /Applications/EServer/Library/oniguruma
+      ONIG_VERSION: 6.9.10
       MACOSX_DEPLOYMENT_TARGET: 11.0
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Prepare EServer Library
+      - name: Build oniguruma
         run: |
-          sudo mkdir -p /Applications/EServer/Library
-          sudo cp -R Library/* /Applications/EServer/Library/
-          echo "===== /Applications/EServer/Library ====="
-          ls -a /Applications/EServer/Library
-
-      - name: Build PHP 7.0
-        run: |
-          chmod +x mac_arm64/php/php-7.0.sh
-          ./mac_arm64/php/php-7.0.sh
+          chmod +x mac_arm64/base/oniguruma.sh
+          ./mac_arm64/base/oniguruma.sh
 
       - name: Debug workspace
         run: |
@@ -46,26 +39,18 @@ jobs:
           echo "===== FULL TREE ====="
           find . -maxdepth 3 -type f -print
 
-      - name: Show PHP info
-        run: |
-          FILE="$PREFIX/bin/php"
-          echo "=== PHP version ==="
-          "$FILE" -v
-          echo "=== PHP modules ==="
-          "$FILE" -m
-
       - name: Show file info
         run: |
-          FILE="$PREFIX/bin/php"
+          FILE="$PREFIX/lib/libonig.dylib"
           echo "=== file architectures ==="
           lipo -info "$FILE" 2>/dev/null || file "$FILE"
           echo "=== file minimum macOS version ==="
-          otool -l "$FILE" | grep -A 3 LC_BUILD_VERSION
+          otool -l "$FILE" 2>/dev/null | grep -A 3 LC_BUILD_VERSION || true
           echo "=== file dependencies ==="
           otool -L "$FILE"
 
       - name: Set artifact name
-        run: echo "ARTIFACT_NAME=php-7.0-macos-${PHP_VERSION}.tar.gz" >> $GITHUB_ENV
+        run: echo "ARTIFACT_NAME=oniguruma-macos-${ONIG_VERSION}.tar.gz" >> $GITHUB_ENV
 
       - name: Package artifact
         run: |

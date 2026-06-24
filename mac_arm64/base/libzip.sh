@@ -54,7 +54,7 @@ cmake . -DCMAKE_INSTALL_PREFIX="$PREFIX" \
 # -------------------------------
 # 编译安装
 # -------------------------------
-make -j8
+make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
 sudo make install
 
 # 删除 share 目录（不需要的文件）

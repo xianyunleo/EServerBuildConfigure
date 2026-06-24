@@ -47,7 +47,7 @@ CXXFLAGS="$CFLAGS" \
 # -------------------------------
 # 编译安装
 # -------------------------------
-make -j8
+make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
 sudo make install
 
 # -------------------------------
