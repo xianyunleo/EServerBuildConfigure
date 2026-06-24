@@ -37,7 +37,6 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
-autoreconf --force --install --verbose
 CFLAGS="-O2"
 CXXFLAGS="$CFLAGS"
 ./configure --prefix="$PREFIX" \
