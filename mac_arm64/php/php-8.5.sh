@@ -82,7 +82,7 @@ export PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/
 # 编译安装
 # -------------------------------
 make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)" V=1 2>&1 | tee "$BUILD_LOG"
-make install
+sudo make install
 
 # -------------------------------
 # 删除 share 目录（若存在）
