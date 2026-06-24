@@ -46,11 +46,12 @@ export PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/
 
 ./configure --prefix="$PREFIX" \
 --with-config-file-path="$PREFIX/etc" \
+--enable-gd=shared \
+--with-external-gd \
 --enable-mbstring \
 --enable-mbregex \
 --enable-opcache \
 --enable-soap \
---enable-sockets \
 --enable-intl \
 --enable-pcntl \
 --with-iconv=/Applications/EServer/Library/libiconv
