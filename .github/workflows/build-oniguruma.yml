@@ -1,0 +1,65 @@
+name: Build and Release oniguruma (macOS)
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. oniguruma-6.9.10)"
+        required: true
+  push:
+    tags:
+      - 'oniguruma-*'
+
+jobs:
+  build_and_release:
+    name: Build and Release oniguruma (macOS)
+    runs-on: macos-latest
+    env:
+      PREFIX: /Applications/EServer/Library/oniguruma
+      ONIG_VERSION: 6.9.10
+      MACOSX_DEPLOYMENT_TARGET: 11.0
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build oniguruma
+        run: |
+          chmod +x mac_arm64/base/oniguruma.sh
+          ./mac_arm64/base/oniguruma.sh
+
+      - name: Debug workspace
+        run: |
+          echo "===== PWD ====="
+          pwd
+          
+          echo "===== ROOT LS ====="
+          ls -la
+          
+          echo "===== FULL TREE ====="
+          find . -maxdepth 3 -type f -print
+
+      - name: Show file info
+        run: |
+          FILE="$PREFIX/lib/libonig.dylib"
+          echo "=== file architectures ==="
+          lipo -info "$FILE" 2>/dev/null || file "$FILE"
+          echo "=== file minimum macOS version ==="
+          otool -l "$FILE" 2>/dev/null | grep -A 3 LC_BUILD_VERSION || true
+          echo "=== file dependencies ==="
+          otool -L "$FILE"
+
+      - name: Set artifact name
+        run: echo "ARTIFACT_NAME=oniguruma-macos-${ONIG_VERSION}.tar.gz" >> $GITHUB_ENV
+
+      - name: Package artifact
+        run: |
+          tar -czf "$ARTIFACT_NAME"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+
+      - name: Upload release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          files: ${{ env.ARTIFACT_NAME }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
