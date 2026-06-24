@@ -42,10 +42,11 @@ make clean 2>/dev/null || true
 CFLAGS="-O2" \
 CXXFLAGS="$CFLAGS" \
 ./configure --prefix="$PREFIX" \
-  --disable-samples \
-  --disable-tests \
-  --enable-static \
-  --with-library-bits=64
+--enable-rpath
+--disable-samples \
+--disable-tests \
+--enable-static \
+--with-library-bits=64
 
 # -------------------------------------------------
 # 编译安装
