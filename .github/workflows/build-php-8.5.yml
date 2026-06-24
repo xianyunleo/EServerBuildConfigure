@@ -30,10 +30,6 @@ jobs:
           echo "===== /Applications/EServer/Library ====="
           ls -a /Applications/EServer/Library
 
-      - name: Prepare EServer childApp
-        run: |
-          sudo mkdir -p /Applications/EServer/childApp
-
       - name: Build PHP 8.5
         run: |
           chmod +x mac_arm64/php/php-8.5.sh
