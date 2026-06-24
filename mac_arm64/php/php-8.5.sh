@@ -45,8 +45,17 @@ make clean || true
 export PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applications/EServer/Library/curl/lib/pkgconfig:/Applications/EServer/Library/libgd/lib/pkgconfig:/Applications/EServer/Library/oniguruma/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig:/Applications/EServer/Library/libxml2/lib/pkgconfig:/Applications/EServer/Library/libzip/lib/pkgconfig:/Applications/EServer/Library/icu/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
 
 ./configure --prefix="$PREFIX" \
-  --with-config-file-path="$PREFIX/etc" \
-    --with-iconv=/Applications/EServer/Library/libiconv
+--with-config-file-path="$PREFIX/etc" \
+--enable-gd=shared \
+--with-external-gd \
+--enable-mbstring \
+--enable-mbregex \
+--enable-opcache \
+--enable-soap \
+--enable-sockets \
+--enable-intl \
+--enable-pcntl \
+--with-iconv=/Applications/EServer/Library/libiconv
 # -------------------------------
 # 编译安装
 # -------------------------------
