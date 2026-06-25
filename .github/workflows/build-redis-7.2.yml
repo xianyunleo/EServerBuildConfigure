@@ -1,0 +1,77 @@
+name: Build and Release Redis 7.2 (macOS)
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. redis-7.2.9)"
+        required: true
+  push:
+    tags:
+      - 'redis-7.2.*'
+
+jobs:
+  build_and_release:
+    name: Build and Release Redis 7.2 (macOS)
+    runs-on: macos-latest
+    env:
+      PREFIX: /Applications/EServer/childApp/server/redis-7.2
+      REDIS_VERSION: 7.2.9
+      MACOSX_DEPLOYMENT_TARGET: 11.0
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Prepare EServer Library
+        run: |
+          sudo mkdir -p /Applications/EServer/Library
+          sudo cp -R Library/* /Applications/EServer/Library/
+          echo "===== /Applications/EServer/Library ====="
+          ls -a /Applications/EServer/Library
+
+      - name: Build Redis 7.2
+        run: |
+          chmod +x mac_arm64/server/redis-7.2.sh
+          ./mac_arm64/server/redis-7.2.sh
+
+      - name: Debug workspace
+        run: |
+          echo "===== PWD ====="
+          pwd
+
+          echo "===== ROOT LS ====="
+          ls -la
+
+          echo "===== FULL TREE ====="
+          find . -maxdepth 3 -type f -print
+
+      - name: Show Redis info
+        run: |
+          echo "=== redis-server --version ==="
+          "$PREFIX/bin/redis-server" --version
+          echo "=== redis-cli --version ==="
+          "$PREFIX/bin/redis-cli" --version
+          echo "=== file architectures ==="
+          for f in "$PREFIX/bin/redis-server" "$PREFIX/bin/redis-cli"; do
+            lipo -info "$f" 2>/dev/null || file "$f"
+          done
+          echo "=== file minimum macOS version ==="
+          otool -l "$PREFIX/bin/redis-server" | grep -A 3 LC_BUILD_VERSION
+          echo "=== file dependencies ==="
+          otool -L "$PREFIX/bin/redis-server"
+
+      - name: Set artifact name
+        run: echo "ARTIFACT_NAME=redis-7.2.tar.xz" >> $GITHUB_ENV
+
+      - name: Package artifact
+        run: |
+          tar -cJf "$ARTIFACT_NAME" -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+
+      - name: Upload release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          files: ${{ env.ARTIFACT_NAME }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
