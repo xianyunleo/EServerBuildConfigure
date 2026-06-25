@@ -2,9 +2,6 @@ name: Check SDK libs
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - '.github/workflows/check-sdk-libs.yml'
 
 jobs:
   check-sdk-libs:
