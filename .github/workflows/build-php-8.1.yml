@@ -8,16 +8,16 @@ on:
         required: true
   push:
     tags:
-      - 'php-d.d.*'
+      - 'php-8.1.*'
 
 jobs:
   build_and_release:
     name: Build and Release PHP 8.1 (macOS)
     runs-on: macos-latest
     env:
-      PREFIX: /Applications/EServer/software/php/php-8.1
+      PREFIX: /Applications/EServer/childApp/php/php-8.1
       PHP_VERSION: 8.1.31
-      MACOSX_DEPLOYMENT_TARGET: 10.13
+      MACOSX_DEPLOYMENT_TARGET: 11.0
 
     steps:
       - name: Checkout repo
@@ -51,6 +51,10 @@ jobs:
           FILE="$PREFIX/bin/php"
           echo "=== PHP version ==="
           "$FILE" -v
+          echo "=== PHP info (php -i) ==="
+          "$FILE" -i
+          echo "=== PHP info (phpinfo()) ==="
+          "$FILE" -r "phpinfo();"
           echo "=== PHP modules ==="
           "$FILE" -m
 
@@ -65,7 +69,7 @@ jobs:
           otool -L "$FILE"
 
       - name: Set artifact name
-        run: echo "ARTIFACT_NAME=php-8.1-macos-${PHP_VERSION}.tar.xz" >> $GITHUB_ENV
+        run: echo "ARTIFACT_NAME=php-8.1.tar.xz" >> $GITHUB_ENV
 
       - name: Package artifact
         run: |

@@ -8,7 +8,7 @@ on:
         required: true
   push:
     tags:
-      - 'php-d.d.*'
+      - 'php-8.4.*'
 
 jobs:
   build_and_release:
@@ -69,7 +69,7 @@ jobs:
           otool -L "$FILE"
 
       - name: Set artifact name
-        run: echo "ARTIFACT_NAME=php-8.4-macos-${PHP_VERSION}.tar.xz" >> $GITHUB_ENV
+        run: echo "ARTIFACT_NAME=php-8.4.tar.xz" >> $GITHUB_ENV
 
       - name: Package artifact
         run: |
