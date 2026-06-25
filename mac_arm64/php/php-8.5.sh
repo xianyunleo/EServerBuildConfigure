@@ -107,12 +107,15 @@ export DYLD_FALLBACK_LIBRARY_PATH="/Applications/EServer/Library/icu/lib:/Applic
 make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)" V=1 2>&1 | tee "$BUILD_LOG"
 sudo make install
 
+sudo cp ./php.ini-development /Applications/EServer/childApp/php/php-8.5/etc/php.ini-development
+sudo cp ./php.ini-production /Applications/EServer/childApp/php/php-8.5/etc/php.ini-production
+
 # -------------------------------
 # 删除 share 目录（若存在）
 # -------------------------------
 if [ -d "$PREFIX/share" ]; then
   echo "Removing share directory..."
-  rm -rf "$PREFIX/share"
+  sudo rm -rf "$PREFIX/share"
 fi
 
 # -------------------------------
