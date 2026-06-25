@@ -28,11 +28,16 @@ jobs:
           echo "===== /Applications/EServer/Library ====="
           ls -a /Applications/EServer/Library
 
-      - name: Build PHP 7.4
+      - name: Set Homebrew bison PATH
         run: |
           echo "bison version: $(bison --version | head -1)"
-          export PATH="$(brew --prefix bison)/bin:$PATH"
-          echo "bison path: $(which bison)"
+          BISON_PATH="$(brew --prefix bison)/bin"
+          echo "bison path: $BISON_PATH"
+          echo "$BISON_PATH" >> $GITHUB_PATH
+          echo "new bison version: $($BISON_PATH/bison --version | head -1)"
+
+      - name: Build PHP 7.4
+        run: |
           echo "bison version: $(bison --version | head -1)"
           chmod +x mac_arm64/php/php-7.4.sh
           ./mac_arm64/php/php-7.4.sh
