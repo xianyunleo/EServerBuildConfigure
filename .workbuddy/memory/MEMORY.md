@@ -24,6 +24,11 @@
 - 所有 workflow 产物统一使用 `.tar.xz`（`tar -cJf`），不再使用 `.tar.gz`。
 - `mac_arm64/php/` 和 `mac_arm64/server/` 目录下所有 .sh 对应的 build yml 均已确认为 tar.xz。
 
+### 编译后清理规则
+- `mac_arm64/php/` 和 `mac_arm64/server/` 目录下的构建脚本，编译完成后**不删除任何文件或目录**。
+- 禁止在 `make install` 后执行 `rm -rf "$PREFIX/share"` 或类似的清理操作。
+- 当前状态：php-7.4/8.0/8.1/8.2/8.4/8.5、nginx、redis 已遵守；php-5.6/7.0/7.1/7.2/7.3/8.3 仍残留 share 删除代码。
+
 ### 传递依赖陷阱（macOS）
 otool 看到的依赖可能是传递依赖，而非直接依赖。当某库 A 链接了错误的 B（如 Homebrew openssl），
 所有依赖 A 的库都会在 Mach-O load commands 中记录 B 的路径。修复时需检查整条依赖链，
