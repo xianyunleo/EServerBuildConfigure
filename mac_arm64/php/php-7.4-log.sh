@@ -33,12 +33,19 @@ rm -rf "php-${PHP_VERSION}"
 rm -rf "php-src-backports-7.4.33"
 tar -xzf "$TARBALL"
 SRC_DIR=$(tar -tzf "$TARBALL" | head -1 | cut -d/ -f1)
+echo "Source directory: $SRC_DIR" | tee -a "$BUILD_LOG"
 cd "$SRC_DIR"
+echo "=== ls -la ===" >> "$BUILD_LOG"
+ls -la >> "$BUILD_LOG"
 
 # -------------------------------
-# 清理旧文件
+# 清理旧文件 & 生成 configure
 # -------------------------------
-make clean || true
+make clean 2>/dev/null || true
+if [ ! -f configure ]; then
+  echo "configure not found, running ./buildconf..." | tee -a "$BUILD_LOG"
+  ./buildconf --force 2>&1 | tee -a "$BUILD_LOG"
+fi
 
 # -------------------------------
 # 配置
