@@ -18,6 +18,7 @@
 - `make install` 需 `sudo`（写入 /Applications 需要权限）
 - 对应 `.github/workflows/build-<库名>.yml`，tag 格式 `<库名>-<版本>`
 - 重打 tag 流程：`git tag -d <tag> && git push origin :refs/tags/<tag>` → `git tag <tag> && git push origin <tag>`
+- GitHub Actions 的 tag 触发模式是 glob，版本号分隔符需与 tag 一致：tag 为 `php-8.5.7` 时写 `php-8.5.*`，不能写成 `php-8.5-*`（后者只匹配 `php-8.5-xxx`）
 
 ### 传递依赖陷阱（macOS）
 otool 看到的依赖可能是传递依赖，而非直接依赖。当某库 A 链接了错误的 B（如 Homebrew openssl），

@@ -32,8 +32,8 @@ jobs:
 
       - name: Build nginx
         run: |
-          chmod +x mac_arm64/nginx.sh
-          ./mac_arm64/nginx.sh
+          chmod +x mac_arm64/server/nginx.sh
+          ./mac_arm64/server/nginx.sh
 
       - name: Debug workspace
         run: |
