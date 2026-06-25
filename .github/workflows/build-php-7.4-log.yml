@@ -31,71 +31,49 @@ jobs:
           ls -a /Applications/EServer/Library
 
       - name: Build PHP 7.4 (with logging)
+        id: build
+        continue-on-error: true
         run: |
           chmod +x mac_arm64/php/php-7.4-log.sh
           ./mac_arm64/php/php-7.4-log.sh
+        env:
+          PHP_VERSION: ${{ env.PHP_VERSION }}
+          PREFIX: ${{ env.PREFIX }}
 
-      - name: Upload build logs (always)
+      - name: Show build log tail
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: php-7.4-logs
-          path: |
-            build.log
-            build/php-${{ env.PHP_VERSION }}/config.log
-          if-no-files-found: ignore
-          retention-days: 7
-
-      - name: Debug workspace
-        if: success()
         run: |
-          echo "===== PWD ====="
-          pwd
-          
-          echo "===== ROOT LS ====="
-          ls -la
-          
-          echo "===== FULL TREE ====="
-          find . -maxdepth 3 -type f -print
+          echo "===== build.log (tail 200) ====="
+          tail -200 build.log || echo "(build.log not found)"
 
-      - name: Show PHP info
-        if: success()
+      - name: Show configure errors
+        if: always()
         run: |
-          FILE="$PREFIX/bin/php"
-          echo "=== PHP version ==="
-          "$FILE" -v
-          echo "=== PHP info (php -i) ==="
-          "$FILE" -i
-          echo "=== PHP info (phpinfo()) ==="
-          "$FILE" -r "phpinfo();"
-          echo "=== PHP modules ==="
-          "$FILE" -m
+          CONFIG_LOG="build/php-${PHP_VERSION}/config.log"
+          echo "===== config.log errors ====="
+          if [ -f "$CONFIG_LOG" ]; then
+            grep -iE 'error|failed|undefined|cannot' "$CONFIG_LOG" | tail -50 || echo "(no errors found)"
+          else
+            echo "(config.log not found at $CONFIG_LOG)"
+          fi
 
-      - name: Show file info
-        if: success()
+      - name: Copy logs to single dir
+        if: always()
         run: |
-          FILE="$PREFIX/bin/php"
-          echo "=== file architectures ==="
-          lipo -info "$FILE" 2>/dev/null || file "$FILE"
-          echo "=== file minimum macOS version ==="
-          otool -l "$FILE" | grep -A 3 LC_BUILD_VERSION
-          echo "=== file dependencies ==="
-          otool -L "$FILE"
+          mkdir -p logs
+          cp build.log logs/build.log 2>/dev/null || echo "(build.log missing)"
+          CONFIG_LOG="build/php-${PHP_VERSION}/config.log"
+          cp "$CONFIG_LOG" logs/config.log 2>/dev/null || echo "(config.log missing)"
+          echo "=== logs dir ==="
+          ls -la logs/
 
-      - name: Set artifact name
-        if: success()
-        run: echo "ARTIFACT_NAME=php-7.4-log.tar.xz" >> $GITHUB_ENV
-
-      - name: Package artifact
-        if: success()
-        run: |
-          tar -cJf "$ARTIFACT_NAME" -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
-
-      - name: Upload release
-        if: success()
+      - name: Upload build logs to release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
-          files: ${{ env.ARTIFACT_NAME }}
+          files: |
+            logs/build.log
+            logs/config.log
+          fail_on_unmatched_files: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

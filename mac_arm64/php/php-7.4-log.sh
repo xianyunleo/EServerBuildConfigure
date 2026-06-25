@@ -40,11 +40,13 @@ make clean || true
 
 # -------------------------------
 # 配置
+# 捕获 configure 和 make 的全部输出到 build.log
 # -------------------------------
 
 export LIBS="${LIBS:+$LIBS }-lresolv"
 export PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applications/EServer/Library/curl/lib/pkgconfig:/Applications/EServer/Library/libgd/lib/pkgconfig:/Applications/EServer/Library/oniguruma/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig:/Applications/EServer/Library/libxml2/lib/pkgconfig:/Applications/EServer/Library/libzip/lib/pkgconfig:/Applications/EServer/Library/icu/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
 
+echo "=== configure start ===" >> "$BUILD_LOG"
 ./configure --prefix="$PREFIX" \
   --with-config-file-path="$PREFIX/etc" \
   --enable-bcmath \
@@ -74,14 +76,20 @@ export PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/
   --with-sqlite3 \
   --with-libxml \
   --with-zip \
-  --with-zlib
+  --with-zlib \
+  2>&1 | tee -a "$BUILD_LOG"
+echo "=== configure end (exit: ${PIPESTATUS[0]}) ===" >> "$BUILD_LOG"
 
 # -------------------------------
 # 编译安装
-# 使用 V=1 tee build.log 捕捉 make 输出
 # -------------------------------
-make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)" V=1 2>&1 | tee "$BUILD_LOG"
-sudo make install
+echo "=== make start ===" >> "$BUILD_LOG"
+make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)" V=1 2>&1 | tee -a "$BUILD_LOG"
+echo "=== make end (exit: ${PIPESTATUS[0]}) ===" >> "$BUILD_LOG"
+
+echo "=== make install start ===" >> "$BUILD_LOG"
+sudo make install 2>&1 | tee -a "$BUILD_LOG"
+echo "=== make install end (exit: ${PIPESTATUS[0]}) ===" >> "$BUILD_LOG"
 
 sudo cp ./php.ini-development /Applications/EServer/childApp/php/php-7.4/etc/php.ini-development
 sudo cp ./php.ini-production /Applications/EServer/childApp/php/php-7.4/etc/php.ini-production
