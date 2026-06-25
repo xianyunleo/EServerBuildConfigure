@@ -38,7 +38,6 @@ jobs:
 
       - name: Build PHP 7.4
         run: |
-          echo "bison version: $(bison --version | head -1)"
           chmod +x mac_arm64/php/php-7.4.sh
           ./mac_arm64/php/php-7.4.sh
 
