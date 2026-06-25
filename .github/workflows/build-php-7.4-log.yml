@@ -1,0 +1,101 @@
+name: Build and Release PHP 7.4 Log (macOS)
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. php-7.4-log-33)"
+        required: true
+  push:
+    tags:
+      - 'php-7.4-log-*'
+
+jobs:
+  build_and_release:
+    name: Build and Release PHP 7.4 Log (macOS)
+    runs-on: macos-latest
+    env:
+      PREFIX: /Applications/EServer/childApp/php/php-7.4
+      PHP_VERSION: 7.4.33
+      MACOSX_DEPLOYMENT_TARGET: 11.0
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Prepare EServer Library
+        run: |
+          sudo mkdir -p /Applications/EServer/Library
+          sudo cp -R Library/* /Applications/EServer/Library/
+          echo "===== /Applications/EServer/Library ====="
+          ls -a /Applications/EServer/Library
+
+      - name: Build PHP 7.4 (with logging)
+        run: |
+          chmod +x mac_arm64/php/php-7.4-log.sh
+          ./mac_arm64/php/php-7.4-log.sh
+
+      - name: Upload build logs (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: php-7.4-logs
+          path: |
+            build.log
+            build/php-${{ env.PHP_VERSION }}/config.log
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Debug workspace
+        if: success()
+        run: |
+          echo "===== PWD ====="
+          pwd
+          
+          echo "===== ROOT LS ====="
+          ls -la
+          
+          echo "===== FULL TREE ====="
+          find . -maxdepth 3 -type f -print
+
+      - name: Show PHP info
+        if: success()
+        run: |
+          FILE="$PREFIX/bin/php"
+          echo "=== PHP version ==="
+          "$FILE" -v
+          echo "=== PHP info (php -i) ==="
+          "$FILE" -i
+          echo "=== PHP info (phpinfo()) ==="
+          "$FILE" -r "phpinfo();"
+          echo "=== PHP modules ==="
+          "$FILE" -m
+
+      - name: Show file info
+        if: success()
+        run: |
+          FILE="$PREFIX/bin/php"
+          echo "=== file architectures ==="
+          lipo -info "$FILE" 2>/dev/null || file "$FILE"
+          echo "=== file minimum macOS version ==="
+          otool -l "$FILE" | grep -A 3 LC_BUILD_VERSION
+          echo "=== file dependencies ==="
+          otool -L "$FILE"
+
+      - name: Set artifact name
+        if: success()
+        run: echo "ARTIFACT_NAME=php-7.4-log.tar.xz" >> $GITHUB_ENV
+
+      - name: Package artifact
+        if: success()
+        run: |
+          tar -cJf "$ARTIFACT_NAME" -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+
+      - name: Upload release
+        if: success()
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          files: ${{ env.ARTIFACT_NAME }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
