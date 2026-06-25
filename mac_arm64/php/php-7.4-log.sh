@@ -48,6 +48,12 @@ if [ ! -f configure ]; then
 fi
 
 # -------------------------------
+# 补丁: cURL 需要 long 类型字面量
+# -------------------------------
+echo "=== curl sed patch ===" >> "$BUILD_LOG"
+sed -i.bak -E 's/CURLOPT_VERBOSE,\s+0/CURLOPT_VERBOSE, 0L/' ext/curl/interface.c
+
+# -------------------------------
 # 配置
 # 捕获 configure 和 make 的全部输出到 build.log
 # -------------------------------

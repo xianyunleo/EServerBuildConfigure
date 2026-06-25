@@ -43,6 +43,11 @@ if [ ! -f configure ]; then
 fi
 
 # -------------------------------
+# 补丁: cURL 需要 long 类型字面量
+# -------------------------------
+sed -i.bak -E 's/CURLOPT_VERBOSE,\s+0/CURLOPT_VERBOSE, 0L/' ext/curl/interface.c
+
+# -------------------------------
 # 配置
 # -------------------------------
 
