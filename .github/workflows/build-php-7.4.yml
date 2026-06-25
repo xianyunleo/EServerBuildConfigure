@@ -16,6 +16,11 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Install dependencies
+        run: |
+          brew update
+          brew install autoconf automake libtool
+
       - name: Prepare EServer Library
         run: |
           sudo mkdir -p /Applications/EServer/Library
