@@ -16,7 +16,7 @@ jobs:
     runs-on: macos-latest
     env:
       PREFIX: /Applications/EServer/childApp/server/redis-7.2
-      REDIS_VERSION: 7.2.9
+      REDIS_VERSION: 7.2.14
       MACOSX_DEPLOYMENT_TARGET: 11.0
 
     steps:

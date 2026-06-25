@@ -6,7 +6,7 @@ set -euo pipefail
 # -------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/childApp/server/redis-7.2}
-REDIS_VERSION=${REDIS_VERSION:-7.2.9}
+REDIS_VERSION=${REDIS_VERSION:-7.2.14}
 
 # -------------------------------
 # 下载源码
@@ -42,7 +42,7 @@ make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)" \
   CFLAGS="-I/Applications/EServer/Library/openssl@3.5/include" \
   LDFLAGS=-L/Applications/EServer/Library/openssl@3.5/lib
 
-make install PREFIX="$PREFIX"
+sudo make install PREFIX="$PREFIX"
 
 # -------------------------------
 # 完成提示
