@@ -8,7 +8,7 @@ on:
         required: true
   push:
     tags:
-      - 'php-7.0-*'
+      - 'php-d.d.*'
 
 jobs:
   build_and_release:
@@ -65,11 +65,11 @@ jobs:
           otool -L "$FILE"
 
       - name: Set artifact name
-        run: echo "ARTIFACT_NAME=php-7.0-macos-${PHP_VERSION}.tar.gz" >> $GITHUB_ENV
+        run: echo "ARTIFACT_NAME=php-7.0-macos-${PHP_VERSION}.tar.xz" >> $GITHUB_ENV
 
       - name: Package artifact
         run: |
-          tar -czf "$ARTIFACT_NAME"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+          tar -cJf "$ARTIFACT_NAME"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
 
       - name: Upload release
         uses: softprops/action-gh-release@v2
