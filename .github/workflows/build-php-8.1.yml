@@ -53,8 +53,6 @@ jobs:
           "$FILE" -v
           echo "=== PHP info (php -i) ==="
           "$FILE" -i
-          echo "=== PHP info (phpinfo()) ==="
-          "$FILE" -r "phpinfo();"
           echo "=== PHP modules ==="
           "$FILE" -m
 
