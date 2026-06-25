@@ -15,8 +15,8 @@ BUILD_LOG="$(pwd)/build.log"
 # -------------------------------
 # 下载源码
 # -------------------------------
-TARBALL="php-${PHP_VERSION}.tar.gz"
-URL="https://www.php.net/distributions/$TARBALL"
+TARBALL="php-src-backports-7.4.33.tar.gz"
+URL="https://raw.githubusercontent.com/xianyunleo/EServerBuildConfigure/master/php-src-backports/$TARBALL"
 
 mkdir -p build
 cd build
@@ -30,8 +30,10 @@ fi
 # 解压
 # -------------------------------
 rm -rf "php-${PHP_VERSION}"
+rm -rf "php-src-backports-7.4.33"
 tar -xzf "$TARBALL"
-cd "php-${PHP_VERSION}"
+SRC_DIR=$(tar -tzf "$TARBALL" | head -1 | cut -d/ -f1)
+cd "$SRC_DIR"
 
 # -------------------------------
 # 清理旧文件

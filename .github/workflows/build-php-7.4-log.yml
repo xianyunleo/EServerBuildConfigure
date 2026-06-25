@@ -6,9 +6,6 @@ on:
       tag:
         description: "Release tag (e.g. php-7.4-log-33)"
         required: true
-  push:
-    tags:
-      - 'php-7.4-log-*'
 
 jobs:
   build_and_release:
