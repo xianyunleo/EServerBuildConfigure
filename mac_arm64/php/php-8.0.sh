@@ -75,9 +75,7 @@ export PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/
 # -------------------------------
 # 编译安装
 # -------------------------------
-export DYLD_FALLBACK_LIBRARY_PATH="/Applications/EServer/Library/icu/lib:/Applications/EServer/Library/libxml2/lib:/Applications/EServer/Library/libzip/lib:/Applications/EServer/Library/zlib/lib:/Applications/EServer/Library/oniguruma/lib:/Applications/EServer/Library/libgd/lib:/Applications/EServer/Library/curl/lib:/Applications/EServer/Library/openssl@3.5/lib:/Applications/EServer/Library/bzip2/lib:/Applications/EServer/Library/gmp/lib:/Applications/EServer/Library/libiconv/lib:/Applications/EServer/Library/libpq/lib${DYLD_FALLBACK_LIBRARY_PATH:+:$DYLD_FALLBACK_LIBRARY_PATH}"
-
-make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)" V=1 2>&1 | tee "$BUILD_LOG"
+make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
 sudo make install
 
 sudo cp ./php.ini-development /Applications/EServer/childApp/php/php-8.0/etc/php.ini-development
