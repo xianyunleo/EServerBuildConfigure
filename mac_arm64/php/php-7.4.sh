@@ -53,6 +53,14 @@ if [ "$(uname)" = "Darwin" ] && [ "${CC:-}" = "gcc" ]; then
   export CFLAGS="${CFLAGS:+$CFLAGS }-Wno-incompatible-pointer-types"
 fi
 
+# ICU 75+ 需要 C++17
+export ICU_CXXFLAGS="-std=c++17"
+
+# macOS: 确保 Mach-O header 有足够空间用于 rpath 重写
+if [ "$(uname)" = "Darwin" ]; then
+  export LDFLAGS="${LDFLAGS:+$LDFLAGS }-Wl,-headerpad_max_install_names"
+fi
+
 export LIBS="${LIBS:+$LIBS }-lresolv"
 export PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applications/EServer/Library/curl/lib/pkgconfig:/Applications/EServer/Library/libgd/lib/pkgconfig:/Applications/EServer/Library/oniguruma/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig:/Applications/EServer/Library/libxml2/lib/pkgconfig:/Applications/EServer/Library/libzip/lib/pkgconfig:/Applications/EServer/Library/icu/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
 
