@@ -52,6 +52,22 @@ fi
 # 捕获 configure 和 make 的全部输出到 build.log
 # -------------------------------
 
+# PHP 7.4 的 K&R 风格源码不兼容 C23，强制使用 C17
+export CFLAGS="${CFLAGS:+$CFLAGS }-std=gnu17"
+
+# Xcode 15.3+ (clang build >= 1500) 兼容性修复
+CLANG_BUILD=$(clang --version 2>/dev/null | grep -oE 'clang-[0-9]+' | head -1 | sed 's/clang-//')
+if [ -n "$CLANG_BUILD" ] && [ "$CLANG_BUILD" -ge 1500 ]; then
+  echo "Detected clang build $CLANG_BUILD >= 1500, applying Xcode 15.3 workarounds..." | tee -a "$BUILD_LOG"
+  export CFLAGS="${CFLAGS:+$CFLAGS }-Wno-incompatible-function-pointer-types"
+  export LDFLAGS="${LDFLAGS:+$LDFLAGS }-lresolv"
+fi
+
+# gcc 编译器兼容（macOS 上使用 gcc 时）
+if [ "$(uname)" = "Darwin" ] && [ "${CC:-}" = "gcc" ]; then
+  export CFLAGS="${CFLAGS:+$CFLAGS }-Wno-incompatible-pointer-types"
+fi
+
 export LIBS="${LIBS:+$LIBS }-lresolv"
 export PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applications/EServer/Library/curl/lib/pkgconfig:/Applications/EServer/Library/libgd/lib/pkgconfig:/Applications/EServer/Library/oniguruma/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig:/Applications/EServer/Library/libxml2/lib/pkgconfig:/Applications/EServer/Library/libzip/lib/pkgconfig:/Applications/EServer/Library/icu/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
 
