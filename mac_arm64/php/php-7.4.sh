@@ -34,21 +34,7 @@ cd "$SRC_DIR"
 ls -la
 
 # -------------------------------
-# 清理旧文件 & 生成 configure
-# -------------------------------
-make clean 2>/dev/null || true
-if [ ! -f configure ]; then
-  echo "configure not found, running ./buildconf..."
-  ./buildconf --force
-fi
-
-# -------------------------------
-# 补丁: cURL 需要 long 类型字面量
-# -------------------------------
-sed -i.bak -E 's/CURLOPT_VERBOSE,\s+0/CURLOPT_VERBOSE, 0L/' ext/curl/interface.c
-
-# -------------------------------
-# 配置
+# 配置环境变量
 # -------------------------------
 
 # PHP 7.4 的 K&R 风格源码不兼容 C23，强制使用 C17
@@ -69,6 +55,24 @@ fi
 
 export LIBS="${LIBS:+$LIBS }-lresolv"
 export PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applications/EServer/Library/curl/lib/pkgconfig:/Applications/EServer/Library/libgd/lib/pkgconfig:/Applications/EServer/Library/oniguruma/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig:/Applications/EServer/Library/libxml2/lib/pkgconfig:/Applications/EServer/Library/libzip/lib/pkgconfig:/Applications/EServer/Library/icu/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
+
+# -------------------------------
+# 清理旧文件 & 生成 configure
+# -------------------------------
+make clean 2>/dev/null || true
+if [ ! -f configure ]; then
+  echo "configure not found, running ./buildconf..."
+  ./buildconf --force
+fi
+
+# -------------------------------
+# 补丁: cURL 需要 long 类型字面量
+# -------------------------------
+sed -i.bak -E 's/CURLOPT_VERBOSE,\s+0/CURLOPT_VERBOSE, 0L/' ext/curl/interface.c
+
+# -------------------------------
+# 配置
+# -------------------------------
 
 ./configure --prefix="$PREFIX" \
   --with-config-file-path="$PREFIX/etc" \
