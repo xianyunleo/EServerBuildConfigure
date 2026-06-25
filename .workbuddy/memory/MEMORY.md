@@ -20,6 +20,10 @@
 - 重打 tag 流程：`git tag -d <tag> && git push origin :refs/tags/<tag>` → `git tag <tag> && git push origin <tag>`
 - GitHub Actions 的 tag 触发模式是 glob，版本号分隔符需与 tag 一致：tag 为 `php-8.5.7` 时写 `php-8.5.*`，不能写成 `php-8.5-*`（后者只匹配 `php-8.5-xxx`）
 
+### 产物打包格式
+- 所有 workflow 产物统一使用 `.tar.xz`（`tar -cJf`），不再使用 `.tar.gz`。
+- `mac_arm64/php/` 和 `mac_arm64/server/` 目录下所有 .sh 对应的 build yml 均已确认为 tar.xz。
+
 ### 传递依赖陷阱（macOS）
 otool 看到的依赖可能是传递依赖，而非直接依赖。当某库 A 链接了错误的 B（如 Homebrew openssl），
 所有依赖 A 的库都会在 Mach-O load commands 中记录 B 的路径。修复时需检查整条依赖链，
