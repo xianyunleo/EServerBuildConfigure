@@ -8,7 +8,6 @@ export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/childApp/php/php-7.4}
 PHP_VERSION=${PHP_VERSION:-7.4.33}
 
-
 # -------------------------------
 # 下载源码
 # -------------------------------
@@ -36,3 +35,58 @@ cd "php-${PHP_VERSION}"
 make clean || true
 
 # -------------------------------
+# 配置
+# -------------------------------
+
+export LIBS="${LIBS:+$LIBS }-lresolv"
+export PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applications/EServer/Library/curl/lib/pkgconfig:/Applications/EServer/Library/libgd/lib/pkgconfig:/Applications/EServer/Library/oniguruma/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig:/Applications/EServer/Library/libxml2/lib/pkgconfig:/Applications/EServer/Library/libzip/lib/pkgconfig:/Applications/EServer/Library/icu/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
+
+./configure --prefix="$PREFIX" \
+  --with-config-file-path="$PREFIX/etc" \
+  --enable-bcmath \
+  --enable-calendar \
+  --enable-exif \
+  --enable-ftp \
+  --enable-fpm \
+  --enable-gd=shared \
+  --with-external-gd \
+  --enable-mbstring \
+  --enable-mbregex \
+  --enable-opcache \
+  --enable-soap \
+  --enable-sockets \
+  --enable-intl \
+  --enable-pcntl \
+  --with-bz2=/Applications/EServer/Library/bzip2 \
+  --with-curl=shared \
+  --with-gmp=/Applications/EServer/Library/gmp \
+  --with-iconv=/Applications/EServer/Library/libiconv \
+  --with-mysqli \
+  --with-openssl=shared \
+  --with-pdo-mysql \
+  --with-pgsql=/Applications/EServer/Library/libpq \
+  --with-pdo-pgsql=/Applications/EServer/Library/libpq \
+  --with-pdo-sqlite \
+  --with-sqlite3 \
+  --with-libxml \
+  --with-zip \
+  --with-zlib
+
+# -------------------------------
+# 编译安装
+# -------------------------------
+export DYLD_FALLBACK_LIBRARY_PATH="/Applications/EServer/Library/icu/lib:/Applications/EServer/Library/libxml2/lib:/Applications/EServer/Library/libzip/lib:/Applications/EServer/Library/zlib/lib:/Applications/EServer/Library/oniguruma/lib:/Applications/EServer/Library/libgd/lib:/Applications/EServer/Library/curl/lib:/Applications/EServer/Library/openssl@3.5/lib:/Applications/EServer/Library/bzip2/lib:/Applications/EServer/Library/gmp/lib:/Applications/EServer/Library/libiconv/lib:/Applications/EServer/Library/libpq/lib${DYLD_FALLBACK_LIBRARY_PATH:+:$DYLD_FALLBACK_LIBRARY_PATH}"
+
+make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)" V=1 2>&1 | tee "$BUILD_LOG"
+sudo make install
+
+sudo cp ./php.ini-development /Applications/EServer/childApp/php/php-7.4/etc/php.ini-development
+sudo cp ./php.ini-production /Applications/EServer/childApp/php/php-7.4/etc/php.ini-production
+
+# -------------------------------
+# 完成提示
+# -------------------------------
+echo "PHP $PHP_VERSION installed to $PREFIX"
+ls -l "$PREFIX/bin"
+"$PREFIX/bin/php" -v
+
