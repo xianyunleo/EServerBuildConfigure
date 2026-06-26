@@ -2,9 +2,6 @@ name: Check libresolv Locations
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - '.github/workflows/check-libresolv.yml'
 
 jobs:
   check-libresolv:

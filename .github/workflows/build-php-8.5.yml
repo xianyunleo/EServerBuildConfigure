@@ -8,7 +8,7 @@ on:
         required: true
   push:
     tags:
-      - 'php-8.5-*'
+      - 'php-8.5.*'
 
 jobs:
   build_and_release:
@@ -53,8 +53,6 @@ jobs:
           "$FILE" -v
           echo "=== PHP info (php -i) ==="
           "$FILE" -i
-          echo "=== PHP info (phpinfo()) ==="
-          "$FILE" -r "phpinfo();"
           echo "=== PHP modules ==="
           "$FILE" -m
 
@@ -69,11 +67,11 @@ jobs:
           otool -L "$FILE"
 
       - name: Set artifact name
-        run: echo "ARTIFACT_NAME=php-8.5-macos-${PHP_VERSION}.tar.gz" >> $GITHUB_ENV
+        run: echo "ARTIFACT_NAME=php-8.5.tar.xz" >> $GITHUB_ENV
 
       - name: Package artifact
         run: |
-          tar -czf "$ARTIFACT_NAME"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+          tar -cJf "$ARTIFACT_NAME"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
 
       - name: Upload release
         uses: softprops/action-gh-release@v2

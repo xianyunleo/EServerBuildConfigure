@@ -18,6 +18,16 @@
 - `make install` 需 `sudo`（写入 /Applications 需要权限）
 - 对应 `.github/workflows/build-<库名>.yml`，tag 格式 `<库名>-<版本>`
 - 重打 tag 流程：`git tag -d <tag> && git push origin :refs/tags/<tag>` → `git tag <tag> && git push origin <tag>`
+- GitHub Actions 的 tag 触发模式是 glob，版本号分隔符需与 tag 一致：tag 为 `php-8.5.7` 时写 `php-8.5.*`，不能写成 `php-8.5-*`（后者只匹配 `php-8.5-xxx`）
+
+### 产物打包格式
+- `mac_arm64/php/` 和 `mac_arm64/server/` 目录使用 `.tar.xz`（`tar -cJf`）。
+- `mac_arm64/base/` 及其他基础库目录使用 `.tar.gz`（`tar -czf`）。
+
+### 编译后清理规则
+- `mac_arm64/php/` 和 `mac_arm64/server/` 目录下的构建脚本，编译完成后**不删除任何文件或目录**。
+- 禁止在 `make install` 后执行 `rm -rf "$PREFIX/share"` 或类似的清理操作。
+- 当前状态：php-7.4/8.0/8.1/8.2/8.4/8.5、nginx、redis 已遵守；php-5.6/7.0/7.1/7.2/7.3/8.3 仍残留 share 删除代码。
 
 ### 传递依赖陷阱（macOS）
 otool 看到的依赖可能是传递依赖，而非直接依赖。当某库 A 链接了错误的 B（如 Homebrew openssl），

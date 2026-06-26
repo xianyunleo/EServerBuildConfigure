@@ -32,8 +32,8 @@ jobs:
 
       - name: Build nginx
         run: |
-          chmod +x mac_arm64/nginx.sh
-          ./mac_arm64/nginx.sh
+          chmod +x mac_arm64/server/nginx.sh
+          ./mac_arm64/server/nginx.sh
 
       - name: Debug workspace
         run: |
@@ -59,11 +59,11 @@ jobs:
           otool -L "$FILE"
 
       - name: Set artifact name
-        run: echo "ARTIFACT_NAME=nginx-macos-${NGINX_VERSION}.tar.gz" >> $GITHUB_ENV
+        run: echo "ARTIFACT_NAME=nginx.tar.xz" >> $GITHUB_ENV
 
       - name: Package artifact
         run: |
-          tar -czf "$ARTIFACT_NAME" -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+          tar -cJf "$ARTIFACT_NAME" -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
 
       - name: Upload release
         uses: softprops/action-gh-release@v2

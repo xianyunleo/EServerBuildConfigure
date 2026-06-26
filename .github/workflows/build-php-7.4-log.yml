@@ -1,0 +1,76 @@
+name: Build and Release PHP 7.4 Log (macOS)
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. php-7.4-log-33)"
+        required: true
+
+jobs:
+  build_and_release:
+    name: Build and Release PHP 7.4 Log (macOS)
+    runs-on: macos-latest
+    env:
+      PREFIX: /Applications/EServer/childApp/php/php-7.4
+      PHP_VERSION: 7.4.33
+      MACOSX_DEPLOYMENT_TARGET: 11.0
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Prepare EServer Library
+        run: |
+          sudo mkdir -p /Applications/EServer/Library
+          sudo cp -R Library/* /Applications/EServer/Library/
+          echo "===== /Applications/EServer/Library ====="
+          ls -a /Applications/EServer/Library
+
+      - name: Build PHP 7.4 (with logging)
+        id: build
+        continue-on-error: true
+        run: |
+          chmod +x mac_arm64/php/php-7.4-log.sh
+          ./mac_arm64/php/php-7.4-log.sh
+        env:
+          PHP_VERSION: ${{ env.PHP_VERSION }}
+          PREFIX: ${{ env.PREFIX }}
+
+      - name: Show build log tail
+        if: always()
+        run: |
+          echo "===== build.log (tail 200) ====="
+          tail -200 build.log || echo "(build.log not found)"
+
+      - name: Show configure errors
+        if: always()
+        run: |
+          CONFIG_LOG="build/php-${PHP_VERSION}/config.log"
+          echo "===== config.log errors ====="
+          if [ -f "$CONFIG_LOG" ]; then
+            grep -iE 'error|failed|undefined|cannot' "$CONFIG_LOG" | tail -50 || echo "(no errors found)"
+          else
+            echo "(config.log not found at $CONFIG_LOG)"
+          fi
+
+      - name: Copy logs to single dir
+        if: always()
+        run: |
+          mkdir -p logs
+          cp build.log logs/build.log 2>/dev/null || echo "(build.log missing)"
+          CONFIG_LOG="build/php-${PHP_VERSION}/config.log"
+          cp "$CONFIG_LOG" logs/config.log 2>/dev/null || echo "(config.log missing)"
+          echo "=== logs dir ==="
+          ls -la logs/
+
+      - name: Upload build logs to release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          files: |
+            logs/build.log
+            logs/config.log
+          fail_on_unmatched_files: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

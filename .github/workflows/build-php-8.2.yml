@@ -8,16 +8,16 @@ on:
         required: true
   push:
     tags:
-      - 'php-8.2-*'
+      - 'php-8.2.*'
 
 jobs:
   build_and_release:
     name: Build and Release PHP 8.2 (macOS)
     runs-on: macos-latest
     env:
-      PREFIX: /Applications/EServer/software/php/php-8.2
+      PREFIX: /Applications/EServer/childApp/php/php-8.2
       PHP_VERSION: 8.2.27
-      MACOSX_DEPLOYMENT_TARGET: 10.13
+      MACOSX_DEPLOYMENT_TARGET: 11.0
 
     steps:
       - name: Checkout repo
@@ -51,6 +51,8 @@ jobs:
           FILE="$PREFIX/bin/php"
           echo "=== PHP version ==="
           "$FILE" -v
+          echo "=== PHP info (php -i) ==="
+          "$FILE" -i
           echo "=== PHP modules ==="
           "$FILE" -m
 
@@ -65,11 +67,11 @@ jobs:
           otool -L "$FILE"
 
       - name: Set artifact name
-        run: echo "ARTIFACT_NAME=php-8.2-macos-${PHP_VERSION}.tar.gz" >> $GITHUB_ENV
+        run: echo "ARTIFACT_NAME=php-8.2.tar.xz" >> $GITHUB_ENV
 
       - name: Package artifact
         run: |
-          tar -czf "$ARTIFACT_NAME"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+          tar -cJf "$ARTIFACT_NAME"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
 
       - name: Upload release
         uses: softprops/action-gh-release@v2

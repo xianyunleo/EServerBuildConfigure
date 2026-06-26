@@ -2,9 +2,6 @@ name: macOS CPU Info
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - '.github/workflows/macos-cpu-info.yml'
 
 jobs:
   cpu-info:
