@@ -1,0 +1,69 @@
+name: Build and Release argon2 (macOS)
+
+on:
+  push:
+    tags:
+      - 'argon2-*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. argon2-20190702)"
+        required: true
+
+jobs:
+  build_and_release:
+    name: Build and Release argon2 (macOS)
+    runs-on: macos-latest
+    env:
+      PREFIX: /Applications/EServer/Library/argon2
+      ARGON2_VERSION: 20190702
+      MACOSX_DEPLOYMENT_TARGET: 11.0
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build argon2
+        run: |
+          chmod +x mac_arm64/base/argon2.sh
+          ./mac_arm64/base/argon2.sh
+
+      - name: Debug workspace
+        run: |
+          echo "===== PWD ====="
+          pwd
+          echo "===== ROOT LS ====="
+          ls -la
+          echo "===== FULL TREE ====="
+          find . -maxdepth 3 -type f -print
+
+      - name: Show file info
+        run: |
+          FILE="$PREFIX/lib/libargon2.1.dylib"
+          if [ -f "$FILE" ]; then
+            echo "=== file architectures ==="
+            lipo -info "$FILE" 2>/dev/null || file "$FILE"
+            echo "=== file minimum macOS version ==="
+            otool -l "$FILE" | grep -A 3 LC_BUILD_VERSION
+            echo "=== file dependencies ==="
+            otool -L "$FILE"
+          else
+            echo "ERROR: $FILE not found!"
+            ls -la "$PREFIX/lib/"
+            exit 1
+          fi
+
+      - name: Set artifact name
+        run: echo "ARTIFACT_NAME=argon2-macos-${ARGON2_VERSION}.tar.xz" >> $GITHUB_ENV
+
+      - name: Package artifact
+        run: |
+          tar -cJf "$ARTIFACT_NAME" -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+
+      - name: Upload release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          files: ${{ env.ARTIFACT_NAME }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
