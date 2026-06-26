@@ -38,8 +38,33 @@ make clean || true
 # 配置
 # -------------------------------
 
+# -------------------------------
+# 配置环境变量
+# -------------------------------
+
+# PHP 8.0 的 K&R 风格源码不兼容 C23，强制使用 C17
+export CFLAGS="${CFLAGS:+$CFLAGS }-std=gnu17"
+
+# Xcode 15.3+ (clang build >= 1500) 兼容性修复
+CLANG_BUILD=$(clang --version 2>/dev/null | grep -oE 'clang-[0-9]+' | head -1 | sed 's/clang-//')
+if [ -n "$CLANG_BUILD" ] && [ "$CLANG_BUILD" -ge 1500 ]; then
+  echo "Detected clang build $CLANG_BUILD >= 1500, applying Xcode 15.3 workarounds..."
+  export CFLAGS="${CFLAGS:+$CFLAGS }-Wno-incompatible-function-pointer-types"
+  export LDFLAGS="${LDFLAGS:+$LDFLAGS }-lresolv"
+fi
+
+# gcc 编译器兼容（macOS 上使用 gcc 时）
+if [ "$(uname)" = "Darwin" ] && [ "${CC:-}" = "gcc" ]; then
+  export CFLAGS="${CFLAGS:+$CFLAGS }-Wno-incompatible-pointer-types"
+fi
+
 # ICU 75+ 需要 C++17
 export ICU_CXXFLAGS="-std=c++17"
+
+# macOS: 确保 Mach-O header 有足够空间用于 rpath 重写
+if [ "$(uname)" = "Darwin" ]; then
+  export LDFLAGS="${LDFLAGS:+$LDFLAGS }-Wl,-headerpad_max_install_names"
+fi
 
 export LIBS="${LIBS:+$LIBS }-lresolv"
 
