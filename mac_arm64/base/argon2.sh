@@ -19,7 +19,7 @@ cd build
 
 if [ ! -f "$TARBALL" ]; then
   echo "Downloading argon2 ${ARGON2_VERSION}..."
-  curl -LO "$URL"
+  curl -L -o "$TARBALL" "$URL"
 fi
 
 # -------------------------------
