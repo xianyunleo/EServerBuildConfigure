@@ -6,7 +6,7 @@ set -euo pipefail
 # -------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/childApp/php/php-8.3}
-PHP_VERSION=${PHP_VERSION:-8.3.28}
+PHP_VERSION=${PHP_VERSION:-8.3.31}
 
 # -------------------------------
 # 下载源码
