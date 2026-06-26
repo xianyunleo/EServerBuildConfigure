@@ -2,13 +2,6 @@ name: Build and Release PHP 8.0 (macOS)
 
 on:
   workflow_dispatch:
-    inputs:
-      tag:
-        description: "Release tag (e.g. php-8.0.30)"
-        required: true
-  push:
-    tags:
-      - 'php-8.0.*'
 
 jobs:
   build_and_release:
@@ -22,6 +15,19 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          brew update
+          brew install autoconf automake libtool bison re2c
+
+      - name: Set Homebrew PATH
+        run: |
+          echo "bison version: $(bison --version | head -1)"
+          BISON_PATH="$(brew --prefix bison)/bin"
+          echo "bison path: $BISON_PATH"
+          echo "$BISON_PATH" >> $GITHUB_PATH
+          echo "new bison version: $($BISON_PATH/bison --version | head -1)"
 
       - name: Prepare EServer Library
         run: |
