@@ -37,6 +37,7 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
+PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 ./configure --prefix="$PREFIX" \
   --with-config-file-path="$PREFIX/etc" \
   --enable-bcmath \
@@ -58,6 +59,7 @@ make clean || true
   --with-iconv=/Applications/EServer/Library/libiconv \
   --with-mysqli \
   --with-openssl=shared,/Applications/EServer/Library/openssl@1.1 \
+  --with-openssl-argon2 \
   --with-pdo-mysql \
   --with-pgsql=/Applications/EServer/Library/libpq \
   --with-pdo-pgsql=/Applications/EServer/Library/libpq \
@@ -67,8 +69,7 @@ make clean || true
   --with-jpeg-dir=/Applications/EServer/Library/jpeg \
   --with-png-dir=/Applications/EServer/Library/libpng \
   --with-zlib-dir=/Applications/EServer/Library/zlib \
-  CFLAGS="-Wno-implicit-function-declaration" \
-  PKG_CONFIG_PATH=/Applications/EServer/Library/freetype/lib/pkgconfig
+  CFLAGS="-Wno-implicit-function-declaration"
 
 # -------------------------------
 # 编译安装
