@@ -66,6 +66,9 @@ ARGS=(
   # —— 关闭维护者模式（避免 -Werror 导致新版 Clang 编译失败）——
   -DMYSQL_MAINTAINER_MODE=OFF
 
+  # —— 兼容新版 CMake（5.7 的 cmake_minimum_required < 3.5，新版 CMake 已移除兼容）——
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+
   # —— 功能开关 ——
   -DENABLED_LOCAL_INFILE=ON
   -DENABLED_PROFILING=OFF
