@@ -54,11 +54,11 @@ jobs:
           fi
 
       - name: Set artifact name
-        run: echo "ARTIFACT_NAME=argon2-macos-${ARGON2_VERSION}.tar.xz" >> $GITHUB_ENV
+        run: echo "ARTIFACT_NAME=argon2-macos-${ARGON2_VERSION}.tar.gz" >> $GITHUB_ENV
 
       - name: Package artifact
         run: |
-          tar -cJf "$ARTIFACT_NAME" -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+          tar -czf "$ARTIFACT_NAME" -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
 
       - name: Upload release
         uses: softprops/action-gh-release@v2

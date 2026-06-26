@@ -21,8 +21,8 @@
 - GitHub Actions 的 tag 触发模式是 glob，版本号分隔符需与 tag 一致：tag 为 `php-8.5.7` 时写 `php-8.5.*`，不能写成 `php-8.5-*`（后者只匹配 `php-8.5-xxx`）
 
 ### 产物打包格式
-- 所有 workflow 产物统一使用 `.tar.xz`（`tar -cJf`），不再使用 `.tar.gz`。
-- `mac_arm64/php/` 和 `mac_arm64/server/` 目录下所有 .sh 对应的 build yml 均已确认为 tar.xz。
+- `mac_arm64/php/` 和 `mac_arm64/server/` 目录使用 `.tar.xz`（`tar -cJf`）。
+- `mac_arm64/base/` 及其他基础库目录使用 `.tar.gz`（`tar -czf`）。
 
 ### 编译后清理规则
 - `mac_arm64/php/` 和 `mac_arm64/server/` 目录下的构建脚本，编译完成后**不删除任何文件或目录**。
