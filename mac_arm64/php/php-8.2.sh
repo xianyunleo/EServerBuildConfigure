@@ -39,8 +39,8 @@ make clean || true
 # -------------------------------
 
 export LIBS="${LIBS:+$LIBS }-lresolv"
-export PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applications/EServer/Library/curl/lib/pkgconfig:/Applications/EServer/Library/libgd/lib/pkgconfig:/Applications/EServer/Library/oniguruma/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig:/Applications/EServer/Library/libxml2/lib/pkgconfig:/Applications/EServer/Library/libzip/lib/pkgconfig:/Applications/EServer/Library/icu/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
 
+PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 ./configure --prefix="$PREFIX" \
   --with-config-file-path="$PREFIX/etc" \
   --enable-bcmath \
@@ -63,6 +63,7 @@ export PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/
   --with-iconv=/Applications/EServer/Library/libiconv \
   --with-mysqli \
   --with-openssl=shared \
+  --with-openssl-argon2 \
   --with-pdo-mysql \
   --with-pgsql=/Applications/EServer/Library/libpq \
   --with-pdo-pgsql=/Applications/EServer/Library/libpq \

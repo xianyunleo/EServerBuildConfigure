@@ -37,6 +37,7 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
+PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 ./configure --prefix="$PREFIX" \
   --with-config-file-path="$PREFIX/etc" \
   --enable-bcmath \
@@ -57,6 +58,7 @@ make clean || true
   --with-iconv=/Applications/EServer/Library/libiconv \
   --with-mysqli \
   --with-openssl=shared \
+  --with-openssl-argon2 \
   --with-pdo-mysql \
   --with-pgsql=/Applications/EServer/Library/libpq \
   --with-pdo-pgsql=/Applications/EServer/Library/libpq \
@@ -64,8 +66,7 @@ make clean || true
   --with-sqlite3 \
   --with-libxml \
   --with-zip \
-  --with-zlib \
-  PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@3.5/lib/pkgconfig:/Applications/EServer/Library/curl/lib/pkgconfig:/Applications/EServer/Library/libgd/lib/pkgconfig:/Applications/EServer/Library/oniguruma/lib/pkgconfig:/Applications/EServer/Library/zlib/lib/pkgconfig:/Applications/EServer/Library/libxml2/lib/pkgconfig:/Applications/EServer/Library/libzip/lib/pkgconfig
+  --with-zlib
 
 # -------------------------------
 # 编译安装
