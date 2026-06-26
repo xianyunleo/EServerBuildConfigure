@@ -11,6 +11,13 @@
 - `PKG_CONFIG_PATH`：指向 EServer Library 内各依赖的 pkgconfig 目录，在默认路径前搜索
 - 不要用 `PKG_CONFIG_LIBDIR`（会完全替换默认搜索路径，导致 libcurl 等库的 `Requires.private` 解析失败）
 
+### 统一 pkgconfig 链接目录
+`create-libs.sh`（位于项目根目录）把 `Library/*/lib/pkgconfig`（排除 `lib` 目录本身）下的 `.pc` 文件以相对路径符号链接集中到 `Library/lib/pkgconfig`，方便 pkg-config 一次性搜索所有库。
+- 默认 `LIBRARY_DIR=$SCRIPT_DIR/Library`（脚本所在目录的 Library），自动检测 sudo
+- 项目内 Library 可写，无需 sudo；可用 `LIBRARY_DIR=/Applications/EServer/Library ./create-libs.sh` 切换到部署目录
+- 链接用相对路径 `../../<lib>/lib/pkgconfig/<file>`
+- 各库 `.pc` 文件无重名，可直接链接无冲突
+
 ### 构建脚本结构约定
 - `mac_arm64/` 下每个库一个 `.sh` 脚本
 - 无外部依赖的基础库放在 `mac_arm64/base/`
