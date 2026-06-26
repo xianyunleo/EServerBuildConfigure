@@ -37,10 +37,13 @@ make clean || true
 # -------------------------------
 # 编译 & 测试 & 安装
 # -------------------------------
+INSTALL_NAME="${PREFIX}/lib/libargon2.1.dylib"
+
 make \
   PREFIX="$PREFIX" \
   ARGON2_VERSION="${ARGON2_VERSION}" \
-  LIBRARY_REL=lib
+  LIBRARY_REL=lib \
+  LIB_CFLAGS="-dynamiclib -install_name ${INSTALL_NAME}"
 
 sudo make install \
   PREFIX="$PREFIX" \
