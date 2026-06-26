@@ -58,7 +58,7 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
   --with-gmp=/Applications/EServer/Library/gmp \
   --with-iconv=/Applications/EServer/Library/libiconv \
   --with-openssl=shared,/Applications/EServer/Library/openssl@1.1 \
-  --with-openssl-argon2 \
+  --with-password-argon2=/Applications/EServer/Library/argon2 \
   --with-mysqli \
   --with-pdo-mysql \
   --with-pgsql=/Applications/EServer/Library/libpq \
