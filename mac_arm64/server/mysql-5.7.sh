@@ -3,8 +3,10 @@ set -euo pipefail
 
 # -------------------------------------------------
 # MySQL 5.7 — 基于 Homebrew Formula/mysql.rb
-# 依赖: openssl (通过 pkg-config 发现)
 # 源码: mysql-boost-5.7.44.tar.gz (内含 boost)
+# 说明: 5.7 不兼容 OpenSSL 3.x，且 WITH_SSL=yes 会拉到
+#       Homebrew 动态库导致 MERGE_CONVENIENCE_LIBRARIES 报错，
+#       故关闭 SSL（如需加密连接改用 bundled yaSSL）。
 # -------------------------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/childApp/server/mysql-5.7}
@@ -61,7 +63,8 @@ ARGS=(
   -DINSTALL_INCLUDEDIR=include/mysql
   -DINSTALL_PLUGINDIR=lib/plugin
   -DWITH_BOOST=boost
-  -DWITH_SSL=yes
+  # 5.7 不兼容 OpenSSL 3.x，关闭 SSL（避免拉到 Homebrew 动态库导致合并库失败）
+  -DWITH_SSL=off
 
   # —— 关闭维护者模式（避免 -Werror 导致新版 Clang 编译失败）——
   -DMYSQL_MAINTAINER_MODE=OFF
