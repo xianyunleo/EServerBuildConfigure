@@ -39,8 +39,8 @@ make clean || true
 # -------------------------------
 
 export LIBS="${LIBS:+$LIBS }-lresolv"
-export PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
 
+PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 ./configure --prefix="$PREFIX" \
   --with-config-file-path="$PREFIX/etc" \
   --enable-bcmath \
