@@ -38,6 +38,9 @@ make clean || true
 # 配置
 # -------------------------------
 
+# ICU 75+ 需要 C++17
+export ICU_CXXFLAGS="-std=c++17"
+
 export LIBS="${LIBS:+$LIBS }-lresolv"
 
 PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
