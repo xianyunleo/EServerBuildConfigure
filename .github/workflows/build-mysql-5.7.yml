@@ -77,6 +77,13 @@ jobs:
         run: |
           tar -cJf "$ARTIFACT_NAME" -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
 
+      - name: Upload CMake logs (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cmake-logs-failed
+          path: cmake_logs/
+
       - name: Upload release
         uses: softprops/action-gh-release@v2
         with:
