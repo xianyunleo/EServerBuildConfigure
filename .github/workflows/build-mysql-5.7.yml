@@ -23,28 +23,20 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Install CMake 3.20 (local)
+      - name: Install CMake 3.20 (force)
         run: |
           set -e
 
-          echo "===== download cmake 3.20 ====="
           curl -L -o cmake.tar.gz \
             https://cmake.org/files/v3.20/cmake-3.20.0-macos-universal.tar.gz
 
-          echo "===== extract cmake ====="
           tar -xzf cmake.tar.gz
-
-          echo "===== detect folder ====="
-          ls -la
 
           CMAKE_DIR=$(find . -maxdepth 1 -type d -name "cmake-3.20*" | head -n 1)
 
-          echo "CMake dir: $CMAKE_DIR"
+          export PATH="$PWD/$CMAKE_DIR/bin:$PATH"
 
-          echo "===== add to PATH ====="
-          echo "$PWD/$CMAKE_DIR/bin" >> $GITHUB_PATH
-
-          echo "===== verify cmake version ====="
+          which cmake
           cmake --version
 
       - name: Prepare EServer Library
