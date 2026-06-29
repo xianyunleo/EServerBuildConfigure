@@ -2,6 +2,9 @@
 set -euo pipefail
 
 # -------------------------------------------------
+# MySQL 5.7 — 基于 Homebrew Formula/mysql.rb
+# 依赖: openssl@1.1 (5.7 兼容 OpenSSL 1.1.1)
+# 源码: mysql-boost-5.7.44.tar.gz (内含 boost)
 # -------------------------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/childApp/server/mysql-5.7}
@@ -58,7 +61,7 @@ ARGS=(
   -DINSTALL_INCLUDEDIR=include/mysql
   -DINSTALL_PLUGINDIR=lib/plugin
   -DWITH_BOOST=boost
-
+  -DWITH_SSL=/Applications/EServer/Library/openssl@1.1
 
   # —— 关闭维护者模式（避免 -Werror 导致新版 Clang 编译失败）——
   -DMYSQL_MAINTAINER_MODE=OFF
