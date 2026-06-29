@@ -12,14 +12,14 @@ OPENSSL_VERSION=${OPENSSL_VERSION:-1.1.1w}
 # 下载源码
 # -------------------------------
 TARBALL="openssl-${OPENSSL_VERSION}.tar.gz"
-URL="https://www.openssl.org/source/$TARBALL"
+URL="https://github.com/openssl/openssl/releases/download/OpenSSL_${OPENSSL_VERSION//./_}/$TARBALL"
 
 mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
   echo "Downloading OpenSSL $OPENSSL_VERSION..."
-  curl -LO "$URL"
+  curl -fL -o "$TARBALL" "$URL"
 fi
 
 # -------------------------------
