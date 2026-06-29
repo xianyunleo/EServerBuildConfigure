@@ -23,10 +23,28 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup compatible CMake
+      - name: Install CMake 3.20 (local)
         run: |
-          brew install cmake@3.20
-          echo "/usr/local/opt/cmake@3.20/bin" >> $GITHUB_PATH
+          set -e
+
+          echo "===== download cmake 3.20 ====="
+          curl -L -o cmake.tar.gz \
+            https://cmake.org/files/v3.20/cmake-3.20.0-macos-universal.tar.gz
+
+          echo "===== extract cmake ====="
+          tar -xzf cmake.tar.gz
+
+          echo "===== detect folder ====="
+          ls -la
+
+          CMAKE_DIR=$(find . -maxdepth 1 -type d -name "cmake-3.20*" | head -n 1)
+
+          echo "CMake dir: $CMAKE_DIR"
+
+          echo "===== add to PATH ====="
+          echo "$PWD/$CMAKE_DIR/bin" >> $GITHUB_PATH
+
+          echo "===== verify cmake version ====="
           cmake --version
 
       - name: Prepare EServer Library
