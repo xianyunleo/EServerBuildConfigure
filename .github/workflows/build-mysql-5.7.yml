@@ -23,6 +23,12 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Setup compatible CMake
+        run: |
+          brew install cmake@3.20
+          echo "/usr/local/opt/cmake@3.20/bin" >> $GITHUB_PATH
+          cmake --version
+
       - name: Prepare EServer Library
         run: |
           sudo mkdir -p /Applications/EServer/Library
