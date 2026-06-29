@@ -62,9 +62,6 @@ jobs:
           echo ""
           echo "=== curl supported protocols ==="
           "$PREFIX/bin/curl-config" --protocols
-          echo ""
-          echo "=== curl --version (verbose) ==="
-          "$PREFIX/bin/curl" --version
 
       - name: Set artifact name
         run: echo "ARTIFACT_NAME=curl-macos-${CURL_VERSION}.tar.gz" >> $GITHUB_ENV

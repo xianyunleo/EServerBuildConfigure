@@ -48,6 +48,9 @@ jobs:
           otool -l "$FILE" | grep -A 3 LC_BUILD_VERSION
           echo "=== file dependencies ==="
           otool -L "$FILE"
+          echo ""
+          echo "=== openssl version -v ==="
+          "$PREFIX/bin/openssl" version -v
 
       - name: Set artifact name
         run: echo "ARTIFACT_NAME=openssl-1.1-macos-${OPENSSL_VERSION}.tar.gz" >> $GITHUB_ENV
