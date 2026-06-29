@@ -12,14 +12,14 @@ OPENSSL_VERSION=${OPENSSL_VERSION:-1.1.1w}
 # 下载源码
 # -------------------------------
 TARBALL="openssl-${OPENSSL_VERSION}.tar.gz"
-URL="https://www.openssl.org/source/$TARBALL"
+URL="https://github.com/openssl/openssl/releases/download/OpenSSL_${OPENSSL_VERSION//./_}/$TARBALL"
 
 mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
   echo "Downloading OpenSSL $OPENSSL_VERSION..."
-  curl -LO "$URL"
+  curl -fL -o "$TARBALL" "$URL"
 fi
 
 # -------------------------------
@@ -52,6 +52,11 @@ CXXFLAGS="$CFLAGS"
 # -------------------------------
 make -j$(sysctl -n hw.ncpu)
 make install
+
+# 删除 share 目录（不需要的文件）
+if [ -d "$PREFIX/share" ]; then
+  sudo rm -rf "$PREFIX/share"
+fi
 
 # -------------------------------
 # 完成提示
