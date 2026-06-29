@@ -85,7 +85,18 @@ ARGS=(
   -DFORCE_INSOURCE_BUILD=ON
 )
 
-cmake "${ARGS[@]}"
+set +e
+cmake "${ARGS[@]}" 2>&1 | tee cmake-output.log
+CMAKE_EXIT=${PIPESTATUS[0]}
+set -e
+
+if [ "$CMAKE_EXIT" -ne 0 ]; then
+  echo ""
+  echo "========== CMake Error Summary =========="
+  grep -i -n "cmake error\|send_error\|fatal_error\|error:" cmake-output.log || true
+  echo "========================================="
+  exit "$CMAKE_EXIT"
+fi
 
 # -------------------------------------------------
 # 编译安装

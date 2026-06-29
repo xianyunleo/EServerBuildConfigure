@@ -26,9 +26,18 @@ jobs:
       - name: Prepare EServer Library
         run: |
           sudo mkdir -p /Applications/EServer/Library
-          sudo cp -R Library/* /Applications/EServer/Library/
+          sudo cp -R Library/* /Applications/EServer/Library/ 2>/dev/null || true
+
+          # 从 release 下载 openssl@1.1（5.7 依赖 OpenSSL 1.1.x）
+          echo "===== Downloading openssl@1.1 from release ====="
+          curl -fL -o /tmp/openssl-1.1.tar.gz \
+            "https://github.com/${{ github.repository }}/releases/download/openssl-1.1.1w/openssl-1.1-macos-1.1.1w.tar.gz"
+          sudo tar -xzf /tmp/openssl-1.1.tar.gz -C /Applications/EServer/Library/
+
           echo "===== /Applications/EServer/Library ====="
           ls -a /Applications/EServer/Library
+          echo "===== openssl@1.1 check ====="
+          ls -la /Applications/EServer/Library/openssl@1.1/lib/
 
       - name: Build MySQL 5.7
         run: |
