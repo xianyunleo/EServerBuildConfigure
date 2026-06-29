@@ -18,33 +18,38 @@ jobs:
       PREFIX: /Applications/EServer/childApp/server/mysql-5.7
       MYSQL_VERSION: 5.7.44
       MACOSX_DEPLOYMENT_TARGET: 11.0
-        - name: Install CMake 3.20 (fixed path)
-          run: |
-            set -e
-            
-            curl -L -o cmake.tar.gz \
-              https://cmake.org/files/v3.20/cmake-3.20.0-macos-universal.tar.gz
-            
-            tar -xzf cmake.tar.gz
-            
-            CMAKE_DIR=$(find . -maxdepth 1 -type d -name "cmake-3.20*" | head -n 1)
-            
-            echo "CMAKE_DIR=$CMAKE_DIR"
-            
-            # ✔ 正确 bin 路径（关键修复）
-            CMAKE_BIN="$PWD/$CMAKE_DIR/CMake.app/Contents/bin"
-            
-            echo "CMAKE_BIN=$CMAKE_BIN"
-            
-            # ✔ 加入 PATH（跨 step）
-            echo "$CMAKE_BIN" >> $GITHUB_PATH
-            
-            # ✔ 当前 step 立即生效
-            export PATH="$CMAKE_BIN:$PATH"
-            
-            # ✔ 验证
-            which cmake
-            cmake --versione --version
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install CMake 3.20 (fixed path)
+        run: |
+          set -e
+
+          curl -L -o cmake.tar.gz \
+            https://cmake.org/files/v3.20/cmake-3.20.0-macos-universal.tar.gz
+
+          tar -xzf cmake.tar.gz
+
+          CMAKE_DIR=$(find . -maxdepth 1 -type d -name "cmake-3.20*" | head -n 1)
+
+          echo "CMAKE_DIR=$CMAKE_DIR"
+
+          # ✔ 正确 bin 路径（关键修复）
+          CMAKE_BIN="$PWD/$CMAKE_DIR/CMake.app/Contents/bin"
+
+          echo "CMAKE_BIN=$CMAKE_BIN"
+
+          # ✔ 加入 PATH（跨 step）
+          echo "$CMAKE_BIN" >> $GITHUB_PATH
+
+          # ✔ 当前 step 立即生效
+          export PATH="$CMAKE_BIN:$PATH"
+
+          # ✔ 验证
+          which cmake
+          cmake --version
 
       - name: Prepare EServer Library
         run: |
