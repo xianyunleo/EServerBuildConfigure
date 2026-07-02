@@ -68,6 +68,7 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 --with-sqlite3 \
 --with-jpeg-dir=/Applications/EServer/Library/jpeg \
 --with-png-dir=/Applications/EServer/Library/libpng \
+--with-webp-dir=/Applications/EServer/Library/libwebp \
 --with-freetype-dir=/Applications/EServer/Library/freetype \
 --with-libxml-dir=/Applications/EServer/Library/libxml2 \
 --with-zlib-dir=/Applications/EServer/Library/zlib
