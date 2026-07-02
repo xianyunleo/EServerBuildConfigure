@@ -2,26 +2,32 @@ name: Build and Release PHP 7.3 (macOS)
 
 on:
   workflow_dispatch:
-    inputs:
-      tag:
-        description: "Release tag (e.g. php-7.3.33)"
-        required: true
-  push:
-    tags:
-      - 'php-d.d.*'
 
 jobs:
   build_and_release:
     name: Build and Release PHP 7.3 (macOS)
     runs-on: macos-latest
     env:
-      PREFIX: /Applications/EServer/software/php/php-7.3
+      PREFIX: /Applications/EServer/childApp/php/php-7.3
       PHP_VERSION: 7.3.33
-      MACOSX_DEPLOYMENT_TARGET: 10.13
+      MACOSX_DEPLOYMENT_TARGET: 11.0
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          brew update
+          brew install autoconf automake libtool bison re2c
+
+      - name: Set Homebrew PATH
+        run: |
+          echo "bison version: $(bison --version | head -1)"
+          BISON_PATH="$(brew --prefix bison)/bin"
+          echo "bison path: $BISON_PATH"
+          echo "$BISON_PATH" >> $GITHUB_PATH
+          echo "new bison version: $($BISON_PATH/bison --version | head -1)"
 
       - name: Prepare EServer Library
         run: |
@@ -51,6 +57,8 @@ jobs:
           FILE="$PREFIX/bin/php"
           echo "=== PHP version ==="
           "$FILE" -v
+          echo "=== PHP info (php -i) ==="
+          "$FILE" -i
           echo "=== PHP modules ==="
           "$FILE" -m
 
@@ -65,7 +73,7 @@ jobs:
           otool -L "$FILE"
 
       - name: Set artifact name
-        run: echo "ARTIFACT_NAME=php-7.3-macos-${PHP_VERSION}.tar.xz" >> $GITHUB_ENV
+        run: echo "ARTIFACT_NAME=php-7.3.tar.xz" >> $GITHUB_ENV
 
       - name: Package artifact
         run: |
