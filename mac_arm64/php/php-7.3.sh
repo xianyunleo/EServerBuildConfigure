@@ -37,7 +37,7 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
-PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
+if ! PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 ./configure --prefix="$PREFIX" \
 --with-config-file-path="$PREFIX/etc" \
 --enable-bcmath \
@@ -71,7 +71,27 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 --with-webp-dir=/Applications/EServer/Library/libwebp \
 --with-freetype-dir=/Applications/EServer/Library/freetype \
 --with-libxml-dir=/Applications/EServer/Library/libxml2 \
---with-zlib-dir=/Applications/EServer/Library/zlib
+--with-zlib-dir=/Applications/EServer/Library/zlib; then
+  # configure 失败诊断：GD build test 失败时 conftest 仍保留在当前目录
+  # 用 DYLD 调试变量重新运行，定位崩溃前最后加载的 dylib
+  echo "=== configure 失败，运行 GD build test 诊断 ==="
+  if [ -x ./conftest ]; then
+    echo "--- DYLD_PRINT_LIBRARIES=1 ./conftest ---"
+    DYLD_PRINT_LIBRARIES=1 DYLD_PRINT_RPATHS=1 ./conftest 2>&1 | head -200 || true
+    echo "--- otool -L ./conftest ---"
+    otool -L ./conftest || true
+  fi
+  # 检查 GD 依赖 dylib 链是否误链 Homebrew / /usr/local
+  echo "=== GD 依赖 dylib 链检查 ==="
+  for lib in freetype libpng libjpeg-turbo libwebp; do
+    for dylib in /Applications/EServer/Library/$lib/lib/lib*.dylib; do
+      [ -f "$dylib" ] || continue
+      echo "--- $dylib ---"
+      otool -L "$dylib" 2>/dev/null | grep -E "(/opt/homebrew|/usr/local|/Applications/EServer)" || echo "(无外部依赖)"
+    done
+  done
+  exit 1
+fi
 
 # -------------------------------
 # 编译安装
