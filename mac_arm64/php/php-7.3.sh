@@ -37,6 +37,11 @@ make clean || true
 # -------------------------------
 # 配置
 # -------------------------------
+# GD build test 失败时 conftest 运行即 SIGILL，需 dyld 打印崩溃前最后加载的 dylib。
+# 在 configure 前 export，使 configure 内部运行的所有 conftest 都把 dylib 加载信息输出到 stderr；
+# autoconf 会把 conftest 的 stderr 重定向到 config.log，下次 config.log 即含诊断信息。
+export DYLD_PRINT_LIBRARIES=1
+
 if ! PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 ./configure --prefix="$PREFIX" \
 --with-config-file-path="$PREFIX/etc" \
@@ -72,14 +77,37 @@ if ! PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 --with-freetype-dir=/Applications/EServer/Library/freetype \
 --with-libxml-dir=/Applications/EServer/Library/libxml2 \
 --with-zlib-dir=/Applications/EServer/Library/zlib; then
-  # configure 失败诊断：GD build test 失败时 conftest 仍保留在当前目录
-  # 用 DYLD 调试变量重新运行，定位崩溃前最后加载的 dylib
-  echo "=== configure 失败，运行 GD build test 诊断 ==="
-  if [ -x ./conftest ]; then
-    echo "--- DYLD_PRINT_LIBRARIES=1 ./conftest ---"
-    DYLD_PRINT_LIBRARIES=1 DYLD_PRINT_RPATHS=1 ./conftest 2>&1 | head -200 || true
-    echo "--- otool -L ./conftest ---"
-    otool -L ./conftest || true
+  # configure 失败诊断：GD build test 失败后 conftest 通常已被 configure 清理
+  # 用 config.log 里的源码 + 链接命令重建 conftest，再用 DYLD 调试变量运行
+  echo "=== configure 失败，运行 GD 依赖诊断 ==="
+  cat > _gd_diag_conftest.c <<'EOF'
+char foobar () {}
+char foobar();
+int main() {
+  foobar();
+  return 0;
+}
+EOF
+  echo "--- 重建 conftest 并用 DYLD 调试运行 ---"
+  cc -o _gd_diag_conftest -g -O2 -fvisibility=hidden -no-cpp-precomp \
+    -Wl,-rpath,/Applications/EServer/Library/libxml2/lib -L/Applications/EServer/Library/libxml2/lib \
+    -Wl,-rpath,/Applications/EServer/Library/zlib/lib -L/Applications/EServer/Library/zlib/lib \
+    -Wl,-rpath,/Applications/EServer/Library/bzip2/lib -L/Applications/EServer/Library/bzip2/lib \
+    -Wl,-rpath,/Applications/EServer/Library/openssl@3.5/lib -L/Applications/EServer/Library/openssl@3.5/lib \
+    _gd_diag_conftest.c \
+    -Wl,-rpath,/Applications/EServer/Library/freetype/lib -L/Applications/EServer/Library/freetype/lib \
+    -Wl,-rpath,/Applications/EServer/Library/libpng/lib -L/Applications/EServer/Library/libpng/lib -lpng \
+    -Wl,-rpath,/Applications/EServer/Library/zlib/lib -L/Applications/EServer/Library/zlib/lib -lz \
+    -Wl,-rpath,/Applications/EServer/Library/libjpeg-turbo/lib -L/Applications/EServer/Library/libjpeg-turbo/lib -ljpeg \
+    -Wl,-rpath,/Applications/EServer/Library/libwebp/lib -L/Applications/EServer/Library/libwebp/lib -lwebp \
+    -lfreetype \
+    -lcrypto -lssl -lcrypto -lbz2 -lz -lm \
+    -lxml2 -lz -liconv -lxml2 -lz -liconv 2>&1 || true
+  if [ -x ./_gd_diag_conftest ]; then
+    echo "--- DYLD_PRINT_LIBRARIES=1 ./_gd_diag_conftest (前 200 行) ---"
+    DYLD_PRINT_LIBRARIES=1 DYLD_PRINT_RPATHS=1 ./_gd_diag_conftest 2>&1 | head -200 || true
+    echo "--- otool -L ./_gd_diag_conftest ---"
+    otool -L ./_gd_diag_conftest || true
   fi
   # 检查 GD 依赖 dylib 链是否误链 Homebrew / /usr/local
   echo "=== GD 依赖 dylib 链检查 ==="
