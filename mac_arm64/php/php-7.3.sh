@@ -39,53 +39,47 @@ make clean || true
 # -------------------------------
 PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 ./configure --prefix="$PREFIX" \
-  --with-config-file-path="$PREFIX/etc" \
-  --enable-bcmath \
-  --enable-calendar \
-  --enable-exif \
-  --enable-ftp \
-  --enable-fpm \
-  --enable-mbstring \
-  --enable-mbregex \
-  --enable-soap \
-  --enable-sockets \
-  --enable-opcache \
-  --enable-zip \
-  --with-bz2=/Applications/EServer/Library/bzip2 \
-  --with-curl=shared,/Applications/EServer/Library/curl \
-  --with-freetype-dir=/Applications/EServer/Library/freetype \
-  --with-gd=shared \
-  --with-gmp=/Applications/EServer/Library/gmp \
-  --with-iconv=/Applications/EServer/Library/libiconv \
-  --with-openssl=shared,/Applications/EServer/Library/openssl@1.1 \
-  --with-password-argon2=/Applications/EServer/Library/argon2 \
-  --with-mysqli \
-  --with-pdo-mysql \
-  --with-pgsql=/Applications/EServer/Library/libpq \
-  --with-pdo-pgsql=/Applications/EServer/Library/libpq \
-  --with-pdo-sqlite \
-  --with-sqlite3 \
-  --with-libxml-dir=/Applications/EServer/Library/libxml2 \
-  --with-jpeg-dir=/Applications/EServer/Library/jpeg \
-  --with-png-dir=/Applications/EServer/Library/libpng \
-  --with-zlib-dir=/Applications/EServer/Library/zlib \
-  --without-libzip \
-  CFLAGS="-Wno-implicit-function-declaration"
+--with-config-file-path="$PREFIX/etc" \
+--enable-bcmath \
+--enable-calendar \
+--enable-exif \
+--enable-ftp \
+--enable-fpm \
+--enable-mbstring \
+--enable-mbregex \
+--enable-opcache \
+--enable-soap \
+--enable-sockets \
+--enable-intl \
+--enable-pcntl \
+--enable-zip \
+--with-bz2=/Applications/EServer/Library/bzip2 \
+--with-curl=shared,/Applications/EServer/Library/curl \
+--with-gd=shared \
+--with-gmp=/Applications/EServer/Library/gmp \
+--with-iconv=/Applications/EServer/Library/libiconv \
+--with-openssl=shared,/Applications/EServer/Library/openssl@3.5 \
+--with-password-argon2=/Applications/EServer/Library/argon2 \
+--with-mysqli \
+--with-pdo-mysql \
+--with-pgsql=/Applications/EServer/Library/libpq \
+--with-pdo-pgsql=/Applications/EServer/Library/libpq \
+--with-pdo-sqlite \
+--with-sqlite3 \
+--with-jpeg-dir=/Applications/EServer/Library/jpeg \
+--with-png-dir=/Applications/EServer/Library/libpng \
+--with-freetype-dir=/Applications/EServer/Library/freetype \
+--with-libxml-dir=/Applications/EServer/Library/libxml2 \
+--with-zlib-dir=/Applications/EServer/Library/zlib
 
 # -------------------------------
 # 编译安装
 # -------------------------------
 make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
-make install
+sudo make install
 
-# -------------------------------
-# 删除 share 目录（若存在）
-# -------------------------------
-if [ -d "$PREFIX/share" ]; then
-  echo "Removing share directory..."
-  rm -rf "$PREFIX/share"
-fi
-
+sudo cp ./php.ini-development /Applications/EServer/childApp/php/php-7.3/etc/php.ini-development
+sudo cp ./php.ini-production /Applications/EServer/childApp/php/php-7.3/etc/php.ini-production
 
 # -------------------------------
 # 完成提示
