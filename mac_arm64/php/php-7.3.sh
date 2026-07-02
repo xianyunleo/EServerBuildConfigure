@@ -14,6 +14,12 @@ PHP_VERSION=${PHP_VERSION:-7.3.33}
 TARBALL="php-${PHP_VERSION}.tar.gz"
 URL="https://www.php.net/distributions/$TARBALL"
 
+# -------------------------------
+# 下载源码
+# -------------------------------
+TARBALL="php-src-backports-7.3.33.tar.gz"
+URL="https://raw.githubusercontent.com/xianyunleo/EServerBuildConfigure/master/php-src-backports/$TARBALL"
+
 mkdir -p build
 cd build
 
@@ -26,23 +32,48 @@ fi
 # 解压
 # -------------------------------
 rm -rf "php-${PHP_VERSION}"
+rm -rf "php-src-backports-7.3.33"
 tar -xzf "$TARBALL"
-cd "php-${PHP_VERSION}"
+SRC_DIR=$(tar -tzf "$TARBALL" | head -1 | cut -d/ -f1)
+echo "Source directory: $SRC_DIR"
+cd "$SRC_DIR"
+ls -la
+
+# 低版本 PHP 的 K&R 风格源码不兼容 C23，强制使用 C17 + 抑制隐式函数声明错误
+export CFLAGS="${CFLAGS:+$CFLAGS }-std=gnu17 -Wno-implicit-function-declaration"
+
+# Xcode 15.3+ (clang build >= 1500) 兼容性修复
+CLANG_BUILD=$(clang --version 2>/dev/null | grep -oE 'clang-[0-9]+' | head -1 | sed 's/clang-//')
+if [ -n "$CLANG_BUILD" ] && [ "$CLANG_BUILD" -ge 1500 ]; then
+  echo "Detected clang build $CLANG_BUILD >= 1500, applying Xcode 15.3 workarounds..."
+  export CFLAGS="${CFLAGS:+$CFLAGS }-Wno-incompatible-function-pointer-types"
+  export LDFLAGS="${LDFLAGS:+$LDFLAGS }-lresolv"
+  # readdir_r 在 macOS 新版 SDK 中已废弃，2 参数形式已移除，需替换为 3 参数形式
+  sed -i '' 's/readdir_r(dirp, entry)/readdir_r(dirp, entry, result)/g' main/reentrancy.c
+fi
+
+# ICU 75+ 需要 C++17
+export ICU_CXXFLAGS="-std=c++17"
+export LIBS="${LIBS:+$LIBS }-lresolv"
 
 # -------------------------------
-# 清理旧文件
+# 清理旧文件 & 生成 configure
 # -------------------------------
-make clean || true
+make clean 2>/dev/null || true
+if [ ! -f configure ]; then
+  echo "configure not found, running ./buildconf..."
+  ./buildconf --force
+fi
+
+# -------------------------------
+# 补丁
+# -------------------------------
+
 
 # -------------------------------
 # 配置
 # -------------------------------
-# GD build test 失败时 conftest 运行即 SIGILL，需 dyld 打印崩溃前最后加载的 dylib。
-# 在 configure 前 export，使 configure 内部运行的所有 conftest 都把 dylib 加载信息输出到 stderr；
-# autoconf 会把 conftest 的 stderr 重定向到 config.log，下次 config.log 即含诊断信息。
-export DYLD_PRINT_LIBRARIES=1
-
-if ! PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
+PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 ./configure --prefix="$PREFIX" \
 --with-config-file-path="$PREFIX/etc" \
 --enable-bcmath \
@@ -76,50 +107,7 @@ if ! PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 --with-webp-dir=/Applications/EServer/Library/libwebp \
 --with-freetype-dir=/Applications/EServer/Library/freetype \
 --with-libxml-dir=/Applications/EServer/Library/libxml2 \
---with-zlib-dir=/Applications/EServer/Library/zlib; then
-  # configure 失败诊断：GD build test 失败后 conftest 通常已被 configure 清理
-  # 用 config.log 里的源码 + 链接命令重建 conftest，再用 DYLD 调试变量运行
-  echo "=== configure 失败，运行 GD 依赖诊断 ==="
-  cat > _gd_diag_conftest.c <<'EOF'
-char foobar () {}
-char foobar();
-int main() {
-  foobar();
-  return 0;
-}
-EOF
-  echo "--- 重建 conftest 并用 DYLD 调试运行 ---"
-  cc -o _gd_diag_conftest -g -O2 -fvisibility=hidden -no-cpp-precomp \
-    -Wl,-rpath,/Applications/EServer/Library/libxml2/lib -L/Applications/EServer/Library/libxml2/lib \
-    -Wl,-rpath,/Applications/EServer/Library/zlib/lib -L/Applications/EServer/Library/zlib/lib \
-    -Wl,-rpath,/Applications/EServer/Library/bzip2/lib -L/Applications/EServer/Library/bzip2/lib \
-    -Wl,-rpath,/Applications/EServer/Library/openssl@3.5/lib -L/Applications/EServer/Library/openssl@3.5/lib \
-    _gd_diag_conftest.c \
-    -Wl,-rpath,/Applications/EServer/Library/freetype/lib -L/Applications/EServer/Library/freetype/lib \
-    -Wl,-rpath,/Applications/EServer/Library/libpng/lib -L/Applications/EServer/Library/libpng/lib -lpng \
-    -Wl,-rpath,/Applications/EServer/Library/zlib/lib -L/Applications/EServer/Library/zlib/lib -lz \
-    -Wl,-rpath,/Applications/EServer/Library/libjpeg-turbo/lib -L/Applications/EServer/Library/libjpeg-turbo/lib -ljpeg \
-    -Wl,-rpath,/Applications/EServer/Library/libwebp/lib -L/Applications/EServer/Library/libwebp/lib -lwebp \
-    -lfreetype \
-    -lcrypto -lssl -lcrypto -lbz2 -lz -lm \
-    -lxml2 -lz -liconv -lxml2 -lz -liconv 2>&1 || true
-  if [ -x ./_gd_diag_conftest ]; then
-    echo "--- DYLD_PRINT_LIBRARIES=1 ./_gd_diag_conftest (前 200 行) ---"
-    DYLD_PRINT_LIBRARIES=1 DYLD_PRINT_RPATHS=1 ./_gd_diag_conftest 2>&1 | head -200 || true
-    echo "--- otool -L ./_gd_diag_conftest ---"
-    otool -L ./_gd_diag_conftest || true
-  fi
-  # 检查 GD 依赖 dylib 链是否误链 Homebrew / /usr/local
-  echo "=== GD 依赖 dylib 链检查 ==="
-  for lib in freetype libpng libjpeg-turbo libwebp; do
-    for dylib in /Applications/EServer/Library/$lib/lib/lib*.dylib; do
-      [ -f "$dylib" ] || continue
-      echo "--- $dylib ---"
-      otool -L "$dylib" 2>/dev/null | grep -E "(/opt/homebrew|/usr/local|/Applications/EServer)" || echo "(无外部依赖)"
-    done
-  done
-  exit 1
-fi
+--with-zlib-dir=/Applications/EServer/Library/zlib
 
 # -------------------------------
 # 编译安装

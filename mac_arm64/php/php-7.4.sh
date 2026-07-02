@@ -37,7 +37,7 @@ ls -la
 # 配置环境变量
 # -------------------------------
 
-# PHP 7.4 的 K&R 风格源码不兼容 C23，强制使用 C17
+# 低版本 PHP 的 K&R 风格源码不兼容 C23，强制使用 C17
 export CFLAGS="${CFLAGS:+$CFLAGS }-std=gnu17"
 
 # Xcode 15.3+ (clang build >= 1500) 兼容性修复
@@ -73,7 +73,7 @@ if [ ! -f configure ]; then
 fi
 
 # -------------------------------
-# 补丁: cURL 需要 long 类型字面量
+# 补丁
 # -------------------------------
 sed -i.bak -E 's/CURLOPT_VERBOSE,\s+0/CURLOPT_VERBOSE, 0L/' ext/curl/interface.c
 
@@ -90,6 +90,7 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
   --enable-ftp \
   --enable-fpm \
   --enable-gd=shared \
+  --with-external-gd \
   --enable-mbstring \
   --enable-mbregex \
   --enable-opcache \
@@ -109,10 +110,6 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
   --with-pdo-pgsql=/Applications/EServer/Library/libpq \
   --with-pdo-sqlite \
   --with-sqlite3 \
-  --with-jpeg-dir=/Applications/EServer/Library/libjpeg-turbo \
-  --with-png-dir=/Applications/EServer/Library/libpng \
-  --with-webp-dir=/Applications/EServer/Library/libwebp \
-  --with-freetype-dir=/Applications/EServer/Library/freetype \
   --with-libxml \
   --with-zip \
   --with-zlib
