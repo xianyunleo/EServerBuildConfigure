@@ -66,7 +66,7 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 --with-pdo-pgsql=/Applications/EServer/Library/libpq \
 --with-pdo-sqlite \
 --with-sqlite3 \
---with-jpeg-dir=/Applications/EServer/Library/jpeg \
+--with-jpeg-dir=/Applications/EServer/Library/libjpeg-turbo \
 --with-png-dir=/Applications/EServer/Library/libpng \
 --with-webp-dir=/Applications/EServer/Library/libwebp \
 --with-freetype-dir=/Applications/EServer/Library/freetype \
