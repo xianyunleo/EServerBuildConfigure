@@ -69,7 +69,7 @@ fi
 # 屏蔽XPM，https://bugs.php.net/bug.php?id=66204
 # -------------------------------
 
-sed -i '' '/gdImageCreateFromBmp/d' ext/gd/config.m4
+sed -i '' '/gdImageCreateFromXpm/d' ext/gd/config.m4
 
 
 # -------------------------------
