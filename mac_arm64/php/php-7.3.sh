@@ -119,7 +119,7 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 --with-zlib-dir=/Applications/EServer/Library/zlib
 
 
-grep -n -A 2 'HAVE_GD_XPM' main/php_config.h.in
+grep -n -A 2 'HAVE_GD_XPM' main/php_config.h
 
 
 # -------------------------------
