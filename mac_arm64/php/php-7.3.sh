@@ -118,7 +118,7 @@ sed -i '' '/HAVE_GD_XPM/d' main/php_config.h
 # -------------------------------
 # 编译安装
 # -------------------------------
-make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
+make
 sudo make install
 
 sudo cp ./php.ini-development /Applications/EServer/childApp/php/php-7.3/etc/php.ini-development
