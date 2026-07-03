@@ -113,8 +113,8 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 # 屏蔽XPM，https://bugs.php.net/bug.php?id=66204
 # -------------------------------
 echo "disable xpm"
+
 sed -i '' '/HAVE_GD_XPM/d' main/php_config.h
-grep -n -A 2 'HAVE_GD_XPM' main/php_config.h
 
 # -------------------------------
 # 编译安装
