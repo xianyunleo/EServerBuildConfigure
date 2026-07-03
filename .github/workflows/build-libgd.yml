@@ -1,14 +1,14 @@
 name: Build and Release libgd (macOS)
 
 on:
-  push:
-    tags:
-      - 'libgd-*'
   workflow_dispatch:
     inputs:
       tag:
         description: "Release tag (e.g. libgd-2.3.3)"
         required: true
+  push:
+    tags:
+      - 'libgd-*'
 
 jobs:
   build_and_release:

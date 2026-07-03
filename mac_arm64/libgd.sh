@@ -65,8 +65,8 @@ LDFLAGS="-L$FREETYPE_PREFIX/lib -L$JPEG_PREFIX/lib -L$LIBPNG_PREFIX/lib -L$LIBWE
   --without-fontconfig \
   --without-avif \
   --without-tiff \
-  --with-x=no \
-  --with-xpm=no
+  --without-x \
+  --without-xpm
 
 # -------------------------------------------------
 # 编译安装
