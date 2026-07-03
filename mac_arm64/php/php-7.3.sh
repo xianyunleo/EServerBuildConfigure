@@ -70,7 +70,7 @@ fi
 # -------------------------------
 
 sed -i '' '/gdImageCreateFromXpm/d' ext/gd/config.m4
-
+grep -n -A 7 'gdImageCreateFromPng' ext/gd/config.m4
 
 # -------------------------------
 # 补丁
