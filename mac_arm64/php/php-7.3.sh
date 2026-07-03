@@ -72,7 +72,7 @@ fi
 sed -i '' '/gdImageCreateFromXpm/d' ext/gd/config.m4
 echo "print PHP_GD_CHECK_VERSION"
 grep -n -A 7 'gdImageCreateFromPng' ext/gd/config.m4
-grep -n -A 2 'HAVE_GD_XPM' main/php_config.h.in
+
 
 # -------------------------------
 # 补丁
@@ -117,6 +117,10 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 --with-freetype-dir=/Applications/EServer/Library/freetype \
 --with-libxml-dir=/Applications/EServer/Library/libxml2 \
 --with-zlib-dir=/Applications/EServer/Library/zlib
+
+
+grep -n -A 2 'HAVE_GD_XPM' main/php_config.h.in
+
 
 # -------------------------------
 # 编译安装
