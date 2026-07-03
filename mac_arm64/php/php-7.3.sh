@@ -70,6 +70,7 @@ fi
 # -------------------------------
 
 sed -i '' '/gdImageCreateFromXpm/d' ext/gd/config.m4
+echo "print PHP_GD_CHECK_VERSION"
 grep -n -A 7 'gdImageCreateFromPng' ext/gd/config.m4
 
 # -------------------------------
