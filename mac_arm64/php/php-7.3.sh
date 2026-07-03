@@ -91,7 +91,7 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 --enable-zip \
 --with-bz2=/Applications/EServer/Library/bzip2 \
 --with-curl=/Applications/EServer/Library/curl \
---with-gd=shared \
+--with-gd= \
 --with-gmp=/Applications/EServer/Library/gmp \
 --with-iconv=/Applications/EServer/Library/libiconv \
 --with-openssl=/Applications/EServer/Library/openssl@3.5 \
