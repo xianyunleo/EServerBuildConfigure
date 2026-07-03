@@ -112,7 +112,7 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 # -------------------------------
 # 屏蔽XPM，https://bugs.php.net/bug.php?id=66204
 # -------------------------------
-echo "disable xpm"
+echo "Custom: disable xpm"
 
 sed -i '' '/HAVE_GD_XPM/d' main/php_config.h
 
