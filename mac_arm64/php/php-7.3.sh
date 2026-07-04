@@ -73,6 +73,7 @@ fi
 # -------------------------------
 # 配置
 # -------------------------------
+LIBXPM_PREFIX=$(brew --prefix libxpm)
 PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 ./configure --prefix="$PREFIX" \
 --with-config-file-path="$PREFIX/etc" \
@@ -106,6 +107,7 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 --with-png-dir=/Applications/EServer/Library/libpng \
 --with-webp-dir=/Applications/EServer/Library/libwebp \
 --with-freetype-dir=/Applications/EServer/Library/freetype \
+--with-xpm-dir=$LIBXPM_PREFIX \
 --with-libxml-dir=/Applications/EServer/Library/libxml2 \
 --with-zlib-dir=/Applications/EServer/Library/zlib
 
