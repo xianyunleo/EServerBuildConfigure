@@ -2,6 +2,10 @@ name: Build and Release PHP 7.3 (macOS)
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. releases)"
+        required: true
 
 jobs:
   build_and_release:
