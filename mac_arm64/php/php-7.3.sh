@@ -90,9 +90,7 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 --enable-pcntl \
 --enable-zip \
 --with-bz2=/Applications/EServer/Library/bzip2 \
-
 --with-iconv=/Applications/EServer/Library/libiconv \
-
 --with-mysqli \
 --with-pdo-mysql \
 --with-pgsql=/Applications/EServer/Library/libpq \
