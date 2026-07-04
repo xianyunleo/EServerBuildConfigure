@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
-brew install libxpm
 # -------------------------------
 # 配置
 # -------------------------------
@@ -107,7 +106,6 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 --with-png-dir=/Applications/EServer/Library/libpng \
 --with-webp-dir=/Applications/EServer/Library/libwebp \
 --with-freetype-dir=/Applications/EServer/Library/freetype \
---with-xpm-dir=$LIBXPM_PREFIX \
 --with-libxml-dir=/Applications/EServer/Library/libxml2 \
 --with-zlib-dir=/Applications/EServer/Library/zlib
 
