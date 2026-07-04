@@ -54,7 +54,7 @@ fi
 # ICU 75+ 需要 C++17
 export ICU_CXXFLAGS="-std=c++17"
 export LIBS="${LIBS:+$LIBS }-lresolv"
-export CXXFLAGS="$CXXFLAGS -stdlib=libc++"
+export CXXFLAGS="${CXXFLAGS:+$CXXFLAGS} -stdlib=libc++"
 export LDFLAGS="$LDFLAGS -stdlib=libc++"
 
 # -------------------------------
