@@ -13,6 +13,12 @@ PHP_VERSION=${PHP_VERSION:-7.3.33}
 TARBALL="php-${PHP_VERSION}.tar.gz"
 URL="https://www.php.net/distributions/$TARBALL"
 
+# -------------------------------
+# 下载源码
+# -------------------------------
+TARBALL="php-src-backports-7.3.33.tar.gz"
+URL="https://raw.githubusercontent.com/xianyunleo/EServerBuildConfigure/master/php-src-backports/$TARBALL"
+
 mkdir -p build
 cd build
 
@@ -25,13 +31,12 @@ fi
 # 解压
 # -------------------------------
 rm -rf "php-${PHP_VERSION}"
+rm -rf "php-src-backports-7.3.33"
 tar -xzf "$TARBALL"
-cd "php-${PHP_VERSION}"
-
-# -------------------------------
-# 清理旧文件
-# -------------------------------
-make clean || true
+SRC_DIR=$(tar -tzf "$TARBALL" | head -1 | cut -d/ -f1)
+echo "Source directory: $SRC_DIR"
+cd "$SRC_DIR"
+ls -la
 
 # 低版本 PHP 的 K&R 风格源码不兼容 C23，强制使用 C17 + 抑制隐式函数声明错误
 export CFLAGS="${CFLAGS:+$CFLAGS }-std=gnu17 -Wno-implicit-function-declaration"
@@ -53,14 +58,17 @@ export CXXFLAGS="${CXXFLAGS:+$CXXFLAGS} -stdlib=libc++"
 export LDFLAGS="$LDFLAGS -stdlib=libc++"
 
 # -------------------------------
+# 清理旧文件 & 生成 configure
+# -------------------------------
+make clean 2>/dev/null || true
+if [ ! -f configure ]; then
+  echo "configure not found, running ./buildconf..."
+  ./buildconf --force
+fi
+
+# -------------------------------
 # 补丁
 # -------------------------------
-echo "Applying patches..."
-patch -p1 < ../../patch/php/0001-Add-support-for-ICU-70.1-PHP7.3.patch
-patch -p1 < ../../patch/php/0002-Add-minimal-OpenSSL-3.0-patch-PHP7.3.patch
-patch -p1 < ../../patch/php/0003-Fix-bug-79589-ssl3_read_n-unexpected-eof-while-reading-PHP7.3.patch
-patch -p1 < ../../patch/php/0006-Use-ITIMER_REAL-for-timeout-handling-PHP-7.3.patch
-patch -p1 < ../../patch/php/0010-Fix-GH-16168-Fix-inline-assembly-labels-to-not-crash-PHP7.3.patch
 
 
 # -------------------------------
