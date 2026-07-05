@@ -74,6 +74,8 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
 sudo make install
 
+sudo cp ./php.ini-development /Applications/EServer/childApp/php/php-8.3/etc/php.ini-development
+sudo cp ./php.ini-production /Applications/EServer/childApp/php/php-8.3/etc/php.ini-production
 
 # -------------------------------
 # 完成提示
