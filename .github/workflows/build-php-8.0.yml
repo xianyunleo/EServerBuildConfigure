@@ -2,6 +2,13 @@ name: Build and Release PHP 8.0 (macOS)
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. php-8.0.30)"
+        required: true
+  push:
+    tags:
+      - 'php-8.0.*'
 
 jobs:
   build_and_release:
