@@ -41,6 +41,7 @@ echo "Applying patches..."
 patch -p1 < ../../patch/php/0002-Add-minimal-OpenSSL-3.0-patch-PHP8.0.patch
 patch -p1 < ../../patch/php/0003-Fix-bug-79589-ssl3_read_n-unexpected-eof-while-reading-PHP8.0.patch
 patch -p1 < ../../patch/php/0006-Use-ITIMER_REAL-for-timeout-handling-PHP-8.0.patch
+patch -p1 < ../../patch/php/0007-Fix-PEAR-installation-with-libxml2.13.patch
 patch -p1 < ../../patch/php/0009-Fix-w-strict-prototype-build-warnings-PHP-8.0.patch
 patch -p1 < ../../patch/php/0010-Fix-GH-16168-Fix-inline-assembly-labels-to-not-crash-PHP8.0.patch
 
