@@ -11,8 +11,8 @@ PHP_VERSION=${PHP_VERSION:-8.0.30}
 # -------------------------------
 # 下载源码
 # -------------------------------
-TARBALL="php-${PHP_VERSION}.tar.gz"
-URL="https://www.php.net/distributions/$TARBALL"
+TARBALL="php-src-backports-8.0.30.tar.gz"
+URL="https://raw.githubusercontent.com/xianyunleo/EServerBuildConfigure/master/php-src-backports/$TARBALL"
 
 mkdir -p build
 cd build
@@ -26,26 +26,24 @@ fi
 # 解压
 # -------------------------------
 rm -rf "php-${PHP_VERSION}"
+rm -rf "php-src-backports-8.0.30"
 tar -xzf "$TARBALL"
-cd "php-${PHP_VERSION}"
+SRC_DIR=$(tar -tzf "$TARBALL" | head -1 | cut -d/ -f1)
+echo "Source directory: $SRC_DIR"
+cd "$SRC_DIR"
 
 # -------------------------------
-# 清理旧文件
+# 清理旧文件 & 生成 configure
 # -------------------------------
-make clean || true
+make clean 2>/dev/null || true
+if [ ! -f configure ]; then
+  echo "configure not found, running ./buildconf..."
+  ./buildconf --force
+fi
 
 # -------------------------------
-# 补丁
+# 配置
 # -------------------------------
-echo "Applying patches..."
-patch -p1 < ../../patch/php/0002-Add-minimal-OpenSSL-3.0-patch-PHP8.0.patch
-patch -p1 < ../../patch/php/0003-Fix-bug-79589-ssl3_read_n-unexpected-eof-while-reading-PHP8.0.patch
-patch -p1 < ../../patch/php/0006-Use-ITIMER_REAL-for-timeout-handling-PHP-8.0.patch
-patch -p1 < ../../patch/php/0007-Fix-PEAR-installation-with-libxml2.13.patch
-patch -p1 < ../../patch/php/0009-Fix-w-strict-prototype-build-warnings-PHP-8.0.patch
-patch -p1 < ../../patch/php/0010-Fix-GH-16168-Fix-inline-assembly-labels-to-not-crash-PHP8.0.patch
-patch -p1 < ../../patch/php/libxml-PHP8.0.patch
-
 
 # -------------------------------
 # 配置环境变量
