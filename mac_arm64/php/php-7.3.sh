@@ -105,6 +105,9 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 --with-libxml-dir=/Applications/EServer/Library/libxml2@2.11 \
 --with-zlib-dir=/Applications/EServer/Library/zlib
 
+echo "Show Makefile"
+cat Makefile
+
 # -------------------------------
 # 屏蔽XPM，https://bugs.php.net/bug.php?id=66204
 # -------------------------------
