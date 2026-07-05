@@ -53,6 +53,13 @@ make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
 sudo make install
 
 # -------------------------------
+# 删除 share 目录（若存在）
+# -------------------------------
+if [ -d "$PREFIX/share" ]; then
+  sudo rm -rf "$PREFIX/share"
+fi
+
+# -------------------------------
 # 完成提示
 # -------------------------------
 echo "libxml2 $LIBXML2_VERSION installed to $PREFIX"

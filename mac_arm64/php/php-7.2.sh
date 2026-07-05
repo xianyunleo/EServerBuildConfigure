@@ -78,15 +78,6 @@ make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
 make install
 
 # -------------------------------
-# 删除 share 目录（若存在）
-# -------------------------------
-if [ -d "$PREFIX/share" ]; then
-  echo "Removing share directory..."
-  rm -rf "$PREFIX/share"
-fi
-
-
-# -------------------------------
 # 完成提示
 # -------------------------------
 echo "PHP $PHP_VERSION installed to $PREFIX"
