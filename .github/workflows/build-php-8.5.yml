@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag (e.g. php-8.5.7)"
+        description: "Release tag (e.g. php-8.5.12)"
         required: true
   push:
     tags:
@@ -16,7 +16,7 @@ jobs:
     runs-on: macos-latest
     env:
       PREFIX: /Applications/EServer/childApp/php/php-8.5
-      PHP_VERSION: 8.5.7
+      PHP_VERSION: 8.5.12
       MACOSX_DEPLOYMENT_TARGET: 11.0
 
     steps:
