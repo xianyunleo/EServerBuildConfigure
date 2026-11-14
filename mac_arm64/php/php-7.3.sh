@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+
 # -------------------------------
 # 配置
 # -------------------------------
@@ -7,30 +8,31 @@ export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/childApp/php/php-7.3}
 PHP_VERSION=${PHP_VERSION:-7.3.33}
 
-# -------------------------------
-# 下载源码
-# -------------------------------
-TARBALL="php-${PHP_VERSION}.tar.gz"
-URL="https://www.php.net/distributions/$TARBALL"
+# build.log 固定落仓库根目录（脚本启动时的 cwd），不受后续 cd 影响
+BUILD_LOG="$(pwd)/build.log"
+: > "$BUILD_LOG"
 
 # -------------------------------
 # 下载源码
+# shivammathur/php-src-backports：PHP 7.3.33 + 安全回溯，
+# 归档已内置 patches/ 目录全部兼容补丁（ICU 70+、OpenSSL 3.0、
+# libxml2 2.13、ITIMER_REAL、aarch64 inline asm 等，
+# 已逐一 patch --dry-run --forward 验证为「已应用」）
 # -------------------------------
 TARBALL="php-src-backports-7.3.33.tar.gz"
-URL="https://raw.githubusercontent.com/xianyunleo/EServerBuildConfigure/master/php-src-backports/$TARBALL"
+URL="https://github.com/shivammathur/php-src-backports/archive/7.3.33.tar.gz"
 
 mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
-  echo "Downloading PHP $PHP_VERSION..."
-  curl -LO "$URL"
+  echo "Downloading PHP $PHP_VERSION from php-src-backports..."
+  curl -fL -o "$TARBALL" "$URL"
 fi
 
 # -------------------------------
 # 解压
 # -------------------------------
-rm -rf "php-${PHP_VERSION}"
 rm -rf "php-src-backports-7.3.33"
 tar -xzf "$TARBALL"
 SRC_DIR=$(tar -tzf "$TARBALL" | head -1 | cut -d/ -f1)
@@ -55,7 +57,7 @@ fi
 export ICU_CXXFLAGS="-std=c++17"
 export LIBS="${LIBS:+$LIBS }-lresolv"
 export CXXFLAGS="${CXXFLAGS:+$CXXFLAGS} -stdlib=libc++"
-export LDFLAGS="$LDFLAGS -stdlib=libc++"
+export LDFLAGS="${LDFLAGS:+$LDFLAGS }-stdlib=libc++ -Wl,-headerpad_max_install_names"
 
 # -------------------------------
 # 清理旧文件 & 生成 configure
@@ -63,18 +65,18 @@ export LDFLAGS="$LDFLAGS -stdlib=libc++"
 make clean 2>/dev/null || true
 if [ ! -f configure ]; then
   echo "configure not found, running ./buildconf..."
-  ./buildconf --force
+  ./buildconf --force 2>&1 | tee -a "$BUILD_LOG"
 fi
 
 # -------------------------------
 # 补丁
+# 无需应用任何补丁：php-src-backports 归档源码已内置
+# patch/php/ 清单（0001/0002/0003/0006/0007/0010/0011）中的全部修复
 # -------------------------------
-
 
 # -------------------------------
 # 配置
 # -------------------------------
-
 PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 ./configure --prefix="$PREFIX" \
 --with-config-file-path="$PREFIX/etc" \
@@ -103,10 +105,8 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 --with-webp-dir=/Applications/EServer/Library/libwebp \
 --with-freetype-dir=/Applications/EServer/Library/freetype \
 --with-libxml-dir=/Applications/EServer/Library/libxml2@2.11 \
---with-zlib-dir=/Applications/EServer/Library/zlib
-
-echo "Show config.status"
-cat config.status
+--with-zlib-dir=/Applications/EServer/Library/zlib \
+2>&1 | tee -a "$BUILD_LOG"
 
 # -------------------------------
 # 屏蔽XPM，https://bugs.php.net/bug.php?id=66204
@@ -117,8 +117,8 @@ sed -i '' '/HAVE_GD_XPM/d' main/php_config.h
 # -------------------------------
 # 编译安装
 # -------------------------------
-make
-sudo make install
+make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)" 2>&1 | tee -a "$BUILD_LOG"
+sudo make install 2>&1 | tee -a "$BUILD_LOG"
 
 sudo cp ./php.ini-development /Applications/EServer/childApp/php/php-7.3/etc/php.ini-development
 sudo cp ./php.ini-production /Applications/EServer/childApp/php/php-7.3/etc/php.ini-production

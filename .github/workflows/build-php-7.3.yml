@@ -4,8 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag (e.g. releases)"
+        description: "Release tag (e.g. php-7.3.33)"
         required: true
+  push:
+    tags:
+      - 'php-7.3.*'
 
 jobs:
   build_and_release:
@@ -82,6 +85,25 @@ jobs:
       - name: Package artifact
         run: |
           tar -cJf "$ARTIFACT_NAME"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
+
+      - name: Collect build log on failure
+        if: failure()
+        run: |
+          LOG="$GITHUB_WORKSPACE/build.log"
+          if [ -f "$LOG" ]; then
+            {
+              echo "## Build log (last 300 lines)"
+              echo '```'
+              tail -300 "$LOG"
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            # 输出 error annotations（公开 API 可读，便于诊断）
+            tail -c 4500 "$LOG" | fold -w 450 | head -10 | while IFS= read -r line; do
+              echo "::error::${line}"
+            done
+          else
+            echo "::error::build.log not found"
+          fi
 
       - name: Upload release
         uses: softprops/action-gh-release@v2
