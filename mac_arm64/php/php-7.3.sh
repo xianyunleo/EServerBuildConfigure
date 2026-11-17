@@ -8,6 +8,9 @@ export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/childApp/php/php-7.3}
 PHP_VERSION=${PHP_VERSION:-7.3.33}
 
+# -------------------------------
+# 下载源码
+# -------------------------------
 TARBALL="php-${PHP_VERSION}.tar.gz"
 URL="https://www.php.net/distributions/$TARBALL"
 
@@ -15,19 +18,21 @@ mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
-  echo "Downloading PHP $PHP_VERSION from php-src-backports..."
-  curl -fL -o "$TARBALL" "$URL"
+  echo "Downloading PHP $PHP_VERSION..."
+  curl -LO "$URL"
 fi
 
 # -------------------------------
 # 解压
 # -------------------------------
-rm -rf "php-src-backports-7.3.33"
+rm -rf "php-${PHP_VERSION}"
 tar -xzf "$TARBALL"
-SRC_DIR=$(tar -tzf "$TARBALL" | head -1 | cut -d/ -f1)
-echo "Source directory: $SRC_DIR"
-cd "$SRC_DIR"
-ls -la
+cd "php-${PHP_VERSION}"
+
+# -------------------------------
+# 清理旧文件
+# -------------------------------
+make clean || true
 
 # 低版本 PHP 的 K&R 风格源码不兼容 C23，强制使用 C17 + 抑制隐式函数声明错误
 export CFLAGS="${CFLAGS:+$CFLAGS }-std=gnu17 -Wno-implicit-function-declaration"
@@ -47,21 +52,6 @@ export ICU_CXXFLAGS="-std=c++17"
 export LIBS="${LIBS:+$LIBS }-lresolv"
 export CXXFLAGS="${CXXFLAGS:+$CXXFLAGS} -stdlib=libc++"
 export LDFLAGS="${LDFLAGS:+$LDFLAGS }-stdlib=libc++ -Wl,-headerpad_max_install_names"
-
-# -------------------------------
-# 清理旧文件 & 生成 configure
-# -------------------------------
-make clean 2>/dev/null || true
-if [ ! -f configure ]; then
-  echo "configure not found, running ./buildconf..."
-  ./buildconf --force 2>&1 | tee -a "$BUILD_LOG"
-fi
-
-# -------------------------------
-# 补丁
-# 无需应用任何补丁：php-src-backports 归档源码已内置
-# patch/php/ 清单（0001/0002/0003/0006/0007/0010/0011）中的全部修复
-# -------------------------------
 
 # -------------------------------
 # 配置
