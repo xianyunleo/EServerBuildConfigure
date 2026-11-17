@@ -23,19 +23,6 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: |
-          brew update
-          brew install autoconf automake libtool bison re2c
-
-      - name: Set Homebrew PATH
-        run: |
-          echo "bison version: $(bison --version | head -1)"
-          BISON_PATH="$(brew --prefix bison)/bin"
-          echo "bison path: $BISON_PATH"
-          echo "$BISON_PATH" >> $GITHUB_PATH
-          echo "new bison version: $($BISON_PATH/bison --version | head -1)"
-
       - name: Prepare EServer Library
         run: |
           sudo mkdir -p /Applications/EServer/Library
@@ -85,25 +72,6 @@ jobs:
       - name: Package artifact
         run: |
           tar -cJf "$ARTIFACT_NAME"  -C "$(dirname "$PREFIX")" "$(basename "$PREFIX")"
-
-      - name: Collect build log on failure
-        if: failure()
-        run: |
-          LOG="$GITHUB_WORKSPACE/build.log"
-          if [ -f "$LOG" ]; then
-            {
-              echo "## Build log (last 300 lines)"
-              echo '```'
-              tail -300 "$LOG"
-              echo '```'
-            } >> "$GITHUB_STEP_SUMMARY"
-            # 输出 error annotations（公开 API 可读，便于诊断）
-            tail -c 4500 "$LOG" | fold -w 450 | head -10 | while IFS= read -r line; do
-              echo "::error::${line}"
-            done
-          else
-            echo "::error::build.log not found"
-          fi
 
       - name: Upload release
         uses: softprops/action-gh-release@v2
