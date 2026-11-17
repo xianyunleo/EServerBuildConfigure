@@ -55,20 +55,17 @@ jobs:
           CONFIG_LOG="build/php-$PHP_VERSION/config.log"
           MAKE_LOG="build/php-$PHP_VERSION/make.log"
           echo "::group::Build diagnostics"
-          if [ -f "$CONFIG_LOG" ]; then
-            echo "===== config.log tail ====="
-            tail -30 "$CONFIG_LOG"
-          fi
           if [ -f "$MAKE_LOG" ]; then
-            echo "===== make.log errors ====="
-            grep -iE 'error:|fatal|undefined|cannot|No such|ld:' "$MAKE_LOG" | tail -60 || true
+            echo "===== make.log compile errors ====="
+            grep -E 'error:|fatal error:|Undefined symbols|ld: |_zend_sort|symbol\(s\) not found' "$MAKE_LOG" | tail -40 || true
           else
             echo "make.log not found at $MAKE_LOG"
           fi
           echo "::endgroup::"
-          # Emit make error lines as a single base64 annotation for the checks API
+          # Emit real compile/link errors as a compact base64 annotation (limit to avoid truncation)
           if [ -f "$MAKE_LOG" ]; then
-            echo "::error::MAKE_LOG_B64=$(grep -iE 'error:|fatal|undefined|cannot|No such|ld:|zend_sort' "$MAKE_LOG" | tail -60 | base64 | tr -d '\n')"
+            ERRS=$(grep -E 'error:|fatal error:|Undefined symbols|ld: |_zend_sort|symbol\(s\) not found' "$MAKE_LOG" | tail -25 | base64 | tr -d '\n')
+            echo "::error::MAKE_ERR_B64=$ERRS"
           fi
           if [ -f "$CONFIG_LOG" ]; then
             echo "::error::CONFIG_LOG_B64=$(tail -40 "$CONFIG_LOG" | base64 | tr -d '\n')"
