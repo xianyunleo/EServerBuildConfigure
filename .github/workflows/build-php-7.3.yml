@@ -52,14 +52,20 @@ jobs:
       - name: Collect build log on failure
         if: failure()
         run: |
-          echo "===== build/php-$PHP_VERSION/config.log (errors) ====="
-          if [ -f "build/php-$PHP_VERSION/config.log" ]; then
-            grep -iE 'error|failed|undefined|cannot|not found' "build/php-$PHP_VERSION/config.log" | tail -80 || true
-          else
-            echo "(config.log not found)"
-          fi
-          echo "===== make error context ====="
-          find build -maxdepth 2 -name '*.log' -print
+          {
+            echo "## Build failed diagnostics"
+            echo '```'
+            echo "===== config.log errors ====="
+            CONFIG_LOG="build/php-$PHP_VERSION/config.log"
+            if [ -f "$CONFIG_LOG" ]; then
+              grep -iE 'error|failed|undefined|cannot|not found|conftest' "$CONFIG_LOG" | tail -120 || true
+            else
+              echo "(config.log not found)"
+            fi
+            echo "===== ls build/php-$PHP_VERSION ====="
+            ls -la "build/php-$PHP_VERSION" 2>/dev/null | head -40 || echo "(dir not found)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Debug workspace
         run: |
