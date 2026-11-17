@@ -52,20 +52,25 @@ jobs:
       - name: Collect build log on failure
         if: failure()
         run: |
-          {
-            echo "## Build failed diagnostics"
-            echo '```'
+          CONFIG_LOG="build/php-$PHP_VERSION/config.log"
+          echo "::group::Build diagnostics"
+          if [ -f "$CONFIG_LOG" ]; then
+            echo "===== config.log (last 150 lines) ====="
+            tail -150 "$CONFIG_LOG"
             echo "===== config.log errors ====="
-            CONFIG_LOG="build/php-$PHP_VERSION/config.log"
-            if [ -f "$CONFIG_LOG" ]; then
-              grep -iE 'error|failed|undefined|cannot|not found|conftest' "$CONFIG_LOG" | tail -120 || true
-            else
-              echo "(config.log not found)"
-            fi
-            echo "===== ls build/php-$PHP_VERSION ====="
-            ls -la "build/php-$PHP_VERSION" 2>/dev/null | head -40 || echo "(dir not found)"
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
+            grep -iE 'error|failed|undefined|cannot|not found' "$CONFIG_LOG" | tail -80 || true
+          else
+            echo "::error::config.log not found at $CONFIG_LOG"
+          fi
+          echo "===== source dir contents ====="
+          ls -la "build/php-$PHP_VERSION" 2>/dev/null | head -40 || echo "::error::source dir not found"
+          echo "::endgroup::"
+          # Emit errors as annotations so they surface in the checks API
+          if [ -f "$CONFIG_LOG" ]; then
+            grep -iE 'error:|fatal error|undefined|cannot find|No such file' "$CONFIG_LOG" | tail -30 | while IFS= read -r line; do
+              echo "::error::$line"
+            done
+          fi
 
       - name: Debug workspace
         run: |
