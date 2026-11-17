@@ -8,19 +8,8 @@ export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/childApp/php/php-7.3}
 PHP_VERSION=${PHP_VERSION:-7.3.33}
 
-# build.log 固定落仓库根目录（脚本启动时的 cwd），不受后续 cd 影响
-BUILD_LOG="$(pwd)/build.log"
-: > "$BUILD_LOG"
-
-# -------------------------------
-# 下载源码
-# shivammathur/php-src-backports：PHP 7.3.33 + 安全回溯，
-# 归档已内置 patches/ 目录全部兼容补丁（ICU 70+、OpenSSL 3.0、
-# libxml2 2.13、ITIMER_REAL、aarch64 inline asm 等，
-# 已逐一 patch --dry-run --forward 验证为「已应用」）
-# -------------------------------
-TARBALL="php-src-backports-7.3.33.tar.gz"
-URL="https://github.com/shivammathur/php-src-backports/archive/7.3.33.tar.gz"
+TARBALL="php-${PHP_VERSION}.tar.gz"
+URL="https://www.php.net/distributions/$TARBALL"
 
 mkdir -p build
 cd build
@@ -112,8 +101,8 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 # -------------------------------
 # 屏蔽XPM，https://bugs.php.net/bug.php?id=66204
 # -------------------------------
-echo "Custom: disable xpm"
-sed -i '' '/HAVE_GD_XPM/d' main/php_config.h
+#echo "Custom: disable xpm"
+#sed -i '' '/HAVE_GD_XPM/d' main/php_config.h
 
 # -------------------------------
 # 编译安装
