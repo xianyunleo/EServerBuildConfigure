@@ -57,19 +57,19 @@ jobs:
           if [ -f "$CONFIG_LOG" ]; then
             echo "===== config.log (last 150 lines) ====="
             tail -150 "$CONFIG_LOG"
-            echo "===== config.log errors ====="
-            grep -iE 'error|failed|undefined|cannot|not found' "$CONFIG_LOG" | tail -80 || true
           else
-            echo "::error::config.log not found at $CONFIG_LOG"
+            echo "config.log not found at $CONFIG_LOG"
           fi
           echo "===== source dir contents ====="
-          ls -la "build/php-$PHP_VERSION" 2>/dev/null | head -40 || echo "::error::source dir not found"
+          ls -la "build/php-$PHP_VERSION" 2>/dev/null | head -40 || echo "source dir not found"
           echo "::endgroup::"
-          # Emit errors as annotations so they surface in the checks API
+          # Emit configure error + config.log tail (base64) as single annotations for the checks API
           if [ -f "$CONFIG_LOG" ]; then
-            grep -iE 'error:|fatal error|undefined|cannot find|No such file' "$CONFIG_LOG" | tail -30 | while IFS= read -r line; do
-              echo "::error::$line"
-            done
+            CONFIG_ERR=$(grep -iE 'configure: error:' "$CONFIG_LOG" | tail -1 || echo none)
+            echo "::error::CONFIGURE_ERROR: $CONFIG_ERR"
+            echo "::error::TAIL_B64=$(tail -60 "$CONFIG_LOG" | base64 | tr -d '\n')"
+          else
+            echo "::error::CONFIG_LOG_MISSING: $CONFIG_LOG"
           fi
 
       - name: Debug workspace
