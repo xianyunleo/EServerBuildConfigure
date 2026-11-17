@@ -53,23 +53,25 @@ jobs:
         if: failure()
         run: |
           CONFIG_LOG="build/php-$PHP_VERSION/config.log"
+          MAKE_LOG="build/php-$PHP_VERSION/make.log"
           echo "::group::Build diagnostics"
           if [ -f "$CONFIG_LOG" ]; then
-            echo "===== config.log (last 150 lines) ====="
-            tail -150 "$CONFIG_LOG"
-          else
-            echo "config.log not found at $CONFIG_LOG"
+            echo "===== config.log tail ====="
+            tail -30 "$CONFIG_LOG"
           fi
-          echo "===== source dir contents ====="
-          ls -la "build/php-$PHP_VERSION" 2>/dev/null | head -40 || echo "source dir not found"
-          echo "::endgroup::"
-          # Emit configure error + config.log tail (base64) as single annotations for the checks API
-          if [ -f "$CONFIG_LOG" ]; then
-            CONFIG_ERR=$(grep -iE 'configure: error:' "$CONFIG_LOG" | tail -1 || echo none)
-            echo "::error::CONFIGURE_ERROR: $CONFIG_ERR"
-            echo "::error::TAIL_B64=$(tail -60 "$CONFIG_LOG" | base64 | tr -d '\n')"
+          if [ -f "$MAKE_LOG" ]; then
+            echo "===== make.log errors ====="
+            grep -iE 'error:|fatal|undefined|cannot|No such|ld:' "$MAKE_LOG" | tail -60 || true
           else
-            echo "::error::CONFIG_LOG_MISSING: $CONFIG_LOG"
+            echo "make.log not found at $MAKE_LOG"
+          fi
+          echo "::endgroup::"
+          # Emit make error lines as a single base64 annotation for the checks API
+          if [ -f "$MAKE_LOG" ]; then
+            echo "::error::MAKE_LOG_B64=$(grep -iE 'error:|fatal|undefined|cannot|No such|ld:|zend_sort' "$MAKE_LOG" | tail -60 | base64 | tr -d '\n')"
+          fi
+          if [ -f "$CONFIG_LOG" ]; then
+            echo "::error::CONFIG_LOG_B64=$(tail -40 "$CONFIG_LOG" | base64 | tr -d '\n')"
           fi
 
       - name: Debug workspace

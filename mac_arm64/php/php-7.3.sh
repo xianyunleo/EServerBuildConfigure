@@ -96,7 +96,8 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 # -------------------------------
 # 编译安装
 # -------------------------------
-make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
+MAKE_LOG="$(pwd)/make.log"
+make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)" 2>&1 | tee "$MAKE_LOG"
 sudo make install
 
 sudo cp ./php.ini-development /Applications/EServer/childApp/php/php-7.3/etc/php.ini-development
