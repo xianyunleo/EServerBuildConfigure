@@ -99,6 +99,19 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@1.1/lib/pkgconfig:/Applica
 --with-zlib-dir=/Applications/EServer/Library/zlib
 
 # -------------------------------
+# 修复 opcache shared module 链接：MACOSX_DEPLOYMENT_TARGET=11.0 不匹配
+# libtool.m4 的 darwin case 分支（10.*），导致 _lt_dar_allow_undefined 为空，
+# opcache.so 链接时缺少 -undefined dynamic_lookup，无法解析主程序的
+# _zend_sort / _OnUpdateBool 等符号。此处对生成的 libtool 追加该 flag。
+# -------------------------------
+LIBTOOL_FILE="$(pwd)/libtool"
+if [ -f "$LIBTOOL_FILE" ]; then
+  sed -i '' 's/^allow_undefined_flag=""$/allow_undefined_flag=" -undefined dynamic_lookup"/' "$LIBTOOL_FILE"
+  echo "Patched libtool allow_undefined_flag:"
+  grep -n '^allow_undefined_flag=' "$LIBTOOL_FILE" || true
+fi
+
+# -------------------------------
 # 屏蔽XPM，https://bugs.php.net/bug.php?id=66204
 # -------------------------------
 #echo "Custom: disable xpm"
