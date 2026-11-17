@@ -66,7 +66,7 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 --enable-fpm \
 --enable-mbstring \
 --enable-mbregex \
---enable-opcache \
+--disable-opcache \
 --enable-soap \
 --enable-sockets \
 --enable-intl \
