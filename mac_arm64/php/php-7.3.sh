@@ -56,7 +56,7 @@ export LDFLAGS="${LDFLAGS:+$LDFLAGS }-stdlib=libc++ -Wl,-headerpad_max_install_n
 # -------------------------------
 # 配置
 # -------------------------------
-PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
+PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@1.1/lib/pkgconfig:/Applications/EServer/Library/lib/pkgconfig \
 ./configure --prefix="$PREFIX" \
 --with-config-file-path="$PREFIX/etc" \
 --enable-bcmath \
