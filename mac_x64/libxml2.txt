@@ -1,0 +1,19 @@
+#需要先安装libiconv、zlib
+
+
+export MACOSX_DEPLOYMENT_TARGET=10.13
+make clean
+./configure --prefix=/Applications/EServer/Library/libxml2 \
+--disable-dependency-tracking \
+--with-iconv=/Applications/EServer/Library/libiconv \
+--with-zlib=/Applications/EServer/Library/zlib \
+--with-history \
+--without-python \
+--without-lzma
+make -j8
+make install
+
+
+
+
+#https://download.gnome.org/sources/libxml2/
