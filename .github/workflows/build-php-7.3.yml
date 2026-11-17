@@ -64,7 +64,7 @@ jobs:
           echo "::endgroup::"
           # Emit real compile/link errors as a compact base64 annotation (limit to avoid truncation)
           if [ -f "$MAKE_LOG" ]; then
-            ERRS=$(grep -E 'error:|fatal error:|Undefined symbols|ld: |_zend_sort|symbol\(s\) not found' "$MAKE_LOG" | tail -25 | base64 | tr -d '\n')
+            ERRS=$(grep -A 4 -E 'Undefined symbols|error:|fatal error:' "$MAKE_LOG" | grep -vE 'warning|ld: warning' | tail -30 | base64 | tr -d '\n')
             echo "::error::MAKE_ERR_B64=$ERRS"
           fi
           if [ -f "$CONFIG_LOG" ]; then
