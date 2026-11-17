@@ -85,8 +85,7 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 --with-webp-dir=/Applications/EServer/Library/libwebp \
 --with-freetype-dir=/Applications/EServer/Library/freetype \
 --with-libxml-dir=/Applications/EServer/Library/libxml2@2.11 \
---with-zlib-dir=/Applications/EServer/Library/zlib \
-2>&1 | tee -a "$BUILD_LOG"
+--with-zlib-dir=/Applications/EServer/Library/zlib
 
 # -------------------------------
 # 屏蔽XPM，https://bugs.php.net/bug.php?id=66204
@@ -97,8 +96,8 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 # -------------------------------
 # 编译安装
 # -------------------------------
-make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)" 2>&1 | tee -a "$BUILD_LOG"
-sudo make install 2>&1 | tee -a "$BUILD_LOG"
+make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
+sudo make install
 
 sudo cp ./php.ini-development /Applications/EServer/childApp/php/php-7.3/etc/php.ini-development
 sudo cp ./php.ini-production /Applications/EServer/childApp/php/php-7.3/etc/php.ini-production
