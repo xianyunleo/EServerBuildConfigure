@@ -54,6 +54,18 @@ export CXXFLAGS="${CXXFLAGS:+$CXXFLAGS} -stdlib=libc++"
 export LDFLAGS="${LDFLAGS:+$LDFLAGS }-stdlib=libc++ -Wl,-headerpad_max_install_names"
 
 # -------------------------------
+# 补丁（官方源码在 arm64 macOS + 高版本 ICU/OpenSSL 下编译必需）
+# -------------------------------
+echo "Applying patches..."
+patch -p1 < ../../patch/php/0001-Add-support-for-ICU-70.1-PHP7.3.patch
+patch -p1 < ../../patch/php/0002-Add-minimal-OpenSSL-3.0-patch-PHP7.3.patch
+patch -p1 < ../../patch/php/0003-Fix-bug-79589-ssl3_read_n-unexpected-eof-while-reading-PHP7.3.patch
+patch -p1 < ../../patch/php/0006-Use-ITIMER_REAL-for-timeout-handling-PHP-7.3.patch
+patch -p1 < ../../patch/php/0007-Fix-PEAR-installation-with-libxml2.13.patch
+patch -p1 < ../../patch/php/0010-Fix-GH-16168-Fix-inline-assembly-labels-to-not-crash-PHP7.3.patch
+patch -p1 < ../../patch/php/0011-Backport-4fe82131-Backport-libxml2-2.13.2-fixes-1481-PHP7.3.patch
+
+# -------------------------------
 # 配置
 # -------------------------------
 PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@1.1/lib/pkgconfig:/Applications/EServer/Library/lib/pkgconfig \
