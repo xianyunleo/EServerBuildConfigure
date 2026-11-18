@@ -61,8 +61,9 @@ patch -p1 < ../../patch/php/0001-Add-support-for-ICU-70.1-PHP7.3.patch
 patch -p1 < ../../patch/php/0002-Add-minimal-OpenSSL-3.0-patch-PHP7.3.patch
 patch -p1 < ../../patch/php/0003-Fix-bug-79589-ssl3_read_n-unexpected-eof-while-reading-PHP7.3.patch
 patch -p1 < ../../patch/php/0006-Use-ITIMER_REAL-for-timeout-handling-PHP-7.3.patch
-patch -p1 < ../../patch/php/0007-Fix-PEAR-installation-with-libxml2.13.patch
 patch -p1 < ../../patch/php/0010-Fix-GH-16168-Fix-inline-assembly-labels-to-not-crash-PHP7.3.patch
+patch -p1 < ../../patch/php/0007-Fix-PEAR-installation-with-libxml2.13.patch
+
 
 # -------------------------------
 # 配置

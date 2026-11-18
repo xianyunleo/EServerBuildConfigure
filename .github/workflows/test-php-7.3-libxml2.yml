@@ -1,0 +1,78 @@
+name: PHP 7.3 libxml2 2.15 test
+
+# 临时诊断 workflow：验证 php-7.3 改用 Library/libxml2 (2.15.3) 能否编译。
+# 触发：push tag php-7.3-libxmltest*
+# 不发布 release、不覆盖任何产物。
+
+on:
+  push:
+    tags:
+      - 'php-7.3-libxmltest*'
+
+jobs:
+  test:
+    name: ${{ matrix.id }}
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - id: libxml2-2.15-keep-0007
+            drop: "none"
+          - id: libxml2-2.15-minus-0007
+            drop: 0007-Fix-PEAR-installation-with-libxml2.13.patch
+    env:
+      PREFIX: /Applications/EServer/childApp/php/php-7.3
+      PHP_VERSION: 7.3.33
+      MACOSX_DEPLOYMENT_TARGET: 11.0
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          brew update
+          brew install autoconf automake libtool bison re2c
+
+      - name: Set Homebrew PATH
+        run: |
+          BISON_PATH="$(brew --prefix bison)/bin"
+          echo "$BISON_PATH" >> $GITHUB_PATH
+
+      - name: Prepare EServer Library
+        run: |
+          sudo mkdir -p /Applications/EServer/Library
+          sudo cp -R Library/* /Applications/EServer/Library/
+
+      - name: Switch libxml2 path and build
+        run: |
+          sed -i '' 's#--with-libxml-dir=/Applications/EServer/Library/libxml2@2.11#--with-libxml-dir=/Applications/EServer/Library/libxml2#' mac_arm64/php/php-7.3.sh
+          if [ "${{ matrix.drop }}" != "none" ]; then
+            sed -i '' "/${{ matrix.drop }}/d" mac_arm64/php/php-7.3.sh
+          fi
+          echo "===== configure args ====="
+          grep -n 'libxml2\|patch -p1 <' mac_arm64/php/php-7.3.sh
+          chmod +x mac_arm64/php/php-7.3.sh
+          ./mac_arm64/php/php-7.3.sh
+
+      - name: Collect build log on failure
+        if: failure()
+        run: |
+          CONFIG_LOG="build/php-$PHP_VERSION/config.log"
+          MAKE_LOG="build/php-$PHP_VERSION/make.log"
+          if [ -f "$MAKE_LOG" ]; then
+            echo "===== make.log compile errors ====="
+            grep -E 'error:|fatal error:|Undefined symbols|ld: ' "$MAKE_LOG" | grep -v 'ld: warning' | tail -30 || true
+            ERRS=$(grep -A 4 -E 'Undefined symbols|error:|fatal error:' "$MAKE_LOG" | grep -vE 'warning|ld: warning' | tail -20 | base64 | tr -d '\n')
+            echo "::error::MAKE_ERR_B64=$ERRS"
+          else
+            echo "make.log not found"
+          fi
+          if [ -f "$CONFIG_LOG" ]; then
+            echo "::error::CONFIG_LOG_B64=$(tail -30 "$CONFIG_LOG" | base64 | tr -d '\n')"
+          fi
+
+      - name: Report success
+        if: success()
+        run: echo "::notice::BUILD_OK ${{ matrix.id }}"
