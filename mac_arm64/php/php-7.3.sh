@@ -84,9 +84,12 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 --enable-pcntl \
 --enable-zip \
 --with-bz2=/Applications/EServer/Library/bzip2 \
---with-iconv=/Applications/EServer/Library/libiconv \
+--with-curl=shared,/Applications/EServer/Library/curl \
 --with-mysqli \
---with-openssl=shared,/Applications/EServer/Library/openssl@1.1 \
+--with-gd=shared \
+--with-gmp=/Applications/EServer/Library/gmp \
+--with-iconv=/Applications/EServer/Library/libiconv \
+--with-openssl=shared,/Applications/EServer/Library/openssl@3.5 \
 --with-pdo-mysql \
 --with-pgsql=/Applications/EServer/Library/libpq \
 --with-pdo-pgsql=/Applications/EServer/Library/libpq \
