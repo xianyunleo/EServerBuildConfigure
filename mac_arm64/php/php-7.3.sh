@@ -67,7 +67,7 @@ patch -p1 < ../../patch/php/0010-Fix-GH-16168-Fix-inline-assembly-labels-to-not-
 # -------------------------------
 # 配置
 # -------------------------------
-PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@1.1/lib/pkgconfig:/Applications/EServer/Library/lib/pkgconfig \
+PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 ./configure --prefix="$PREFIX" \
 --with-config-file-path="$PREFIX/etc" \
 --enable-bcmath \
@@ -86,6 +86,7 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/openssl@1.1/lib/pkgconfig:/Applica
 --with-bz2=/Applications/EServer/Library/bzip2 \
 --with-iconv=/Applications/EServer/Library/libiconv \
 --with-mysqli \
+--with-openssl=shared,/Applications/EServer/Library/openssl@1.1 \
 --with-pdo-mysql \
 --with-pgsql=/Applications/EServer/Library/libpq \
 --with-pdo-pgsql=/Applications/EServer/Library/libpq \

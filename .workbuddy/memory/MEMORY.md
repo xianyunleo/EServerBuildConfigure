@@ -40,3 +40,9 @@
 otool 看到的依赖可能是传递依赖，而非直接依赖。当某库 A 链接了错误的 B（如 Homebrew openssl），
 所有依赖 A 的库都会在 Mach-O load commands 中记录 B 的路径。修复时需检查整条依赖链，
 不能只看直接构建目标的 configure 日志。
+
+### PHP 7.3 opcache 链接修复（macOS arm64 + MACOSX_DEPLOYMENT_TARGET=11.0）
+- 官方源码 + `--enable-opcache` 在 arm64 上，opcache.so（shared module）链接报 `_zend_sort` / `_OnUpdateBool` 未定义。
+- 根因：PHP 7.3 的 libtool darwin 分支 `_lt_dar_allow_undefined` 只匹配 `10.*`，`11.0` 不匹配 → module 链接缺 `-undefined dynamic_lookup`，无法引用主程序符号。
+- 修复：configure 之后、make 之前 sed 改生成的 `libtool`：`s/^allow_undefined_flag=""$/allow_undefined_flag=" -undefined dynamic_lookup"/`。
+- 注意：不要把它塞进全局 LDFLAGS（会破坏 configure 的 conftest 链接检测导致 exit 1）。
