@@ -1,6 +1,7 @@
 name: PHP 7.3 libxml2 2.15 + 0011 test
 
 # 临时诊断 workflow：libxml2 2.15.3 + 0011 回溯补丁 编译测试
+# 0011 应用失败时退化为只改 ext/libxml/libxml.c 的最小修复，继续观察 2.15 是否还有其它编译错误。
 # 触发：push tag php-7.3-libxml0011*
 # 不发布 release、不覆盖任何产物。
 
@@ -37,13 +38,31 @@ jobs:
           sudo mkdir -p /Applications/EServer/Library
           sudo cp -R Library/* /Applications/EServer/Library/
 
-      - name: Patch script (libxml2 2.15 + 0011) and build
+      - name: Patch script (libxml2 2.15 + 0011 block) and build
         run: |
           sed -i '' 's#--with-libxml-dir=/Applications/EServer/Library/libxml2@2.11#--with-libxml-dir=/Applications/EServer/Library/libxml2#' mac_arm64/php/php-7.3.sh
-          awk '{print} /0010-Fix-GH-16168/ {print "patch -p1 < ../../patch/php/0011-Backport-4fe82131-Backport-libxml2-2.13.2-fixes-1481-PHP7.3.patch"}' mac_arm64/php/php-7.3.sh > /tmp/p.sh
-          mv /tmp/p.sh mac_arm64/php/php-7.3.sh
+          python3 - <<'PY'
+          p = 'mac_arm64/php/php-7.3.sh'
+          s = open(p).read()
+          anchor = 'patch -p1 < ../../patch/php/0010-Fix-GH-16168-Fix-inline-assembly-labels-to-not-crash-PHP7.3.patch'
+          block = '''
+          # ---- 0011 (libxml2 2.13+ backport) ----
+          PATCH_LOG=/tmp/0011.log
+          if patch -p1 < ../../patch/php/0011-Backport-4fe82131-Backport-libxml2-2.13.2-fixes-1481-PHP7.3.patch > "$PATCH_LOG" 2>&1; then
+            echo "0011 applied OK"
+          else
+            echo "0011 apply FAILED, falling back to minimal libxml.c fix"
+            grep -E "FAILED|Hunk|Reversed|can.t find file|saving rejects" "$PATCH_LOG" | head -20 || true
+            echo "::warning::PATCH_ERR_B64=$(grep -E 'FAILED|Hunk|Reversed|can.t find|rejects' "$PATCH_LOG" | head -20 | base64 | tr -d '\\n')"
+            sed -i '' 's/int compression ATTRIBUTE_UNUSED)/int compression)/' ext/libxml/libxml.c
+          fi
+          '''
+          assert anchor in s
+          s = s.replace(anchor, anchor + block, 1)
+          open(p, 'w').write(s)
+          PY
           echo "===== patch list / libxml path ====="
-          grep -n 'patch -p1 <\|libxml-dir' mac_arm64/php/php-7.3.sh
+          grep -n 'patch -p1 <\|libxml-dir\|0011' mac_arm64/php/php-7.3.sh
           chmod +x mac_arm64/php/php-7.3.sh
           ./mac_arm64/php/php-7.3.sh
 
@@ -54,7 +73,7 @@ jobs:
           MAKE_LOG="build/php-$PHP_VERSION/make.log"
           if [ -f "$MAKE_LOG" ]; then
             echo "===== make.log compile errors ====="
-            grep -E 'error:|fatal error:|hunk FAILED|Undefined symbols|ld: ' "$MAKE_LOG" | grep -v 'ld: warning' | tail -30 || true
+            grep -E 'error:|fatal error:|Undefined symbols|ld: ' "$MAKE_LOG" | grep -v 'ld: warning' | tail -30 || true
             ERRS=$(grep -A 4 -E 'Undefined symbols|error:|fatal error:' "$MAKE_LOG" | grep -vE 'warning|ld: warning' | tail -20 | base64 | tr -d '\n')
             echo "::error::MAKE_ERR_B64=$ERRS"
           else
