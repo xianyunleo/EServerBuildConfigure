@@ -62,6 +62,7 @@ patch -p1 < ../../patch/php/0002-Add-minimal-OpenSSL-3.0-patch-PHP7.2.patch
 patch -p1 < ../../patch/php/0003-Fix-bug-79589-ssl3_read_n-unexpected-eof-while-reading-PHP7.2.patch
 patch -p1 < ../../patch/php/0006-Use-ITIMER_REAL-for-timeout-handling-PHP-7.2.patch
 patch -p1 < ../../patch/php/0012-Fixed-compilation-warnings-PHP7.2.patch
+patch -p1 < ../../patch/php/0013-Fix-TRUE-FALSE-macros-PHP7.2.patch
 
 # -------------------------------
 # 配置
