@@ -131,8 +131,8 @@ MAKE_LOG="$(pwd)/make.log"
 make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)" 2>&1 | tee "$MAKE_LOG"
 sudo make install
 
-sudo cp ./php.ini-development /Applications/EServer/childApp/php/php-7.2/etc/php.ini-development
-sudo cp ./php.ini-production /Applications/EServer/childApp/php/php-7.2/etc/php.ini-production
+sudo cp ./php.ini-development "$PREFIX/etc/php.ini-development"
+sudo cp ./php.ini-production "$PREFIX/etc/php.ini-production"
 
 # -------------------------------
 # 完成提示
