@@ -47,16 +47,20 @@ if [ -n "$CLANG_BUILD" ] && [ "$CLANG_BUILD" -ge 1500 ]; then
   sed -i '' 's/readdir_r(dirp, entry)/readdir_r(dirp, entry, result)/g' main/reentrancy.c
 fi
 
-# ICU 75+ 需要 C++17。参考 Homebrew Formula 的写法：
-#   ENV.append "CXX", "-std=c++17"
-# PHP 7.1 的 acinclude.m4（PHP_SETUP_ICU）会无条件覆盖 ICU_CXXFLAGS，
-# 所以不再使用 ICU_CXXFLAGS，直接把 -std=c++17 追加到 CXX 命令上。
-export CXX="${CXX:-clang++} -std=c++17"
+# PHP 7.1 的 configure 用 K&R 老写法 main() {...} 探测 sprintf 是否损坏，
+# Xcode 26 的 clang 对隐式 int 直接报错，try_run 必然失败 → 误判 ZEND_BROKEN_SPRINTF=1，
+# 于是 php_config.h 里会生成 int zend_sprintf(...) 声明；而 7.1 的这个头还没有
+# include guard（7.2+ 才加上），C++ 单元里被 extern "C" 内外各包含一次就报
+# "declaration of 'zend_sprintf' has a different language linkage"。
+# macOS 的 sprintf 本身正常，直接把 configure 的缓存值钉成 no。
+export ac_cv_broken_sprintf=no
+# ICU 75+ 需要 C++17。不能用 ICU_CXXFLAGS —— 7.1 的 PHP_SETUP_ICU 会把它
+# 覆盖成 "-DU_USING_ICU_NAMESPACE=1"（7.2+ 才改成从 pkg-config 的 CXXFLAGS 变量读取）。
 # ICU 68+ 公共头文件默认不再定义 TRUE/FALSE，而 PHP 7.1 的 ext/intl 仍在用。
 # 启用 ICU 官方过渡开关恢复这两个宏（PHP 7.3+ 已改用 1/0，无需此开关）。
 export CFLAGS="${CFLAGS:+$CFLAGS }-DU_DEFINE_FALSE_AND_TRUE=1"
 export LIBS="${LIBS:+$LIBS }-lresolv"
-export CXXFLAGS="${CXXFLAGS:+$CXXFLAGS} -DU_DEFINE_FALSE_AND_TRUE=1"
+export CXXFLAGS="${CXXFLAGS:+$CXXFLAGS} -std=c++17 -DU_DEFINE_FALSE_AND_TRUE=1"
 export LDFLAGS="${LDFLAGS:+$LDFLAGS }-Wl,-headerpad_max_install_names"
 
 # -------------------------------
@@ -69,16 +73,6 @@ patch -p1 < ../../patch/php/0003-Fix-bug-79589-ssl3_read_n-unexpected-eof-while-
 patch -p1 < ../../patch/php/0006-Use-ITIMER_REAL-for-timeout-handling-PHP-7.1.patch
 patch -p1 < ../../patch/php/0012-Fixed-compilation-warnings-PHP7.1.patch
 
-# -------------------------------
-# 配置（PHP 7.1 无 argon2，故不传 --with-password-argon2）
-# -------------------------------
-# PHP 7.1 的 configure 用 K&R 老写法 main() {...} 探测 sprintf 是否损坏，
-# Xcode 26 的 clang 对隐式 int 直接报错，try_run 必然失败 → 误判 ZEND_BROKEN_SPRINTF=1，
-# 于是 php_config.h 里会生成 int zend_sprintf(...) 声明；而 7.1 的这个头还没有
-# include guard（7.2+ 才加上），C++ 单元里被 extern "C" 内外各包含一次就报
-# "declaration of 'zend_sprintf' has a different language linkage"。
-# macOS 的 sprintf 本身正常，直接把 configure 的缓存值钉成 no。
-export ac_cv_broken_sprintf=no
 
 PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 ./configure --prefix="$PREFIX" \
