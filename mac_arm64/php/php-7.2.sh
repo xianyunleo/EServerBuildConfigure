@@ -49,8 +49,11 @@ fi
 
 # ICU 75+ 需要 C++17
 export ICU_CXXFLAGS="-std=c++17"
+# ICU 68+ 公共头文件默认不再定义 TRUE/FALSE，而 PHP 7.2 的 ext/intl 仍在用。
+# 启用 ICU 官方过渡开关恢复这两个宏（PHP 7.3+ 已改用 1/0，无需此开关）。
+export CFLAGS="${CFLAGS:+$CFLAGS }-DU_DEFINE_FALSE_AND_TRUE=1"
 export LIBS="${LIBS:+$LIBS }-lresolv"
-export CXXFLAGS="${CXXFLAGS:+$CXXFLAGS} -stdlib=libc++"
+export CXXFLAGS="${CXXFLAGS:+$CXXFLAGS} -DU_DEFINE_FALSE_AND_TRUE=1 -stdlib=libc++"
 export LDFLAGS="${LDFLAGS:+$LDFLAGS }-stdlib=libc++ -Wl,-headerpad_max_install_names"
 
 # -------------------------------
@@ -62,7 +65,6 @@ patch -p1 < ../../patch/php/0002-Add-minimal-OpenSSL-3.0-patch-PHP7.2.patch
 patch -p1 < ../../patch/php/0003-Fix-bug-79589-ssl3_read_n-unexpected-eof-while-reading-PHP7.2.patch
 patch -p1 < ../../patch/php/0006-Use-ITIMER_REAL-for-timeout-handling-PHP-7.2.patch
 patch -p1 < ../../patch/php/0012-Fixed-compilation-warnings-PHP7.2.patch
-patch -p1 < ../../patch/php/0013-Fix-TRUE-FALSE-macros-PHP7.2.patch
 
 # -------------------------------
 # 配置
