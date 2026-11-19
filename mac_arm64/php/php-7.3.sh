@@ -62,7 +62,9 @@ patch -p1 < ../../patch/php/0002-Add-minimal-OpenSSL-3.0-patch-PHP7.3.patch
 patch -p1 < ../../patch/php/0003-Fix-bug-79589-ssl3_read_n-unexpected-eof-while-reading-PHP7.3.patch
 patch -p1 < ../../patch/php/0006-Use-ITIMER_REAL-for-timeout-handling-PHP-7.3.patch
 patch -p1 < ../../patch/php/0010-Fix-GH-16168-Fix-inline-assembly-labels-to-not-crash-PHP7.3.patch
-patch -p1 < ../../patch/php/0007-Fix-PEAR-installation-with-libxml2.13.patch
+# 0007 (GH-14834, libxml2 2.13 实体上报) 不钩：本项目 libxml 固定 libxml2@2.11，
+# 该 bug 由 2.13 的 instate 语义变更引入，且未启用 --with-pear，无触发场景。
+# 若将来升到 libxml2 >= 2.13，再从 patch/php/ 恢复这一行。
 
 
 # -------------------------------
