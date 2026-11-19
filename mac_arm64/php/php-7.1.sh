@@ -47,13 +47,16 @@ if [ -n "$CLANG_BUILD" ] && [ "$CLANG_BUILD" -ge 1500 ]; then
   sed -i '' 's/readdir_r(dirp, entry)/readdir_r(dirp, entry, result)/g' main/reentrancy.c
 fi
 
-# ICU 75+ 需要 C++17
+# ICU 75+ 需要 C++17。
+# 注意：PHP 7.1 的 acinclude.m4（PHP_SETUP_ICU）会无条件把 ICU_CXXFLAGS 覆盖成
+# "-DU_USING_ICU_NAMESPACE=1"，环境里的 ICU_CXXFLAGS 传不进去（7.2+ 才改成从
+# pkg-config 的 CXXFLAGS 变量读取），所以这里必须同时写进 CXXFLAGS 才生效。
 export ICU_CXXFLAGS="-std=c++17"
 # ICU 68+ 公共头文件默认不再定义 TRUE/FALSE，而 PHP 7.1 的 ext/intl 仍在用。
 # 启用 ICU 官方过渡开关恢复这两个宏（PHP 7.3+ 已改用 1/0，无需此开关）。
 export CFLAGS="${CFLAGS:+$CFLAGS }-DU_DEFINE_FALSE_AND_TRUE=1"
 export LIBS="${LIBS:+$LIBS }-lresolv"
-export CXXFLAGS="${CXXFLAGS:+$CXXFLAGS} -DU_DEFINE_FALSE_AND_TRUE=1"
+export CXXFLAGS="${CXXFLAGS:+$CXXFLAGS} -std=c++17 -DU_DEFINE_FALSE_AND_TRUE=1"
 export LDFLAGS="${LDFLAGS:+$LDFLAGS }-Wl,-headerpad_max_install_names"
 
 # -------------------------------
