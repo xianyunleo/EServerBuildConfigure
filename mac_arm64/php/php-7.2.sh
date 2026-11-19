@@ -53,8 +53,8 @@ export ICU_CXXFLAGS="-std=c++17"
 # 启用 ICU 官方过渡开关恢复这两个宏（PHP 7.3+ 已改用 1/0，无需此开关）。
 export CFLAGS="${CFLAGS:+$CFLAGS }-DU_DEFINE_FALSE_AND_TRUE=1"
 export LIBS="${LIBS:+$LIBS }-lresolv"
-export CXXFLAGS="${CXXFLAGS:+$CXXFLAGS} -DU_DEFINE_FALSE_AND_TRUE=1 -stdlib=libc++"
-export LDFLAGS="${LDFLAGS:+$LDFLAGS }-stdlib=libc++ -Wl,-headerpad_max_install_names"
+export CXXFLAGS="${CXXFLAGS:+$CXXFLAGS} -DU_DEFINE_FALSE_AND_TRUE=1"
+export LDFLAGS="${LDFLAGS:+$LDFLAGS }-Wl,-headerpad_max_install_names"
 
 # -------------------------------
 # 补丁（官方源码在 arm64 macOS + 高版本 ICU/OpenSSL 下编译必需）

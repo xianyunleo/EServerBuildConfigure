@@ -50,8 +50,7 @@ fi
 # ICU 75+ 需要 C++17
 export ICU_CXXFLAGS="-std=c++17"
 export LIBS="${LIBS:+$LIBS }-lresolv"
-export CXXFLAGS="${CXXFLAGS:+$CXXFLAGS} -stdlib=libc++"
-export LDFLAGS="${LDFLAGS:+$LDFLAGS }-stdlib=libc++ -Wl,-headerpad_max_install_names"
+export LDFLAGS="${LDFLAGS:+$LDFLAGS }-Wl,-headerpad_max_install_names"
 
 # -------------------------------
 # 补丁（官方源码在 arm64 macOS + 高版本 ICU/OpenSSL 下编译必需）
