@@ -72,6 +72,14 @@ patch -p1 < ../../patch/php/0012-Fixed-compilation-warnings-PHP7.1.patch
 # -------------------------------
 # 配置（PHP 7.1 无 argon2，故不传 --with-password-argon2）
 # -------------------------------
+# PHP 7.1 的 configure 用 K&R 老写法 main() {...} 探测 sprintf 是否损坏，
+# Xcode 26 的 clang 对隐式 int 直接报错，try_run 必然失败 → 误判 ZEND_BROKEN_SPRINTF=1，
+# 于是 php_config.h 里会生成 int zend_sprintf(...) 声明；而 7.1 的这个头还没有
+# include guard（7.2+ 才加上），C++ 单元里被 extern "C" 内外各包含一次就报
+# "declaration of 'zend_sprintf' has a different language linkage"。
+# macOS 的 sprintf 本身正常，直接把 configure 的缓存值钉成 no。
+export ac_cv_broken_sprintf=no
+
 PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 ./configure --prefix="$PREFIX" \
 --with-config-file-path="$PREFIX/etc" \
