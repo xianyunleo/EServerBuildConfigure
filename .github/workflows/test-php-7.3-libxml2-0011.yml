@@ -1,0 +1,75 @@
+name: PHP 7.3 libxml2 2.15 + 0011 test
+
+# 临时诊断 workflow：libxml2 2.15.3 + 0011 回溯补丁 编译测试
+# 触发：push tag php-7.3-libxml0011*
+# 不发布 release、不覆盖任何产物。
+
+on:
+  push:
+    tags:
+      - 'php-7.3-libxml0011*'
+
+jobs:
+  test:
+    name: libxml2-2.15-with-0011
+    runs-on: macos-latest
+    env:
+      PREFIX: /Applications/EServer/childApp/php/php-7.3
+      PHP_VERSION: 7.3.33
+      MACOSX_DEPLOYMENT_TARGET: 11.0
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          brew update
+          brew install autoconf automake libtool bison re2c
+
+      - name: Set Homebrew PATH
+        run: |
+          BISON_PATH="$(brew --prefix bison)/bin"
+          echo "$BISON_PATH" >> $GITHUB_PATH
+
+      - name: Prepare EServer Library
+        run: |
+          sudo mkdir -p /Applications/EServer/Library
+          sudo cp -R Library/* /Applications/EServer/Library/
+
+      - name: Patch script (libxml2 2.15 + 0011) and build
+        run: |
+          sed -i '' 's#--with-libxml-dir=/Applications/EServer/Library/libxml2@2.11#--with-libxml-dir=/Applications/EServer/Library/libxml2#' mac_arm64/php/php-7.3.sh
+          awk '{print} /0010-Fix-GH-16168/ {print "patch -p1 < ../../patch/php/0011-Backport-4fe82131-Backport-libxml2-2.13.2-fixes-1481-PHP7.3.patch"}' mac_arm64/php/php-7.3.sh > /tmp/p.sh
+          mv /tmp/p.sh mac_arm64/php/php-7.3.sh
+          echo "===== patch list / libxml path ====="
+          grep -n 'patch -p1 <\|libxml-dir' mac_arm64/php/php-7.3.sh
+          chmod +x mac_arm64/php/php-7.3.sh
+          ./mac_arm64/php/php-7.3.sh
+
+      - name: Collect build log on failure
+        if: failure()
+        run: |
+          CONFIG_LOG="build/php-$PHP_VERSION/config.log"
+          MAKE_LOG="build/php-$PHP_VERSION/make.log"
+          if [ -f "$MAKE_LOG" ]; then
+            echo "===== make.log compile errors ====="
+            grep -E 'error:|fatal error:|hunk FAILED|Undefined symbols|ld: ' "$MAKE_LOG" | grep -v 'ld: warning' | tail -30 || true
+            ERRS=$(grep -A 4 -E 'Undefined symbols|error:|fatal error:' "$MAKE_LOG" | grep -vE 'warning|ld: warning' | tail -20 | base64 | tr -d '\n')
+            echo "::error::MAKE_ERR_B64=$ERRS"
+          else
+            echo "make.log not found"
+          fi
+          if [ -f "$CONFIG_LOG" ]; then
+            echo "::error::CONFIG_LOG_B64=$(tail -30 "$CONFIG_LOG" | base64 | tr -d '\n')"
+          fi
+
+      - name: Runtime smoke test
+        if: success()
+        run: |
+          PHP="$PREFIX/bin/php"
+          "$PHP" -v
+          "$PHP" -r 'echo "libxml=", LIBXML_DOTTED_VERSION, " dom=", (int)extension_loaded("dom"), " simplexml=", (int)extension_loaded("simplexml"), " soap=", (int)extension_loaded("soap"), " xml=", (int)extension_loaded("xml"), PHP_EOL;'
+          "$PHP" -r '$d = new DOMDocument(); $d->loadXML("<a b=\"1\"><c>x &amp; y</c></a>"); echo $d->saveXML();'
+          "$PHP" -r 'echo simplexml_load_string("<a><b>1</b></a>")->b, PHP_EOL;'
+          echo "::notice::BUILD_OK libxml2 2.15.3 + 0011"
