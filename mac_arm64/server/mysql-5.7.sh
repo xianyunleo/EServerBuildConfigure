@@ -158,7 +158,8 @@ if [ "$MAKE_EXIT" -ne 0 ]; then
   echo ""
   echo "========== make failed (exit $MAKE_EXIT) =========="
   if [ "${GITHUB_ACTIONS:-}" = "true" ]; then
-    first=$(grep -n -a -m1 -E "error:" "$BUILD_LOG" | cut -d: -f1 || true)
+    # 只匹配 clang 诊断行 `path:line:col: error:`，避免命中源码里的 "error:" 字符串
+    first=$(grep -n -a -m1 -E ":[0-9]+:[0-9]+: (fatal )?error:" "$BUILD_LOG" | cut -d: -f1 || true)
     if [ -n "$first" ]; then
       echo "::error title=make failed (exit $MAKE_EXIT, first error line $first):: $(sed -n "${first},$(( first + 5 ))p" "$BUILD_LOG" | tr -d '\r' | tr '\n' '|' | cut -c1-1400)"
     else
