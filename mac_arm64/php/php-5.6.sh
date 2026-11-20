@@ -8,79 +8,85 @@ export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/childApp/php/php-5.6}
 PHP_VERSION=${PHP_VERSION:-5.6.40}
 
+# 官方 php-5.6.40 的 ext/openssl 只支持到 OpenSSL 1.0.2：它直接读 dsa->p /
+# dsa->priv_key 这类结构体字段，而 OpenSSL 1.1.0 起 DSA/DH/RSA 全部 opaque 化，
+# 编译必然报 "incomplete definition of type 'DSA'"。所以这里不用 php.net 官方
+# tarball，改用 shivammathur/php-src-backports 的 security-backports + openssl11
+# 线源码（main/php_version.h 仍是 5.6.40）。
+# 该树已内置全部所需 backport，无需再打任何 patch：
+#   OpenSSL 1.1/3.x/4.x accessor 改造、ICU 70 适配、bug 79589 (TLS EOF)、
+#   aarch64 ZEND_SIGNED_MULTIPLY_LONG、pthreads 交叉编译检测、ITIMER_REAL、
+#   头文件 register 关键字移除、LDAP 默认 host 修复。
+# 参考 shivammathur/homebrew-php 的 Formula/php@5.6.rb。
+SOURCE_COMMIT=${SOURCE_COMMIT:-048228913b6eeda72b784c59c43a7bfe8eb05f34}
+SRC_NAME="php-src-backports-${SOURCE_COMMIT}"
+TARBALL="${SRC_NAME}.tar.gz"
+URL="https://github.com/shivammathur/php-src-backports/archive/${SOURCE_COMMIT}.tar.gz"
+
 # -------------------------------
 # 下载源码
 # -------------------------------
-TARBALL="php-${PHP_VERSION}.tar.gz"
-URL="https://www.php.net/distributions/$TARBALL"
-
 mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
-  echo "Downloading PHP $PHP_VERSION..."
-  curl -LO "$URL"
+  echo "Downloading php-src-backports @ $SOURCE_COMMIT..."
+  curl -fL -o "$TARBALL" "$URL"
 fi
 
 # -------------------------------
 # 解压
 # -------------------------------
-rm -rf "php-${PHP_VERSION}"
+rm -rf "$SRC_NAME"
 tar -xzf "$TARBALL"
-cd "php-${PHP_VERSION}"
+cd "$SRC_NAME"
 
 # -------------------------------
-# 清理旧文件
+# 编译环境（对齐 homebrew-php php@5.6 的 ENV 设置）
 # -------------------------------
-make clean || true
-
-# 低版本 PHP 的 K&R 风格源码不兼容 C23，强制使用 C17 + 抑制隐式函数声明错误
-export CFLAGS="${CFLAGS:+$CFLAGS }-std=gnu17 -Wno-implicit-function-declaration"
-
-# Xcode 15.3+ (clang build >= 1500) 兼容性修复
+# 5.6 的 K&R 风格源码在 C23 下编译不过，锁到 gnu99；
+# Xcode 15.3+ (clang build >= 1500) 起隐式 int / 整数转指针 / 函数指针不兼容
+# 都直接报错，必须降级为警告。
+export CFLAGS="${CFLAGS:+$CFLAGS }-std=gnu99 -Wno-implicit-function-declaration"
 CLANG_BUILD=$(clang --version 2>/dev/null | grep -oE 'clang-[0-9]+' | head -1 | sed 's/clang-//')
 if [ -n "$CLANG_BUILD" ] && [ "$CLANG_BUILD" -ge 1500 ]; then
   echo "Detected clang build $CLANG_BUILD >= 1500, applying Xcode 15.3 workarounds..."
-  export CFLAGS="${CFLAGS:+$CFLAGS }-Wno-incompatible-function-pointer-types"
-  export LDFLAGS="${LDFLAGS:+$LDFLAGS }-lresolv"
-  # readdir_r 在 macOS 新版 SDK 中已废弃，2 参数形式已移除，需替换为 3 参数形式
-  sed -i '' 's/readdir_r(dirp, entry)/readdir_r(dirp, entry, result)/g' main/reentrancy.c
+  export CFLAGS="${CFLAGS:+$CFLAGS }-Wno-incompatible-function-pointer-types -Wno-implicit-int -Wno-int-conversion"
 fi
+# readdir_r 在 macOS 新版 SDK 中已废弃，2 参数形式已移除，需替换为 3 参数形式
+# （只有 configure 误判成 HAVE_OLD_READDIR_R 时才会走到这段，替换了也无害）
+sed -i '' 's/readdir_r(dirp, entry)/readdir_r(dirp, entry, result)/g' main/reentrancy.c
 
-# PHP 5.6/7.0 的 configure 用 K&R 老写法 main() {...} 探测 sprintf 是否损坏，
+# 5.6 的 configure 用 K&R 老写法 main() {...} 探测 sprintf 是否损坏，
 # Xcode 26 的 clang 对隐式 int 直接报错，try_run 必然失败 → 误判 ZEND_BROKEN_SPRINTF=1，
 # 于是 php_config.h 里会生成 int zend_sprintf(...) 声明；而这些版本的 php_config.h
 # 还没有 include guard，C++ 单元里被 extern "C" 内外各包含一次就报
 # "declaration of 'zend_sprintf' has a different language linkage"。
 # macOS 的 sprintf 本身正常，直接把 configure 的缓存值钉成 no。
 export ac_cv_broken_sprintf=no
-# ICU 75+ 需要 C++17。PHP 5.6 的 PHP_SETUP_ICU 只把 icu-config 的
-# --cppflags-searchpath 结果当成 ICU_INCS（没有 ICU_CXXFLAGS 这一路），
-# 所以 -std=c++17 只能经 CXXFLAGS 进到 ext/intl 的 .cpp 编译行。
-# ICU 68+ 公共头文件默认不再定义 TRUE/FALSE，而 ext/intl 仍在用。
+# ICU 68+ 公共头文件默认不再定义 TRUE/FALSE，而 ext/intl 仍在用；
 # 启用 ICU 官方过渡开关恢复这两个宏（PHP 7.3+ 已改用 1/0，无需此开关）。
-# U_USING_ICU_NAMESPACE：ICU 的 uversion.h 现在恒默认 0，不再自动 `using namespace icu_XX`，
-# ext/intl 里裸用 UnicodeString 就报 unknown type name。PHP 7.1+ 的 PHP_SETUP_ICU
-# pkg-config 分支自己钉了 ICU_CXXFLAGS="-DU_USING_ICU_NAMESPACE=1"，而 5.6 只有
-# icu-config 一条路、压根不设 ICU_CXXFLAGS，所以这里必须手工补。
 export CFLAGS="${CFLAGS:+$CFLAGS }-DU_DEFINE_FALSE_AND_TRUE=1"
+export CXXFLAGS="${CXXFLAGS:+$CXXFLAGS} -DU_DEFINE_FALSE_AND_TRUE=1"
+# U_USING_ICU_NAMESPACE：ICU 的 uversion.h 现在恒默认 0，不再自动 `using namespace icu_XX`，
+# ext/intl 里裸用 UnicodeString 就报 unknown type name。5.6 的 PHP_SETUP_ICU 只有
+# icu-config 一条路、从不设 ICU_CXXFLAGS，所以必须手工补（放 CPPFLAGS，C/C++ 都覆盖）。
+export CPPFLAGS="${CPPFLAGS:+$CPPFLAGS }-DU_USING_ICU_NAMESPACE=1"
+# ICU 75+ 需要 C++17：5.6 没有 ICU_CXXFLAGS 这一路，只能经 CXXFLAGS/CXX 进 .cpp 编译行。
+export CXXFLAGS="${CXXFLAGS:+$CXXFLAGS} -std=c++17"
 export LIBS="${LIBS:+$LIBS }-lresolv"
-export CXXFLAGS="${CXXFLAGS:+$CXXFLAGS} -std=c++17 -DU_DEFINE_FALSE_AND_TRUE=1 -DU_USING_ICU_NAMESPACE=1"
 export LDFLAGS="${LDFLAGS:+$LDFLAGS }-Wl,-headerpad_max_install_names"
 
 # -------------------------------
-# 补丁（官方源码在 arm64 macOS + 高版本 ICU/OpenSSL 下编译必需）
+# 生成 configure
 # -------------------------------
-echo "Applying patches..."
-patch -p1 < ../../patch/php/0001-Add-support-for-ICU-70.1-PHP5.6.patch
-patch -p1 < ../../patch/php/0002-Add-minimal-OpenSSL-3.0-patch-PHP5.6.patch
-patch -p1 < ../../patch/php/0003-Fix-bug-79589-ssl3_read_n-unexpected-eof-while-reading-PHP5.6.patch
-patch -p1 < ../../patch/php/0004-PATCH-Fix-ZEND_SIGNED_MULTIPLY_LONG-for-AArch64.patch
-patch -p1 < ../../patch/php/0005-Fix-pthreads-detection-when-cross-compiling.patch
-patch -p1 < ../../patch/php/0006-Use-ITIMER_REAL-for-timeout-handling-PHP-5.6.patch
-patch -p1 < ../../patch/php/0008-Remove-use-of-register-keywork-in-headers-PHP-5.6.patch
-patch -p1 < ../../patch/php/0014-Fix-default-LDAP-host-PHP5.6.patch
+# 这是 git 归档源码，没有预生成的 configure，必须跑 buildconf。
+echo "Running buildconf..."
+./buildconf --force
 
+# -------------------------------
+# 配置
+# -------------------------------
 # PHP 5.6 的 PHP_SETUP_ICU 只认 icu-config（7.1+ 才有 pkg-config 分支），
 # 必须显式给 --with-icu-dir，否则会去 PATH 里找 icu-config 而失败。
 PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
@@ -93,6 +99,7 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 --enable-fpm \
 --enable-mbstring \
 --enable-mbregex \
+--enable-mysqlnd \
 --enable-opcache \
 --enable-soap \
 --enable-sockets \
@@ -102,13 +109,13 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 --with-icu-dir=/Applications/EServer/Library/icu \
 --with-bz2=/Applications/EServer/Library/bzip2 \
 --with-curl=shared,/Applications/EServer/Library/curl \
---with-mysql \
---with-mysqli \
+--with-mysql=mysqlnd \
+--with-mysqli=mysqlnd \
+--with-pdo-mysql=mysqlnd \
 --with-gd=shared \
 --with-gmp=/Applications/EServer/Library/gmp \
 --with-iconv=/Applications/EServer/Library/libiconv \
 --with-openssl=shared,/Applications/EServer/Library/openssl@3.5 \
---with-pdo-mysql \
 --with-pgsql=/Applications/EServer/Library/libpq \
 --with-pdo-pgsql=/Applications/EServer/Library/libpq \
 --with-pdo-sqlite \
@@ -117,6 +124,7 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 --with-png-dir=/Applications/EServer/Library/libpng \
 --with-freetype-dir=/Applications/EServer/Library/freetype \
 --with-libxml-dir=/Applications/EServer/Library/libxml2@2.11 \
+--with-pic \
 --with-zlib-dir=/Applications/EServer/Library/zlib
 
 # -------------------------------
