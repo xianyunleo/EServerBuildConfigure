@@ -145,8 +145,30 @@ fi
 
 # -------------------------------------------------
 # 编译安装
+# 日志同时落 cmake_logs/build.log；失败时用 ::error:: 注解输出错误
+# 行（Actions 原始日志需登录才能下载，注解页公开可读）
 # -------------------------------------------------
-make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
+BUILD_LOG="$REPO_ROOT/cmake_logs/build.log"
+set +e
+make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)" 2>&1 | tee -a "$BUILD_LOG"
+MAKE_EXIT=${PIPESTATUS[0]}
+set -e
+
+if [ "$MAKE_EXIT" -ne 0 ]; then
+  echo ""
+  echo "========== make failed (exit $MAKE_EXIT) =========="
+  if [ "${GITHUB_ACTIONS:-}" = "true" ]; then
+    first=$(grep -n -a -m1 -E "error:" "$BUILD_LOG" | cut -d: -f1 || true)
+    if [ -n "$first" ]; then
+      echo "::error title=make failed (exit $MAKE_EXIT, first error line $first):: $(sed -n "${first},$(( first + 5 ))p" "$BUILD_LOG" | tr -d '\r' | tr '\n' '|' | cut -c1-1400)"
+    else
+      echo "::error title=make failed (exit $MAKE_EXIT):: $(tail -n 20 "$BUILD_LOG" | tr -d '\r' | tr '\n' '|' | cut -c1-1400)"
+    fi
+  fi
+  tail -n 60 "$BUILD_LOG" || true
+  exit "$MAKE_EXIT"
+fi
+
 sudo make install
 
 # -------------------------------------------------
