@@ -59,9 +59,13 @@ export ac_cv_broken_sprintf=no
 # 所以 -std=c++17 只能经 CXXFLAGS 进到 ext/intl 的 .cpp 编译行。
 # ICU 68+ 公共头文件默认不再定义 TRUE/FALSE，而 PHP 7.0 的 ext/intl 仍在用。
 # 启用 ICU 官方过渡开关恢复这两个宏（PHP 7.3+ 已改用 1/0，无需此开关）。
+# U_USING_ICU_NAMESPACE：ICU 的 uversion.h 现在恒默认 0，不再自动 `using namespace icu_XX`，
+# ext/intl 里裸用 UnicodeString 就报 unknown type name。PHP 7.1+ 的 PHP_SETUP_ICU
+# pkg-config 分支自己钉了 ICU_CXXFLAGS="-DU_USING_ICU_NAMESPACE=1"，而 7.0 只有
+# icu-config 一条路、压根不设 ICU_CXXFLAGS，所以这里必须手工补。
 export CFLAGS="${CFLAGS:+$CFLAGS }-DU_DEFINE_FALSE_AND_TRUE=1"
 export LIBS="${LIBS:+$LIBS }-lresolv"
-export CXXFLAGS="${CXXFLAGS:+$CXXFLAGS} -std=c++17 -DU_DEFINE_FALSE_AND_TRUE=1"
+export CXXFLAGS="${CXXFLAGS:+$CXXFLAGS} -std=c++17 -DU_DEFINE_FALSE_AND_TRUE=1 -DU_USING_ICU_NAMESPACE=1"
 export LDFLAGS="${LDFLAGS:+$LDFLAGS }-Wl,-headerpad_max_install_names"
 
 # -------------------------------
