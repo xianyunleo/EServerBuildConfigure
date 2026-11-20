@@ -84,8 +84,11 @@ done
 # 新版 Clang 默认开启 -Werror=implicit-function-declaration，
 # 且 5.7 的维护者模式会启用 -Werror，直接编译必然失败，故整体关闭。
 # C++ 侧固定 C++11：5.7 代码仍在使用 std::auto_ptr 等 C++17 已移除特性。
+# -Wno-enum-constexpr-conversion：clang 16 起把该诊断升级为错误，而 5.7 钉死
+# 的 boost 1.59 在 mpl/aux_/integral_wrapper.hpp 里做 static_cast<Enum>(value-1)
+# 会算出 -1（越界常量转换），不放行就编不过。
 export CFLAGS="-O2 -Wno-error=implicit-function-declaration -Wno-error"
-export CXXFLAGS="-O2 -std=c++11 -Wno-error=deprecated-declarations -Wno-error"
+export CXXFLAGS="-O2 -std=c++11 -Wno-error=deprecated-declarations -Wno-error -Wno-enum-constexpr-conversion"
 
 ARGS=(
   -DCMAKE_INSTALL_PREFIX="$PREFIX"
