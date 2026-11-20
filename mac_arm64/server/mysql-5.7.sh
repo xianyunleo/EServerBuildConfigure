@@ -64,6 +64,21 @@ cd "$SRC_DIR"
 rm -rf CMakeCache.txt CMakeFiles
 
 # -------------------------------------------------
+# 修补内置 zlib 的 fdopen 宏冲突
+# zutil.h 在 macOS 分支里写了 `#define fdopen(fd,mode) NULL`，
+# 而新版 macOS SDK（Xcode 16.4+ / 26）的 _stdio.h 会无条件声明
+# `FILE *fdopen(int, const char *)`，宏展开后直接编译失败：
+#   _stdio.h:322: error: expected identifier or '('
+# 上游 madler/zlib#1076 到 1.3.1 才修，5.7 的 bundled 1.2.13 不会更新。
+# -------------------------------------------------
+for zutil in extra/zlib/zlib-*/zutil.h; do
+  [ -f "$zutil" ] || continue
+  echo "Patching $zutil (drop fdopen macro)"
+  sed -i '' -E 's|^#[[:space:]]*define[[:space:]]+fdopen\(fd,mode\)[[:space:]]+NULL.*$|/* patched out by EServer: conflicts with macOS SDK stdio.h */|' "$zutil"
+  grep -n "fdopen" "$zutil" || true
+done
+
+# -------------------------------------------------
 # 配置（参照 Homebrew mysql@5.7 配方 + macOS 兼容性补丁）
 # -------------------------------------------------
 # 新版 Clang 默认开启 -Werror=implicit-function-declaration，
