@@ -102,7 +102,9 @@ fi
 
 export LIBS="${LIBS:+$LIBS }-lresolv"
 
-PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
+# libxml2@2.11 的 pkgconfig 放在最前，覆盖 Library/lib 里指向 2.15.3 的
+# libxml-2.0.pc（2.12+ 移除了 ATTRIBUTE_UNUSED，PHP 8.0 源码仍依赖该宏）
+PKG_CONFIG_PATH=/Applications/EServer/Library/libxml2@2.11/lib/pkgconfig:/Applications/EServer/Library/lib/pkgconfig \
 ./configure --prefix="$PREFIX" \
   --with-config-file-path="$PREFIX/etc" \
   --enable-bcmath \
