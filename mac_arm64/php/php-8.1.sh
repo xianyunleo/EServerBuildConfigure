@@ -76,7 +76,10 @@ export ICU_CXXFLAGS="-std=c++17"
 
 export LIBS="${LIBS:+$LIBS }-lresolv"
 
-PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
+# libxml2@2.11 的 pkgconfig 放在最前，覆盖 Library/lib 里指向 2.15.3 的
+# libxml-2.0.pc（2.13+ 改了解析器的 instate 行为，ext/xml 的实体上报会出偏差；
+# 2.11.9 仍按 ATTRIBUTE_VALUE/ENTITY_VALUE 维护状态，行为与 8.1 源码判断一致）
+PKG_CONFIG_PATH=/Applications/EServer/Library/libxml2@2.11/lib/pkgconfig:/Applications/EServer/Library/lib/pkgconfig \
 ./configure --prefix="$PREFIX" \
   --with-config-file-path="$PREFIX/etc" \
   --enable-bcmath \
