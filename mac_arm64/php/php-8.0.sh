@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
+set -E
+trap 'rc=$?; echo "ERROR: command failed (exit $rc) at line $LINENO: $BASH_COMMAND" >&2; _f="${GITHUB_WORKSPACE:-/tmp}/failure.txt"; { printf "L%s: %s\n" "$LINENO" "$BASH_COMMAND"; if [ -f make.log ]; then grep -m 10 -E "error:|fatal error:" make.log | sed -E "s#$PWD/##g; s#^.*/((ext|Zend|main|sapi|TSRM)/[^:]+:[0-9]+:[0-9]+: )#\1#"; fi; } > "$_f" 2>/dev/null || true' ERR
 
 # -------------------------------
 # 配置
@@ -31,6 +33,31 @@ tar -xzf "$TARBALL"
 SRC_DIR=$(tar -tzf "$TARBALL" | head -1 | cut -d/ -f1)
 echo "Source directory: $SRC_DIR"
 cd "$SRC_DIR"
+
+# -------------------------------
+# 补丁
+# 这些补丁在 php-src-backports-8.0.30 源码包中可能已经内置，
+# 用反向 dry-run 判断，已应用则跳过，未应用则打上（幂等）。
+# -------------------------------
+apply_patch() {
+  local f="$1"
+  if [ ! -f "$f" ]; then
+    echo "patch not found: $f" >&2
+    return 1
+  fi
+  if patch -p1 -R --dry-run -s -f < "$f" >/dev/null 2>&1; then
+    echo "already applied, skip: $(basename "$f")"
+  else
+    echo "applying: $(basename "$f")"
+    patch -p1 < "$f"
+  fi
+}
+
+apply_patch ../../patch/php/0002-Add-minimal-OpenSSL-3.0-patch-PHP8.0.patch
+apply_patch ../../patch/php/0003-Fix-bug-79589-ssl3_read_n-unexpected-eof-while-reading-PHP8.0.patch
+apply_patch ../../patch/php/0006-Use-ITIMER_REAL-for-timeout-handling-PHP-8.0.patch
+apply_patch ../../patch/php/0009-Fix-w-strict-prototype-build-warnings-PHP-8.0.patch
+apply_patch ../../patch/php/0010-Fix-GH-16168-Fix-inline-assembly-labels-to-not-crash-PHP8.0.patch
 
 # -------------------------------
 # 清理旧文件 & 生成 configure
@@ -111,7 +138,7 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 # -------------------------------
 # 编译安装
 # -------------------------------
-make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
+make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)" 2>&1 | tee make.log
 sudo make install
 
 sudo cp ./php.ini-development "$PREFIX/etc/php.ini-development"
