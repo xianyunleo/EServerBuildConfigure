@@ -68,6 +68,9 @@ fi
 # 配置
 # -------------------------------
 
+# PHP 8.1 的 ext/bcmath/libbcmath 仍是 K&R 风格源码，不兼容 C23，强制使用 C17
+export CFLAGS="${CFLAGS:+$CFLAGS }-std=gnu17"
+
 # ICU 75+ 需要 C++17
 export ICU_CXXFLAGS="-std=c++17"
 
