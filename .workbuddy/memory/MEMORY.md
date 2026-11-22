@@ -77,3 +77,11 @@ otool 看到的依赖可能是传递依赖，而非直接依赖。当某库 A �
 - 匿名 GitHub API 读不到 Actions 日志；脚本 ERR trap 把「行号 + make 中 `error:` 摘要」写入 `$GITHUB_WORKSPACE/failure.txt`，
   workflow 在 `if: failure()` 步骤用 `GITHUB_TOKEN` 上报到 commit status（context `diag-<job>-N`，每条 130 字符）。
 - 上报前用 `sed "s#$PWD/##g"` 去掉源码绝对路径，否则长路径会把错误文案挤出 130 字符窗口。
+### PHP 8.1 源码与补丁（2026-11 起）
+- 源码改用官方分支归档 `PHP-8.1-CVE-2026-109618-109619`（分支版本 8.1.34，非 8.1.31）。
+- 只打 1 个补丁：`0006-Use-ITIMER_REAL-for-timeout-handling-PHP-8.1.patch`（offset 15）。
+- 必须 `CFLAGS += -std=gnu17`：`ext/bcmath/libbcmath` 的 K&R 风格定义在 C23 下属实报错
+  （`unknown type name 'n1'`）。
+- **不需要** libxml2@2.11 覆盖：分支里 `ext/libxml/libxml.c` 已是 `int compression)`，
+  const 回调也有 `#if LIBXML_VERSION` 保护，2.15.3 直接可用。
+- 分支归档不含 `configure`，需 buildconf，故 workflow 需安装 autoconf/bison 并加 Homebrew PATH。
