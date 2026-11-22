@@ -77,7 +77,6 @@ patch -p1 < ../../patch/php/0003-Fix-bug-79589-ssl3_read_n-unexpected-eof-while-
 patch -p1 < ../../patch/php/0006-Use-ITIMER_REAL-for-timeout-handling-PHP-7.4.patch
 patch -p1 < ../../patch/php/0009-Fix-w-strict-prototype-build-warnings-PHP-7.4.patch
 patch -p1 < ../../patch/php/0010-Fix-GH-16168-Fix-inline-assembly-labels-to-not-crash-PHP7.4.patch
-patch -p1 < ../../patch/php/0011-Fix-libxml2-2.12-ATTRIBUTE_UNUSED-PHP7.4.patch
 
 # -------------------------------
 # 生成 configure（git 分支源码不含 configure）
@@ -91,7 +90,9 @@ fi
 # 配置
 # -------------------------------
 
-PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
+# libxml2@2.11 的 pkgconfig 放在最前，覆盖 Library/lib 里指向 2.15.3 的
+# libxml-2.0.pc（2.12+ 移除了 ATTRIBUTE_UNUSED，PHP 7.4 源码仍依赖该宏）
+PKG_CONFIG_PATH=/Applications/EServer/Library/libxml2@2.11/lib/pkgconfig:/Applications/EServer/Library/lib/pkgconfig \
 ./configure --prefix="$PREFIX" \
   --with-config-file-path="$PREFIX/etc" \
   --enable-bcmath \
