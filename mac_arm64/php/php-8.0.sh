@@ -11,32 +11,32 @@ PREFIX=${PREFIX:-/Applications/EServer/childApp/php/php-8.0}
 PHP_VERSION=${PHP_VERSION:-8.0.30}
 
 # -------------------------------
-# 下载源码
+# 下载源码（php-src 官方 CVE 修复分支）
+# https://github.com/php/php-src/tree/PHP-8.0-CVE-2026-109618-109619
 # -------------------------------
-TARBALL="php-src-backports-8.0.30.tar.gz"
-URL="https://raw.githubusercontent.com/xianyunleo/EServerBuildConfigure/master/php-src-backports/$TARBALL"
+GIT_BRANCH="PHP-8.0-CVE-2026-109618-109619"
+SRC_DIR="php-src-${GIT_BRANCH}"
+TARBALL="${SRC_DIR}.tar.gz"
+URL="https://github.com/php/php-src/archive/refs/heads/${GIT_BRANCH}.tar.gz"
 
 mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
-  echo "Downloading PHP $PHP_VERSION..."
-  curl -LO "$URL"
+  echo "Downloading php-src branch $GIT_BRANCH..."
+  curl -L -o "$TARBALL" "$URL"
 fi
 
 # -------------------------------
 # 解压
 # -------------------------------
-rm -rf "php-${PHP_VERSION}"
-rm -rf "php-src-backports-8.0.30"
+rm -rf "$SRC_DIR"
 tar -xzf "$TARBALL"
-SRC_DIR=$(tar -tzf "$TARBALL" | head -1 | cut -d/ -f1)
 echo "Source directory: $SRC_DIR"
 cd "$SRC_DIR"
 
 # -------------------------------
 # 补丁
-# 这些补丁在 php-src-backports-8.0.30 源码包中可能已经内置，
 # 用反向 dry-run 判断，已应用则跳过，未应用则打上（幂等）。
 # -------------------------------
 apply_patch() {
