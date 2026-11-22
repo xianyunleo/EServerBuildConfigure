@@ -46,3 +46,23 @@ otool 看到的依赖可能是传递依赖，而非直接依赖。当某库 A �
 - 根因：PHP 7.3 的 libtool darwin 分支 `_lt_dar_allow_undefined` 只匹配 `10.*`，`11.0` 不匹配 → module 链接缺 `-undefined dynamic_lookup`，无法引用主程序符号。
 - 修复：configure 之后、make 之前 sed 改生成的 `libtool`：`s/^allow_undefined_flag=""$/allow_undefined_flag=" -undefined dynamic_lookup"/`。
 - 注意：不要把它塞进全局 LDFLAGS（会破坏 configure 的 conftest 链接检测导致 exit 1）。
+
+### PHP 7.4 源码与补丁（2026-11 起）
+- 源码改用官方分支归档 `PHP-7.4-CVE-2026-109618-109619`（解压目录 `php-src-PHP-7.4-CVE-2026-109618-109619`）。
+- patch 顺序：0002 OpenSSL3.0 → 0003 bug79589 → 0006 ITIMER_REAL → 0009 strict-prototypes → 0010 GH-16168。
+- git 分支归档不含 `configure`，patch 后必须 `./buildconf --force`。
+- libxml2 版本：`Library/libxml2` = 2.15.3（`xmlversion.h` 已无 `ATTRIBUTE_UNUSED`），
+  `Library/libxml2@2.11` = 2.11.9（仍有该宏）。`Library/lib/pkgconfig/libxml-2.0.pc` 指向 2.15.3。
+- PHP 7.4 的 `ext/libxml/config0.m4` **没有** `--with-libxml-dir` 选项（7.3 有），libxml2 只能经
+  `PKG_CHECK_MODULES(libxml-2.0)` 从 `PKG_CONFIG_PATH` 解析。要让 7.4 用 2.11，把
+  `libxml2@2.11/lib/pkgconfig` 放在 `PKG_CONFIG_PATH` 最前即可（不要改 `--with-libxml`）。
+- 该 workflow 只有 tag 触发才能正确命名 release：`php-7.4.*`。
+
+### macOS 脚本 sed 陷阱
+- macOS 自带 BSD sed 的 ERE **不支持** `\s`（GNU 扩展），`s/a,\s+0/b/` 这类表达式会静默不匹配。
+- 需要空白匹配时用 `[[:space:]]`；`-i` 必须带备份后缀（`-i.bak`）。
+
+### CI 失败诊断（无法读取 Actions 日志时）
+- 匿名 GitHub API 读不到 Actions 日志；脚本 ERR trap 把「行号 + make 中 `error:` 摘要」写入 `$GITHUB_WORKSPACE/failure.txt`，
+  workflow 在 `if: failure()` 步骤用 `GITHUB_TOKEN` 上报到 commit status（context `diag-<job>-N`，每条 130 字符）。
+- 上报前用 `sed "s#$PWD/##g"` 去掉源码绝对路径，否则长路径会把错误文案挤出 130 字符窗口。
