@@ -48,6 +48,28 @@ jobs:
           chmod +x mac_arm64/php/php-7.4.sh
           ./mac_arm64/php/php-7.4.sh
 
+      - name: Report failure info
+        if: failure()
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          FILE="${GITHUB_WORKSPACE}/failure.txt"
+          if [ -f "$FILE" ]; then export MSG="$(tr '\n' ' ' < "$FILE" | cut -c1-130)"; else export MSG="unknown failure (no failure.txt)"; fi
+          echo "DIAG: $MSG"
+          python3 - <<'PY'
+          import json, os, urllib.request
+          msg = os.environ["MSG"]
+          body = json.dumps({"state": "failure", "context": "diag-php7.4", "description": msg}).encode()
+          req = urllib.request.Request(
+              "https://api.github.com/repos/%s/statuses/%s" % (os.environ["REPO"], os.environ["SHA"]),
+              data=body,
+              headers={"Authorization": "Bearer " + os.environ["TOKEN"],
+                       "Accept": "application/vnd.github+json"})
+          print("status api:", urllib.request.urlopen(req).status)
+          PY
+
       - name: Debug workspace
         run: |
           echo "===== PWD ====="

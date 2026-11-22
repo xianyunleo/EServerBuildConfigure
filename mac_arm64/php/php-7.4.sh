@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 set -E
-trap 'echo "ERROR: command failed (exit $?) at line $LINENO: $BASH_COMMAND" >&2' ERR
+trap 'echo "ERROR: command failed (exit $?) at line $LINENO: $BASH_COMMAND" >&2; printf "L%s: %s\n" "$LINENO" "$BASH_COMMAND" > "${GITHUB_WORKSPACE:-/tmp}/failure.txt"' ERR
 
 # -------------------------------
 # 配置
