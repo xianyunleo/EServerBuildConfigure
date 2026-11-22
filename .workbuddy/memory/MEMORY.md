@@ -82,6 +82,8 @@ otool 看到的依赖可能是传递依赖，而非直接依赖。当某库 A �
 - 只打 1 个补丁：`0006-Use-ITIMER_REAL-for-timeout-handling-PHP-8.1.patch`（offset 15）。
 - 必须 `CFLAGS += -std=gnu17`：`ext/bcmath/libbcmath` 的 K&R 风格定义在 C23 下属实报错
   （`unknown type name 'n1'`）。
-- **不需要** libxml2@2.11 覆盖：分支里 `ext/libxml/libxml.c` 已是 `int compression)`，
-  const 回调也有 `#if LIBXML_VERSION` 保护，2.15.3 直接可用。
+- libxml2 覆盖：编译层面 8.1 分支已兼容 2.15（`int compression)` + `#if LIBXML_VERSION` const 保护），
+  但运行期 `ext/xml/compat.c` 仍是旧条件，2.13+ 不再维护 `ATTRIBUTE_VALUE`/`ENTITY_VALUE`
+  状态会让属性内实体误报，故最终统一改走 `PKG_CONFIG_PATH` 前置 `libxml2@2.11`（2.11.9），
+  也因此不需要 `0007-Fix-PEAR-installation-with-libxml2.13-PHP-8.1.patch`。
 - 分支归档不含 `configure`，需 buildconf，故 workflow 需安装 autoconf/bison 并加 Homebrew PATH。
