@@ -1,38 +1,68 @@
 #!/usr/bin/env bash
 set -euo pipefail
+set -E
+trap 'rc=$?; echo "ERROR: command failed (exit $rc) at line $LINENO: $BASH_COMMAND" >&2; _f="${GITHUB_WORKSPACE:-/tmp}/failure.txt"; { printf "L%s: %s\n" "$LINENO" "$BASH_COMMAND"; if [ -f make.log ]; then grep -m 10 -E "error:|fatal error:" make.log | sed -E "s#$PWD/##g; s#^.*/((ext|Zend|main|sapi|TSRM)/[^:]+:[0-9]+:[0-9]+: )#\1#"; fi; } > "$_f" 2>/dev/null || true' ERR
 
 # -------------------------------
 # 配置
 # -------------------------------
 export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
 PREFIX=${PREFIX:-/Applications/EServer/childApp/php/php-8.1}
-PHP_VERSION=${PHP_VERSION:-8.1.31}
+PHP_VERSION=${PHP_VERSION:-8.1.34}
 
 # -------------------------------
-# 下载源码
+# 下载源码（php-src 官方 CVE 修复分支）
+# https://github.com/php/php-src/tree/PHP-8.1-CVE-2026-109618-109619
 # -------------------------------
-TARBALL="php-${PHP_VERSION}.tar.gz"
-URL="https://www.php.net/distributions/$TARBALL"
+GIT_BRANCH="PHP-8.1-CVE-2026-109618-109619"
+SRC_DIR="php-src-${GIT_BRANCH}"
+TARBALL="${SRC_DIR}.tar.gz"
+URL="https://github.com/php/php-src/archive/refs/heads/${GIT_BRANCH}.tar.gz"
 
 mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
-  echo "Downloading PHP $PHP_VERSION..."
-  curl -LO "$URL"
+  echo "Downloading php-src branch $GIT_BRANCH..."
+  curl -L -o "$TARBALL" "$URL"
 fi
 
 # -------------------------------
 # 解压
 # -------------------------------
-rm -rf "php-${PHP_VERSION}"
+rm -rf "$SRC_DIR"
 tar -xzf "$TARBALL"
-cd "php-${PHP_VERSION}"
+echo "Source directory: $SRC_DIR"
+cd "$SRC_DIR"
 
 # -------------------------------
-# 清理旧文件
+# 补丁
+# 用反向 dry-run 判断，已应用则跳过，未应用则打上（幂等）。
 # -------------------------------
-make clean || true
+apply_patch() {
+  local f="$1"
+  if [ ! -f "$f" ]; then
+    echo "patch not found: $f" >&2
+    return 1
+  fi
+  if patch -p1 -R --dry-run -s -f < "$f" >/dev/null 2>&1; then
+    echo "already applied, skip: $(basename "$f")"
+  else
+    echo "applying: $(basename "$f")"
+    patch -p1 < "$f"
+  fi
+}
+
+apply_patch ../../patch/php/0006-Use-ITIMER_REAL-for-timeout-handling-PHP-8.1.patch
+
+# -------------------------------
+# 清理旧文件 & 生成 configure（git 分支源码不含 configure）
+# -------------------------------
+make clean 2>/dev/null || true
+if [ ! -f configure ]; then
+  echo "configure not found, running ./buildconf..."
+  ./buildconf --force
+fi
 
 # -------------------------------
 # 配置
@@ -79,7 +109,7 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
 # -------------------------------
 # 编译安装
 # -------------------------------
-make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
+make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)" 2>&1 | tee make.log
 sudo make install
 
 sudo cp ./php.ini-development "$PREFIX/etc/php.ini-development"
