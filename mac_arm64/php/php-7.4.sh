@@ -9,26 +9,27 @@ PREFIX=${PREFIX:-/Applications/EServer/childApp/php/php-7.4}
 PHP_VERSION=${PHP_VERSION:-7.4.33}
 
 # -------------------------------
-# 下载源码
+# 下载源码（php-src 官方 CVE 修复分支）
+# https://github.com/php/php-src/tree/PHP-7.4-CVE-2026-109618-109619
 # -------------------------------
-TARBALL="php-src-backports-7.4.33.tar.gz"
-URL="https://raw.githubusercontent.com/xianyunleo/EServerBuildConfigure/master/php-src-backports/$TARBALL"
+GIT_BRANCH="PHP-7.4-CVE-2026-109618-109619"
+SRC_DIR="php-src-${GIT_BRANCH}"
+TARBALL="${SRC_DIR}.tar.gz"
+URL="https://github.com/php/php-src/archive/refs/heads/${GIT_BRANCH}.tar.gz"
 
 mkdir -p build
 cd build
 
 if [ ! -f "$TARBALL" ]; then
-  echo "Downloading PHP $PHP_VERSION..."
-  curl -LO "$URL"
+  echo "Downloading php-src branch $GIT_BRANCH..."
+  curl -L -o "$TARBALL" "$URL"
 fi
 
 # -------------------------------
 # 解压
 # -------------------------------
-rm -rf "php-${PHP_VERSION}"
-rm -rf "php-src-backports-7.4.33"
+rm -rf "$SRC_DIR"
 tar -xzf "$TARBALL"
-SRC_DIR=$(tar -tzf "$TARBALL" | head -1 | cut -d/ -f1)
 echo "Source directory: $SRC_DIR"
 cd "$SRC_DIR"
 ls -la
@@ -64,18 +65,27 @@ fi
 export LIBS="${LIBS:+$LIBS }-lresolv"
 
 # -------------------------------
-# 清理旧文件 & 生成 configure
+# 补丁（官方分支在高版本 OpenSSL / 新 Xcode 下编译必需）
 # -------------------------------
 make clean 2>/dev/null || true
+
+echo "Applying patches..."
+patch -p1 < ../../patch/php/0002-Add-minimal-OpenSSL-3.0-patch-PHP7.4.patch
+patch -p1 < ../../patch/php/0003-Fix-bug-79589-ssl3_read_n-unexpected-eof-while-reading-PHP7.4.patch
+patch -p1 < ../../patch/php/0006-Use-ITIMER_REAL-for-timeout-handling-PHP-7.4.patch
+patch -p1 < ../../patch/php/0009-Fix-w-strict-prototype-build-warnings-PHP-7.4.patch
+patch -p1 < ../../patch/php/0010-Fix-GH-16168-Fix-inline-assembly-labels-to-not-crash-PHP7.4.patch
+
+# curl CURLOPT_VERBOSE 参数类型修正
+sed -i.bak -E 's/CURLOPT_VERBOSE,\s+0/CURLOPT_VERBOSE, 0L/' ext/curl/interface.c
+
+# -------------------------------
+# 生成 configure（git 分支源码不含 configure）
+# -------------------------------
 if [ ! -f configure ]; then
   echo "configure not found, running ./buildconf..."
   ./buildconf --force
 fi
-
-# -------------------------------
-# 补丁
-# -------------------------------
-sed -i.bak -E 's/CURLOPT_VERBOSE,\s+0/CURLOPT_VERBOSE, 0L/' ext/curl/interface.c
 
 # -------------------------------
 # 配置
