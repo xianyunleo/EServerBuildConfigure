@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 set -E
-trap 'rc=$?; echo "ERROR: command failed (exit $rc) at line $LINENO: $BASH_COMMAND" >&2; _f="${GITHUB_WORKSPACE:-/tmp}/failure.txt"; { printf "L%s: %s\n" "$LINENO" "$BASH_COMMAND"; [ -f make.log ] && grep -m 6 -E "error:|fatal error:|undefined (symbol|reference)|Error [0-9]" make.log; } > "$_f" 2>/dev/null || true' ERR
+trap 'rc=$?; echo "ERROR: command failed (exit $rc) at line $LINENO: $BASH_COMMAND" >&2; _f="${GITHUB_WORKSPACE:-/tmp}/failure.txt"; { printf "L%s: %s\n" "$LINENO" "$BASH_COMMAND"; if [ -f make.log ]; then grep -m 10 -E "error:|fatal error:" make.log | sed -E "s#$PWD/##g; s#^.*/((ext|Zend|main|sapi|TSRM)/[^:]+:[0-9]+:[0-9]+: )#\1#"; fi; } > "$_f" 2>/dev/null || true' ERR
 
 # -------------------------------
 # 配置
@@ -77,9 +77,6 @@ patch -p1 < ../../patch/php/0003-Fix-bug-79589-ssl3_read_n-unexpected-eof-while-
 patch -p1 < ../../patch/php/0006-Use-ITIMER_REAL-for-timeout-handling-PHP-7.4.patch
 patch -p1 < ../../patch/php/0009-Fix-w-strict-prototype-build-warnings-PHP-7.4.patch
 patch -p1 < ../../patch/php/0010-Fix-GH-16168-Fix-inline-assembly-labels-to-not-crash-PHP7.4.patch
-
-# curl CURLOPT_VERBOSE 参数类型修正
-sed -i.bak -E 's/CURLOPT_VERBOSE,\s+0/CURLOPT_VERBOSE, 0L/' ext/curl/interface.c
 
 # -------------------------------
 # 生成 configure（git 分支源码不含 configure）
