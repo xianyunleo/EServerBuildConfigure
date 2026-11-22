@@ -58,6 +58,17 @@ otool 看到的依赖可能是传递依赖，而非直接依赖。当某库 A �
   `libxml2@2.11/lib/pkgconfig` 放在 `PKG_CONFIG_PATH` 最前即可（不要改 `--with-libxml`）。
 - 该 workflow 只有 tag 触发才能正确命名 release：`php-7.4.*`。
 
+### PHP 8.0 源码与补丁（2026-11 起）
+- 源码同样改用官方分支归档 `PHP-8.0-CVE-2026-109618-109619`，不再用 `php-src-backports-8.0.30.tar.gz`。
+- patch 顺序：0002 OpenSSL3.0 → 0003 bug79589 → 0006 ITIMER_REAL → 0009 strict-prototypes → 0010 GH-16168。
+- 0009 的文件名是 `...-PHP-8.0.patch`（带连字符），其余四个是 `...PHP8.0.patch`，易混。
+- 脚本用 `apply_patch()` 幂等应用：`patch -p1 -R --dry-run` 成功即视为已应用并跳过，
+  兼容「backports 包已内置补丁」的情况（直接 `patch -p1 <` 会因 reversed 而失败）。
+- 直接编译（`PKG_CONFIG_PATH` 只含 `Library/lib/pkgconfig`）会失败：`ext/libxml/libxml.c:431` 的
+  `int compression ATTRIBUTE_UNUSED` 报 `expected ')'`——libxml 解析到 2.15.3。解法与 7.4 相同：
+  `PKG_CONFIG_PATH=/Applications/EServer/Library/libxml2@2.11/lib/pkgconfig:/Applications/EServer/Library/lib/pkgconfig`。
+- 分支归档不含 `configure`，patch 后需 `./buildconf --force`；workflow tag 模式 `php-8.0.*`。
+
 ### macOS 脚本 sed 陷阱
 - macOS 自带 BSD sed 的 ERE **不支持** `\s`（GNU 扩展），`s/a,\s+0/b/` 这类表达式会静默不匹配。
 - 需要空白匹配时用 `[[:space:]]`；`-i` 必须带备份后缀（`-i.bak`）。
