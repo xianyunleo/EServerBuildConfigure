@@ -77,6 +77,7 @@ patch -p1 < ../../patch/php/0003-Fix-bug-79589-ssl3_read_n-unexpected-eof-while-
 patch -p1 < ../../patch/php/0006-Use-ITIMER_REAL-for-timeout-handling-PHP-7.4.patch
 patch -p1 < ../../patch/php/0009-Fix-w-strict-prototype-build-warnings-PHP-7.4.patch
 patch -p1 < ../../patch/php/0010-Fix-GH-16168-Fix-inline-assembly-labels-to-not-crash-PHP7.4.patch
+patch -p1 < ../../patch/php/0011-Fix-libxml2-2.11-ATTRIBUTE_UNUSED-PHP7.4.patch
 
 # -------------------------------
 # 生成 configure（git 分支源码不含 configure）

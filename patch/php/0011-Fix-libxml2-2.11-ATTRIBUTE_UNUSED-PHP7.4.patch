@@ -1,0 +1,27 @@
+From: xianyunleo <xianyunleo@gmail.com>
+Date: Sun, 22 Nov 2026 13:55:00 +0800
+Subject: Fix build with libxml2 2.11 (ATTRIBUTE_UNUSED removed)
+
+libxml2 2.11 移除了 xmlversion.h 中的 ATTRIBUTE_UNUSED 宏（改为
+LIBXML_ATTR_UNUSED），而 PHP 7.4 的 ext/libxml/libxml.c 仍在使用它，
+编译时报：
+
+  ext/libxml/libxml.c:479:47: error: expected ')'
+
+改用 php-src 自带的 ZEND_ATTRIBUTE_UNUSED（Zend/zend_portability.h）。
+
+---
+ ext/libxml/libxml.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/ext/libxml/libxml.c
++++ b/ext/libxml/libxml.c
+@@ -476,7 +476,7 @@
+ static xmlOutputBufferPtr
+ php_libxml_output_buffer_create_filename(const char *URI,
+                               xmlCharEncodingHandlerPtr encoder,
+-                              int compression ATTRIBUTE_UNUSED)
++                              int compression ZEND_ATTRIBUTE_UNUSED)
+ {
+ 	xmlOutputBufferPtr ret;
+ 	xmlURIPtr puri;
