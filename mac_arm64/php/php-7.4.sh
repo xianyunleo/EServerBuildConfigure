@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 set -E
-trap 'echo "ERROR: command failed (exit $?) at line $LINENO: $BASH_COMMAND" >&2; printf "L%s: %s\n" "$LINENO" "$BASH_COMMAND" > "${GITHUB_WORKSPACE:-/tmp}/failure.txt"' ERR
+trap 'rc=$?; echo "ERROR: command failed (exit $rc) at line $LINENO: $BASH_COMMAND" >&2; _f="${GITHUB_WORKSPACE:-/tmp}/failure.txt"; { printf "L%s: %s\n" "$LINENO" "$BASH_COMMAND"; [ -f make.log ] && grep -m 6 -E "error:|fatal error:|undefined (symbol|reference)|Error [0-9]" make.log; } > "$_f" 2>/dev/null || true' ERR
 
 # -------------------------------
 # 配置
@@ -122,14 +122,14 @@ PKG_CONFIG_PATH=/Applications/EServer/Library/lib/pkgconfig \
   --with-pdo-pgsql=/Applications/EServer/Library/libpq \
   --with-pdo-sqlite \
   --with-sqlite3 \
-  --with-libxml \
+  --with-libxml-dir=/Applications/EServer/Library/libxml2@2.11 \
   --with-zip \
   --with-zlib
 
 # -------------------------------
 # 编译安装
 # -------------------------------
-make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)"
+make -j"$(sysctl -n hw.ncpu 2>/dev/null || echo 8)" 2>&1 | tee make.log
 sudo make install
 
 sudo cp ./php.ini-development "$PREFIX/etc/php.ini-development"
